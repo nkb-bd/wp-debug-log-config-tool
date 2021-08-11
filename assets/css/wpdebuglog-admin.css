@@ -1,0 +1,218 @@
+#wpdebugapp * {
+  box-sizing: border-box;
+}
+
+.wpdebugapp_wrap {
+  margin: 10px 15px;
+  /* The Modal (background) */
+  /* Modal Content */
+  /* The switch - the box around the slider */
+  /* Hide default HTML checkbox */
+  /* The slider */
+  /* Rounded sliders */
+  /* The Close Button */
+}
+.wpdebugapp_wrap .wpdebugapp_title {
+  float: left;
+}
+.wpdebugapp_wrap .wpdebugapp_actions {
+  float: right;
+  text-align: right;
+}
+.wpdebugapp_wrap .wpdebugapp_body {
+  clear: both;
+}
+.wpdebugapp_wrap .clearfix {
+  clear: both;
+}
+.wpdebugapp_wrap .tabs {
+  display: flex;
+}
+.wpdebugapp_wrap .tabs .tab {
+  cursor: pointer;
+  padding: 10px 30px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  background-color: #fff;
+  color: #363b3f;
+  transition: 0.3s all ease-in-out;
+  text-decoration: none;
+}
+.wpdebugapp_wrap .tabs .tab.is-tab-selected {
+  background-color: #363b3f;
+  color: #fff;
+}
+.wpdebugapp_wrap table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.wpdebugapp_wrap table .actions {
+  float: right;
+}
+.wpdebugapp_wrap table caption {
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
+}
+.wpdebugapp_wrap .table-list td {
+  font-size: 14px;
+}
+.wpdebugapp_wrap table tr {
+  background-color: #f8f8f8;
+  border: 1px solid #7f8990;
+  padding: 0.35em;
+  transition: 0.3s;
+}
+.wpdebugapp_wrap table tr .header {
+  font-weight: bold;
+}
+.wpdebugapp_wrap table tr .details {
+  margin-top: 10px;
+  font-style: italic;
+}
+.wpdebugapp_wrap table tr:hover {
+  background-color: #d8d6d6;
+}
+.wpdebugapp_wrap table th,
+.wpdebugapp_wrap table td {
+  padding: 0.625em;
+  text-align: left;
+}
+.wpdebugapp_wrap table th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.wpdebugapp_wrap .wpdd_modal {
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+.wpdebugapp_wrap .wpdd_modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  min-width: 40px;
+  border-right: 4px;
+}
+.wpdebugapp_wrap .switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 24px;
+}
+.wpdebugapp_wrap .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.wpdebugapp_wrap .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+}
+.wpdebugapp_wrap .slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+}
+.wpdebugapp_wrap input:checked + .slider {
+  background-color: #1bb16c;
+}
+.wpdebugapp_wrap input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+.wpdebugapp_wrap input:checked + .slider:before {
+  transform: translateX(20px);
+}
+.wpdebugapp_wrap .slider.round {
+  border-radius: 34px;
+}
+.wpdebugapp_wrap .slider.round:before {
+  border-radius: 50%;
+}
+.wpdebugapp_wrap .wpdd_modal_close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.wpdebugapp_wrap .wpdd_modal_close:hover,
+.wpdebugapp_wrap .wpdd_modal_close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+@media screen and (max-width: 600px) {
+  .wpdebugapp_wrap table {
+    border: 0;
+  }
+  .wpdebugapp_wrap table caption {
+    font-size: 1.3em;
+  }
+  .wpdebugapp_wrap table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  .wpdebugapp_wrap table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: 0.625em;
+  }
+  .wpdebugapp_wrap table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 0.8em;
+    text-align: left;
+  }
+  .wpdebugapp_wrap table td::before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .wpdebugapp_wrap table td:last-child {
+    border-bottom: 0;
+  }
+}
