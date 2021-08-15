@@ -128,8 +128,8 @@ final class DLCT_Bootstrap
         if (!get_option('DLCT_LOGconfig_notice_dismissed_20')) {
             $class = 'notice notice-success is-dismissible';
             $message = 'If you like this plugin a nice review will be appriciated :)';
-            $reviewBtn = '<a class="button" target="_blank" href="https://wordpress.org/"> Give Review </a>';
-            $closeBtn = '<a class="button" href="' . site_url('wp-admin/tools.php?page=DLCT_LOG&dimiss_msg=true') . '"> Dismiss </a>';
+            $reviewBtn = '<a class="button" target="_blank" href="https://wordpress.org/plugins/debug-log-config-tool"> Give Review </a>';
+            $closeBtn = '<a class="button" href="' . site_url('wp-admin/tools.php?page='.self::DLCT_LOG.'&dimiss_msg=true') . '"> Dismiss </a>';
             printf('<div class="%1$s"><p>%2$s  %3$s %4$s</p></div>', esc_attr($class), $message, $reviewBtn, $closeBtn);
         }
 

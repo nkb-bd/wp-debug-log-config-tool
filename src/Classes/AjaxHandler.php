@@ -53,6 +53,7 @@ class AjaxHandler
     public function clearLog()
     {
         $file = WP_CONTENT_DIR . '/debug.log';
+        $file =  apply_filters('wp_debuglog_log_file_path', $file);
         $open = fopen($file, "r+");
         if ($open != true) {
             $msg = 'Could not open file!';
@@ -67,7 +68,10 @@ class AjaxHandler
     public function fetchData()
     {
         $file = WP_CONTENT_DIR . '/debug.log';
-        $file =  apply_filters('wp_debuglog_log_file_path', $file);
+        if(!file_exists( $file )){
+            $file = ABSPATH . 'wp-config.php';
+        }
+        $file =  apply_filters('wp_dlct_log_file_path', $file);
         if( !file_exists( $file )){
             wp_send_json_error(['message' => 'Debug file not found']);
         }

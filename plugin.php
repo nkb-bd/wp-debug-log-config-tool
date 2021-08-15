@@ -7,7 +7,7 @@
  * Plugin URI:        #
  * Description:       Simple Debug log and Debug Toggle Tool
  * Version:           1.0.0
- * Author:            pyro_bd
+ * Author:            Lukman Nakib
  * Author URI:        https://nkb-bd.github.io/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt

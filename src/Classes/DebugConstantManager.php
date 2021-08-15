@@ -60,7 +60,7 @@ class DebugConstantManager
                 $file = dirname(ABSPATH) . '/wp-config.php';
             }
         }
-        return apply_filters('wp_debuglog_config_file_path', $file);
+        return apply_filters('wp_dlct_config_file_path', $file);
 
     }
 
