@@ -1,9 +1,12 @@
 let mix = require('laravel-mix');
+const path = require('path');
 
-mix.setPublicPath('assets');
-mix.setResourceRoot('../');
+mix.setPublicPath('dist');
+mix.setResourceRoot('/');
 
-mix.js('resources/main.js', 'assets/js/wpdebuglog-admin.js').vue()
-   .sass('resources/app.scss', 'assets/css/wpdebuglog-admin.css')
 
+mix.js('resources/main.js', 'wpdebuglog-admin.js').vue();
+mix.sass('resources/assets/main.scss', 'wpdebuglog-admin-css.css').options({
+    processCssUrls: false
+});;
 

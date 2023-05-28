@@ -1,86 +1,33 @@
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import HelloWorld from './components/HelloWorld.vue'
+import Navbar from "./components/Navbar";
+import { ref, onMounted } from 'vue'
+
+onMounted(() => {
+    console.log('mounted')
+
+})
+</script>
+
 <template>
-    <div class="wpdebugapp_wrap">
 
-        <div>
-            <div class=" clearfix tabs">
-                    <router-link   v-for="(menu,index) in menuItems" class="tab" :class=" $route.path == menu.path ? 'is-tab-selected' :'' " :to="menu.path"  :key="menu.route">
-                        {{menu.title}}
-                    </router-link>
+    <div class="dlct-wrapper">
+        <Navbar />
+        <Toolbar>
+            <template #start>
+                <SplitButton label="Save" icon="pi pi-check" :model="items" severity="warning"></SplitButton>
+            </template>
 
-            </div>
-            <div class="tab-body">
-
-                <router-view  @notification="sendNotification"></router-view>
-            </div>
-            <notification
-                    message="Text"
-                    :options.sync="notificationOptions"
-                    :show.sync="showNotification"
-                    @close="closeNotification"
-            >
-            </notification>
-            <span class="wpdebug-notification-message" v-if="message">
-
-            </span>
-        </div>
+            <template #end>
+                <Button icon="pi pi-refresh" severity="primary" outlined />
+            </template>
+        </Toolbar>
+        <RouterView />
 
     </div>
+
 </template>
-<script type="text/babel">
-    import Logs from "./components/Logs";
-    import DebugConstants from "./components/DebugConstants";
-    import Notification from "./components/Notification";
+<style type="text/css">
 
-    export default {
-        name: 'App',
-        data() {
-            return {
-                activeTab: 'logs',
-                message: '',
-                showNotification: false,
-                notificationOptions: {},
-                menuItems: []
-
-
-            };
-        },
-        components: {Logs, DebugConstants, Notification},
-        methods: {
-            defaultRoutes() {
-                return [
-                    {
-                        path: '/',
-                        title:'Debug Constants'
-                    },
-                    {
-                        path: '/logs',
-                        title: 'Debug Logs',
-                    },
-                    {
-                        path: '/email',
-                        title: 'Email Notification',
-                    },
-                    {
-                        path: '/support',
-                        title: 'Developer Contact'
-                    }
-                ]
-            },
-            setMenus() {
-                this.menuItems = this.defaultRoutes();
-            },
-            sendNotification(notification) {
-                this.notificationOptions.content = notification.text;
-                this.showNotification = true;
-            },
-            closeNotification() {
-                this.showNotification = false;
-            },
-
-        },
-        mounted() {
-            this.setMenus();
-        }
-
-    }
-</script>
+</style>
