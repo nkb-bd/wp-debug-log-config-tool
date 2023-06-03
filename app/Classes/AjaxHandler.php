@@ -28,7 +28,7 @@ class AjaxHandler
         if (!current_user_can($this->getAccessRole())) {
             return ;
         }
-        Router::load('app/routes.php')->direct(Request::uri(), Request::method());
+        Router::load('app/routes.php')->direct(Request::ajaxRoute(), Request::method());
         return;
         $validRoutes = [
             'clearlog'          => 'clearlog',

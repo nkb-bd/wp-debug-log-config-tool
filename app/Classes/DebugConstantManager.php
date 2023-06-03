@@ -2,7 +2,7 @@
 
 namespace DebugLogConfigTool\Classes;
 
-use DebugLogConfigTool\Classes\vendor\WPConfigTransformer;
+use DebugLogConfigTool\vendor\WPConfigTransformer;
 
 class DebugConstantManager
 {
@@ -14,6 +14,7 @@ class DebugConstantManager
 
     public function __construct()
     {
+        return;
         $this->setConfig();
 
     }
@@ -74,14 +75,12 @@ class DebugConstantManager
 
     }
 
-    public function save($constants)
+    public function store($constants)
     {
         $updatedConstant = [];
         $constants = json_decode($constants, true);
         $this->removeDeletedItem($constants);
-
-
-
+        
         foreach ($constants as $value) {
             if( empty($value['name'])){
                 continue;

@@ -1095,3 +1095,41 @@
 .dlct-wrapper .p-toolbar {
   border: none !important;
 }
+.dlct-wrapper .p-button.p-button-sm {
+  padding: 0.4rem 0.5rem;
+}
+.dlct-wrapper .p-component {
+  font-size: 0.9rem;
+}
+.dlct-wrapper .p-menubar {
+  border-radius: 0;
+  font-weight: 500;
+}
+.dlct-wrapper .p-menuitem-icon {
+  font-weight: 500;
+}
+.dlct-wrapper .router-link-active {
+  background-color: #d4d4d8;
+  border-radius: 4px;
+}
+.dlct-wrapper .dlct-form {
+  padding: 20px;
+}
+.dlct-wrapper .dlct-form-item {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: baseline;
+}
+.dlct-wrapper .dlct-form-item label {
+  font-weight: bold;
+  font-size: 14px;
+}
+.dlct-wrapper .highlight-error-fatal {
+  padding: 10px;
+  background-color: rgb(253, 232, 232);
+}
+.dlct-wrapper .highlight-error-warningl {
+  padding: 10px;
+  background-color: rgb(253, 252, 232);
+}

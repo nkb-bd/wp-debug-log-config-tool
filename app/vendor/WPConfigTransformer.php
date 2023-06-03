@@ -1,6 +1,6 @@
 <?php
 
-namespace DebugLogConfigTool\Classes\vendor;
+namespace DebugLogConfigTool\vendor;
 /**
  * Transforms a wp-config.php file.
  */
@@ -43,11 +43,11 @@ class WPConfigTransformer {
 		$basename = basename( $wp_config_path );
 
 		if ( ! file_exists( $wp_config_path ) ) {
-			throw new Exception( "{$basename} does not exist." );
+			throw new \Exception( "{$basename} does not exist." );
 		}
 
 		if ( ! is_writable( $wp_config_path ) ) {
-			throw new Exception( "{$basename} is not writable." );
+			throw new \Exception( "{$basename} is not writable." );
 		}
 
 		$this->wp_config_path = $wp_config_path;
@@ -68,14 +68,14 @@ class WPConfigTransformer {
 		$wp_config_src = file_get_contents( $this->wp_config_path );
 
 		if ( ! trim( $wp_config_src ) ) {
-			throw new Exception( 'Config file is empty.' );
+			throw new \Exception( 'Config file is empty.' );
 		}
 		// Normalize the newline to prevent an issue coming from OSX.
 		$this->wp_config_src = str_replace( array( "\n\r", "\r" ), "\n", $wp_config_src );
 		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
-			throw new Exception( "Config type '{$type}' does not exist." );
+			throw new \Exception( "Config type '{$type}' does not exist." );
 		}
 
 		return isset( $this->wp_configs[ $type ][ $name ] );
@@ -96,14 +96,14 @@ class WPConfigTransformer {
 		$wp_config_src = file_get_contents( $this->wp_config_path );
 
 		if ( ! trim( $wp_config_src ) ) {
-			throw new Exception( 'Config file is empty.' );
+			throw new \Exception( 'Config file is empty.' );
 		}
 
 		$this->wp_config_src = $wp_config_src;
 		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
-			throw new Exception( "Config type '{$type}' does not exist." );
+			throw new \Exception( "Config type '{$type}' does not exist." );
 		}
 
 		return $this->wp_configs[ $type ][ $name ]['value'];
@@ -124,7 +124,7 @@ class WPConfigTransformer {
 	 */
 	public function add( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
-			throw new Exception( 'Config value must be a string.' );
+			throw new \Exception( 'Config value must be a string.' );
 		}
 
 		if ( $this->exists( $type, $name ) ) {
@@ -149,7 +149,7 @@ class WPConfigTransformer {
 			$contents = $this->wp_config_src . $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
 		} else {
 			if ( false === strpos( $this->wp_config_src, $anchor ) ) {
-				throw new Exception( 'Unable to locate placement anchor.' );
+				throw new \Exception( 'Unable to locate placement anchor.' );
 			}
 
 			$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
@@ -174,13 +174,13 @@ class WPConfigTransformer {
 	 */
 	public function update( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
-			throw new Exception( 'Config value must be a string.' );
+			throw new \Exception( 'Config value must be a string.' );
 		}
 
 		$defaults = array(
 			'add'       => true, // Add the config if missing.
 			'raw'       => false, // Display value in raw format without quotes.
-			'normalize' => false, // Normalize config output using WP Coding Standards.
+			'normalize' => true, // Normalize config output using WP Coding Standards.
 		);
 
 		list( $add, $raw, $normalize ) = array_values( array_merge( $defaults, $options ) );
@@ -245,7 +245,7 @@ class WPConfigTransformer {
 	 */
 	protected function format_value( $value, $raw ) {
 		if ( $raw && '' === trim( $value ) ) {
-			throw new Exception( 'Raw value for empty string not supported.' );
+			throw new \Exception( 'Raw value for empty string not supported.' );
 		}
 
 		return ( $raw ) ? $value : var_export( $value, true );
@@ -268,7 +268,7 @@ class WPConfigTransformer {
 		} elseif ( 'variable' === $type ) {
 			$placeholder = '$%s = %s;';
 		} else {
-			throw new Exception( "Unable to normalize config type '{$type}'." );
+			throw new \Exception( "Unable to normalize config type '{$type}'." );
 		}
 
 		return sprintf( $placeholder, $name, $value );
@@ -340,7 +340,7 @@ class WPConfigTransformer {
 	 */
 	protected function save( $contents ) {
 		if ( ! trim( $contents ) ) {
-			throw new Exception( 'Cannot save the config file with empty contents.' );
+			throw new \Exception( 'Cannot save the config file with empty contents.' );
 		}
 
 		if ( $contents === $this->wp_config_src ) {
@@ -350,7 +350,7 @@ class WPConfigTransformer {
 		$result = file_put_contents( $this->wp_config_path, $contents, LOCK_EX );
 
 		if ( false === $result ) {
-			throw new Exception( 'Failed to update the config file.' );
+			throw new \Exception( 'Failed to update the config file.' );
 		}
 
 		return true;

@@ -16,7 +16,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
 define('DLCT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('DLCT_PLUGIN_VERSION', '1.1');
 define('DLCT_PLUGIN_MAIN_FILE', __FILE__);

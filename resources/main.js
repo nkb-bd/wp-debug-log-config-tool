@@ -20,11 +20,13 @@ import Button from "primevue/button";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';   // optional
-import SplitButton from 'primevue/splitbutton';   // optional
 import Row from 'primevue/row';
 import Toolbar from 'primevue/toolbar';
 import ProgressSpinner from 'primevue/progressspinner';
-
+import Toast from 'primevue/toast';
+import InputSwitch from 'primevue/inputswitch';
+import ToastService from 'primevue/toastservice';
+import InputText from 'primevue/inputtext';
 
 
 window.onload = function () {
@@ -39,8 +41,11 @@ window.onload = function () {
         application.component('ColumnGroup', ColumnGroup);
         application.component('Row', Row);
         application.component('Toolbar', Toolbar);
-        application.component('SplitButton', SplitButton);
         application.component('ProgressSpinner', ProgressSpinner);
+        application.component('Toast', Toast);
+        application.component('InputSwitch', InputSwitch);
+        application.component('InputText', InputText);
+        application.use(ToastService);
         application.use(router).mount(appEl);
     }
 }

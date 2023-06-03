@@ -16,5 +16,45 @@
   .p-toolbar{
     border: none!important;
   }
+  .p-button.p-button-sm {
+    padding: 0.4rem 0.5rem;
+  }
+  .p-component{
+    font-size: 0.9rem;
+  }
+  .p-menubar{
+    border-radius: 0;
+    font-weight: 500;
+  }
+  .p-menuitem-icon{
+    font-weight: 500;
+  }
+  .router-link-active{
+    background-color: #d4d4d8;
+    border-radius: 4px;
+  }
+  .dlct-form{
+    padding: 20px;
+  }
+  .dlct-form-item{
+    margin-bottom: 10px;
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    label {
+        font-weight: bold;
+        font-size: 14px;
+    }
+  }
+  .highlight-error-fatal{
+    padding:10px;
+    background-color: rgb(253 232 232);
+  }
+
+  .highlight-error-warningl{
+    padding:10px;
+    background-color: rgb(253 252 232);
+  }
+
 }
 

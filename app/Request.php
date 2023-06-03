@@ -7,7 +7,7 @@ class Request
      *
      * @return string
      */
-    public static function uri()
+    public static function ajaxRoute()
     {
         return isset($_REQUEST['route']) ? sanitize_text_field($_REQUEST['route']) : false;
     }

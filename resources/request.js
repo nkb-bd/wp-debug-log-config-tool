@@ -5,10 +5,13 @@ export async function useFetch(args = {}, url = '', method) {
     const error = ref(null);
 
     try {
-        const response = await fetch(url, {
+        let param = {
             method: method,
-            body: args,
-        });
+        };
+        if ( method !== 'GET') {
+            param.body = args
+        }
+        const response = await fetch(url, param);
         const jsonData = await response.json();
         data.value = jsonData;
     } catch (err) {

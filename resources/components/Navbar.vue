@@ -1,8 +1,13 @@
 
 <template>
     <div class=" relative z-2">
-        <Menubar :model="items">
+        <Menubar exact :model="items">
             <template #start>
+            </template>
+
+            <template #end>
+                <Button @click="$emit('triggerEventDlc','delete')"  size="small" style="margin-right: 10px;" icon="pi pi-trash" severity="danger"  />
+                <Button @click="$emit('triggerEventDlc','refresh')"  size="small" icon="pi pi-refresh" severity="info"  />
             </template>
 
         </Menubar>
@@ -20,19 +25,14 @@
         },
         {
             label: 'Settings',
-            icon: 'pi pi-fw pi-pencil',
+            icon: 'pi pi-fw pi-cog',
             to: "/settings"
-
         },
         {
             label: 'Notification',
-            icon: 'pi pi-fw pi-user',
+            icon: 'pi pi-fw pi-bell',
             to: "/notification"
         },
-        {
-            label: 'Support',
-            icon: 'pi pi-fw pi-calendar',
-            to: "/support"
-        }
+
     ]);
 </script>

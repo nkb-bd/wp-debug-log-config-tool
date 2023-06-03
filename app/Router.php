@@ -69,10 +69,12 @@ class Router
         $validRoutes = in_array( $uri,$this->routeNames);
         
         if (array_key_exists($uri, $this->routes[$requestType]) && $validRoutes) {
+            
             $action = explode('@', $this->routes[$requestType][$uri]);
+
             return $this->callAction(...$action);
         }
-        throw new \Exception('No route defined for this URI.');
+        throw new \Exception('No route defined for this Routes : '  .$uri );
         
     }
     

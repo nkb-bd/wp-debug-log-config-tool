@@ -14,8 +14,7 @@ class LogController
         }
     
         wp_send_json_success( [
-                'workflow' => "ok",
-            'logs'    => $this->loadDebugLog(),
+            'logs'    => $this->loadLogs(),
             'file_size' => $this->getFilesize(),
         ]);
     }
@@ -28,7 +27,7 @@ class LogController
         }
         return false;
     }
-    public function loadDebugLog()
+    public function loadLogs()
     {
         
         $file = WP_CONTENT_DIR . '/debug.log';
@@ -44,26 +43,44 @@ class LogController
         $i = 0;
         while ($line = @fgets($fh)) {
             $sep = '$!$';
-            $line = preg_replace("/^\[([0-9a-zA-Z-]+) ([0-9:]+) ([a-zA-Z_\/]+)\] (.*)$/i", "$1" . $sep . "$2" . $sep . "$3" . $sep . "$4", $line);
+    
+            $line = preg_replace("/^\[([0-9a-zA-Z-]+) ([0-9:]+) ([a-zA-Z_\/]+)\] (.*)$/i", "$1".$sep."$2".$sep."$3".$sep."$4", $line);
             $parts = explode($sep, $line);
-            
+    
             if (count($parts) >= 4) {
-                array_push($logs, array(
-                    'line'     => $i++,
-                    'date'     => date('Y-m-d', strtotime($parts[0])),
-                    'time'     => $parts[1],
-                    'timezone' => $parts[2],
-                    'details'  => stripslashes($parts[3]),
-                ));
+                $info = stripslashes($parts[3]);
                 
-            }
-            if ($i >= 50) {
-                break; //stop loading more for now @todo
+                $logs[] = [
+                    'date' => date('d/m/y', strtotime($parts[0])),
+                    'time' => $parts[1],
+                    'timezone' => $parts[2],
+                    'details' => $info,
+                ];
             }
             
             
         }
-        fclose($fh);
+        @fclose($fh);
         return $logs;
+    }
+    
+    public function clear()
+    {
+        $file = WP_CONTENT_DIR . '/debug.log';
+        $file = apply_filters('wp_debuglog_log_file_path', $file);
+        if (file_exists($file)) {
+            $open = fopen($file, "r+");
+            if ($open != true) {
+                $msg = 'Could not open file!';
+            } else {
+                file_put_contents($file, "");
+                $msg = 'Log cleared';
+            }
+        } else {
+            $msg = 'No log file yet available!';
+        }
+    
+        wp_send_json_success($msg);
+        
     }
 }
