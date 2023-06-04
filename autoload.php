@@ -4,8 +4,7 @@ defined('ABSPATH') or die;
 spl_autoload_register(function ($class) {
 
     $namespace = 'DebugLogConfigTool';
-    if (!str_starts_with($class, $namespace)) {
-        
+    if (strpos($class, $namespace) !== 0) {
         return;
     }
     $className = str_replace(

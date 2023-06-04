@@ -57,7 +57,7 @@ final class DLCT_Bootstrap
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('wp_before_admin_bar_render', [$this, 'adminTopMenu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_script']);
-        add_action('wpdd_admin_page_render_after', [$this, 'showMsg']);
+        add_action('wpdd_admin_page_render', [$this, 'showMsg']);
         add_action('admin_init', [$this, 'msgDismissed']);
         (new NotificationController())->boot();
         (new NotificationController())->scheduleCron();
@@ -118,7 +118,7 @@ final class DLCT_Bootstrap
             // false for a top level menu
             'title'  => 'Debug Logs',
             // title/menu text to display
-            'href'   => site_url('wp-admin/tools.php?page=') . self::DLCT_LOG . '#/x',
+            'href'   => site_url('wp-admin/tools.php?page=') . self::DLCT_LOG . '#/',
             // target url of this menu item
         
         ));
@@ -133,12 +133,14 @@ final class DLCT_Bootstrap
     
     public function showMsg()
     {
-        if (!get_option('DLCT_LOGconfig_notice_dismissed_20')) {
+        static  $messageShown = false;
+        if (!get_option('DLCT_LOGconfig_notice_dismissed_20') && !$messageShown) {
             $class = 'notice notice-success is-dismissible';
             $message = 'If you like this plugin a nice review will be appriciated :)';
             $reviewBtn = '<a class="button" target="_blank" href="https://wordpress.org/plugins/debug-log-config-tool"> Give Review </a>';
             $closeBtn = '<a class="button" href="' . site_url('wp-admin/tools.php?page=' . self::DLCT_LOG . '&dimiss_msg=true') . '"> Dismiss </a>';
             printf('<div class="%1$s"><p>%2$s  %3$s %4$s</p></div>', esc_attr($class), $message, $reviewBtn, $closeBtn);
+            $messageShown = true;
         }
     }
     

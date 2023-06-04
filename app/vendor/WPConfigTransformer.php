@@ -124,7 +124,8 @@ class WPConfigTransformer {
 	 */
 	public function add( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
-			throw new \Exception( 'Config value must be a string.' );
+            return ;
+			//throw new \Exception( 'Config value must be a string.' );
 		}
 
 		if ( $this->exists( $type, $name ) ) {
