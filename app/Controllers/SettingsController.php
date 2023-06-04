@@ -11,7 +11,7 @@ class SettingsController
         $formattedSettings = $this->getSettings();
         $mismatch = [];
         foreach ($formattedSettings as $setting){
-            $databaseValue = (new \DebugLogConfigTool\Controllers\ConfigController())->get($setting->name);
+            $databaseValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting->name);
             if($databaseValue != $setting->value){
                 $mismatch[] = $setting->name;
             }

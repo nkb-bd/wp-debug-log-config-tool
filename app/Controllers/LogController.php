@@ -4,19 +4,28 @@ namespace DebugLogConfigTool\Controllers;
 class LogController
 {
     public function get(){
-        $file = WP_CONTENT_DIR . '/debug.log';
-        if(!file_exists( $file )){
-            $file = ABSPATH . 'wp-config.php';
+      
+        try {
+            $file = WP_CONTENT_DIR . '/debug.log';
+            if(!file_exists( $file )){
+                $file = ABSPATH . 'wp-config.php';
+            }
+            $file =  apply_filters('wp_dlct_log_file_path', $file);
+            if( !file_exists( $file )){
+                wp_send_json_error(['message' => 'Debug file not found']);
+            }
+            
+            wp_send_json_success( [
+                'logs'    => $this->loadLogs(),
+                'file_size' => $this->getFilesize(),
+            ]);
         }
-        $file =  apply_filters('wp_dlct_log_file_path', $file);
-        if( !file_exists( $file )){
-            wp_send_json_error(['message' => 'Debug file not found']);
+        catch (\Exception $e) {
+            wp_send_json_success( [
+                'message'    => $e->getMessage(),
+            ]);
         }
-    
-        wp_send_json_success( [
-            'logs'    => $this->loadLogs(),
-            'file_size' => $this->getFilesize(),
-        ]);
+        
     }
     public function getFilesize()
     {
@@ -37,7 +46,7 @@ class LogController
         }
         $fh = fopen($file, 'r');
         if (!$fh) {
-            return 'fail_open';
+            return '';
         }
         $logs = [];
         $i = 0;
@@ -46,20 +55,21 @@ class LogController
     
             $line = preg_replace("/^\[([0-9a-zA-Z-]+) ([0-9:]+) ([a-zA-Z_\/]+)\] (.*)$/i", "$1".$sep."$2".$sep."$3".$sep."$4", $line);
             $parts = explode($sep, $line);
-    
             if (count($parts) >= 4) {
                 $info = stripslashes($parts[3]);
-                
+    
                 $logs[] = [
                     'date' => date('d/m/y', strtotime($parts[0])),
                     'time' => $parts[1],
                     'timezone' => $parts[2],
                     'details' => $info,
                 ];
+    
             }
-            
-            
+    
+    
         }
+        
         @fclose($fh);
         return $logs;
     }
@@ -82,5 +92,10 @@ class LogController
     
         wp_send_json_success($msg);
         
+    }
+    public function gmt_to_local_timestamp($gmt_timestamp)
+    {
+        $iso_date = strtotime('Y-m-d H:i:s', $gmt_timestamp);
+        return get_date_from_gmt($iso_date, 'Y-m-d h:i a');
     }
 }

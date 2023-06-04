@@ -2,66 +2,85 @@
 
 namespace DebugLogConfigTool\Controllers;
 
-class NotificationController{
+class NotificationController
+{
     public $notificationEmail = 'dlct_log_notification_email';
-    public $notificationStatus = 'dlct_log_notification_email_schedule';
+        public $notificationStatus = 'dlct_log_notification_email_schedule';
+    
     public function boot()
     {
-        if ( ! wp_next_scheduled( 'dlct_notification_check_daily' ) ) { // This will always be false
-            wp_schedule_event( time(), 'daily', 'dlct_notification_check_daily', '' );
-        }
-        add_action('dlct_notification_check_daily',[$this,'maybeSendEmail']);
+        add_action('dlct_daily_email_check', array($this, 'maybeSendEmail'));
     }
+    
+    public function scheduleCron()
+    {
+        if (!wp_next_scheduled('dlct_daily_email_check')) {
+            wp_schedule_event(time(), 'daily', 'dlct_daily_email_check');
+        }
+    }
+    
+    public function deactivate()
+    {
+        wp_clear_scheduled_hook('dlct_daily_email_check');
+    }
+    
     public function maybeSendEmail()
     {
-        $logData = (new LogController())->get();
-        $logData = json_decode($logData);
-
-        if(!empty($logData->logs)){
-            $lastLog = array_pop($logData->logs);
-            $this->sendEmail($lastLog);
+        $notification_status = get_option($this->notificationStatus) == 'true' || get_option($this->notificationStatus) == 'yes';
+        if (!$notification_status == 'yes') {
+            return;
+        }
+        $logData = (new LogController())->loadLogs();
+        if (!empty($logData)) {
+            $this->sendEmail($logData);
         }
     }
+    
     public function sendEmail($lastLog)
     {
-        $to = 'emailsendto@example.com';
-        $subject = 'Notification from Debug Log Config Plugin';
-        $body = 'A new debug log has been recorded in your site';
-        $table = '<table>';
-            foreach ($lastLog as $row) {
-                $table .= '<tr>';
-                foreach ($row as $cell) {
-                    $table .= '<td>' . $cell . '</td>';
-                }
-                $table .= '</tr>';
+        $to = get_option($this->notificationEmail) ? get_option($this->notificationEmail) : get_option('admin_email');
+        if (empty($to)) {
+            return;
+        }
+        $subject = get_bloginfo('name') . ': Notification from Debug Log Config Plugin';
+        $body = 'A new debug log has been recorded in your site <br>';
+        $table = $this->getTableStyle();
+        $table .= '<table class="dlct-log-table">';
+        foreach ($lastLog as $row) {
+            $table .= '<tr>';
+            foreach ($row as $cell) {
+                $table .= '<td>' . $cell . '</td>';
             }
+            $table .= '</tr>';
+        }
         $table .= '</table>';
         $body .= $table;
-        $headers = array('Content-Type: text/html; charset=UTF-8','From: My Site Name <support@example.com>');
-
-        wp_mail( $to, $subject, $body, $headers );
+        $body = apply_filters('dlct_email_body', $body);
+        
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: '.get_bloginfo('name').' <support@example.com>');
+        
+        wp_mail($to, $subject, $body, $headers);
     }
+    
     public function getNotificationEmail()
-    {   
+    {
         $notification_email = get_option($this->notificationEmail);
-        if(!$notification_email){
-            $notification_email = get_option('admin_email'); 
+        if (!$notification_email) {
+            $notification_email = get_option('admin_email');
         }
-        $notification_status = get_option($this->notificationStatus) == 'true' || get_option($this->notificationStatus) == 'yes';
+        $notification_status =  get_option($this->notificationStatus) == 'yes';
         wp_send_json_success([
-            'email' => $notification_email,
-            'status' =>$notification_status,
+            'email'  => $notification_email,
+            'status' => $notification_status,
         ]);
     }
-
+    
     public function updateNotificationEmail()
-    {   
+    {
         $notification_email = sanitize_text_field($_REQUEST['email']);
-        $notification_status = sanitize_text_field($_REQUEST['status']);
-        if($notification_status)
-
-        if(!$notification_email){
-            $notification_email = get_option('admin_email'); 
+        $notification_status = sanitize_text_field($_REQUEST['status']) == 'true' ? 'yes' : 'no';
+        if (!$notification_email) {
+            $notification_email = get_option('admin_email');
         }
         update_option($this->notificationEmail, $notification_email, false);
         update_option($this->notificationStatus, $notification_status, false);
@@ -69,5 +88,33 @@ class NotificationController{
             'message' => 'Notification Settings Updated!',
             'success' => true
         ]);
+    }
+    
+    private function getTableStyle()
+    {
+        return '<style>
+          .dlct-log-table {
+            border: solid 2px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 14px Roboto, sans-serif;
+          }
+        
+          .dlct-log-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+          }
+        
+          .dlct-log-table tbody td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+          }
+        </style>';
     }
 }

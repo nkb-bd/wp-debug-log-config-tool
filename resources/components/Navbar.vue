@@ -1,4 +1,3 @@
-
 <template>
     <div class=" relative z-2">
         <Menubar exact :model="items">
@@ -6,8 +5,9 @@
             </template>
 
             <template #end>
-                <Button @click="$emit('triggerEventDlc','delete')"  size="small" style="margin-right: 10px;" icon="pi pi-trash" severity="danger"  />
-                <Button @click="$emit('triggerEventDlc','refresh')"  size="small" icon="pi pi-refresh" severity="info"  />
+                <Button @click="$emit('triggerEventDlc','delete')" size="small" style="margin-right: 10px;"
+                        icon="pi pi-trash" severity="danger"/>
+                <Button @click="$emit('triggerEventDlc','refresh')" size="small" icon="pi pi-refresh" severity="info"/>
             </template>
 
         </Menubar>
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-    import { ref } from "vue";
+    import {ref} from "vue";
 
     const items = ref([
         {
@@ -32,6 +32,10 @@
             label: 'Notification',
             icon: 'pi pi-fw pi-bell',
             to: "/notification"
+        },
+        {
+            label: 'Support',
+            to: "/support"
         },
 
     ]);

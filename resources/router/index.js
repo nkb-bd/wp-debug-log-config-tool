@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import LogView from '../views/LogView'
-import AboutView from '../views/AboutView.vue'
 import  SettingsView from '../views/SettingsView'
 import NotificationView from '../views/NotificationView.vue'
+import SupportView from "../views/supportView";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -13,11 +13,6 @@ const router = createRouter({
       component: LogView
     },
     {
-      path: '/logs',
-      name: 'about',
-      component: AboutView
-    },
-    {
       path: '/settings',
       name: 'settings',
       component: SettingsView
@@ -26,6 +21,11 @@ const router = createRouter({
       path: '/notification',
       name: 'notification',
       component: NotificationView
+    },
+    {
+      path: '/support',
+      name: 'support',
+      component: SupportView
     }
   ]
 })

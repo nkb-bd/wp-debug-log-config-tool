@@ -1,0 +1,12 @@
+/resources
+.DS_Store
+.distignore
+.git
+.gitattributes
+.gitignore
+README.md
+.idea
+node_modules
+package-lock.json
+package.json
+webpack.mix.js

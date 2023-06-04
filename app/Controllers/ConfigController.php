@@ -6,9 +6,9 @@ use DebugLogConfigTool\vendor\WPConfigTransformer;
 
 class ConfigController
 {
-    const WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE = 'wpdd_debugging_predefined_constants';
+    const WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE = 'DebugLogConfigTool_data_initial';
     private static $configfilePath;
-   
+    
     protected $optionKey = 'debuglogconfigtool_updated_constant';
     public $debugConstants = ['WP_DEBUG', 'WP_DEBUG_LOG', 'SCRIPT_DEBUG'];
     protected $config_file_manager;
@@ -17,16 +17,11 @@ class ConfigController
         'raw'       => true,
         'add'       => true,
     ];
+    
     public function __construct()
     {
         $this->initialize();
-    
     }
-    
-    public function boot()
-    {
-    }
-    
     
     private function initialize()
     {
@@ -77,14 +72,12 @@ class ConfigController
                 'message' => 'Constant Updated!',
                 'success' => true
             ]);
-            
         } catch (\Exception $e) {
             wp_send_json_error([
                 'message' => $e->getMessage(),
                 'success' => false
             ]);
         }
-        
     }
     
     public function exists($constant)
@@ -92,9 +85,9 @@ class ConfigController
         return $this->config_file_manager->exists('constant', strtoupper($constant));
     }
     
-    public function get($constant)
+    public function getValue($constant)
     {
-        if ($this->exists (strtoupper($constant))) {
+        if ($this->exists(strtoupper($constant))) {
             return $this->config_file_manager->get_value('constant', strtoupper($constant));
         }
         return null;
@@ -105,9 +98,10 @@ class ConfigController
     {
         //By default, when attempting to update a config that doesn't exist, one will be added.
         $option = self::$configArgs;
-        $value = $value ? 'true' : 'false';
+        if (is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
         return $this->config_file_manager->update('constant', strtoupper($key), $value, $option);
-        
     }
     
     public function getConfigFilePath()
@@ -119,7 +113,6 @@ class ConfigController
             }
         }
         return apply_filters('wp_dlct_config_file_manager_path', $file);
-        
     }
     
     /**
@@ -136,15 +129,8 @@ class ConfigController
     }
     
     
-    public function gmt_to_local_timestamp($gmt_timestamp)
-    {
-        $iso_date = strtotime('Y-m-d H:i:s', $gmt_timestamp);
-        return get_date_from_gmt($iso_date, 'Y-m-d h:i a');
-    }
-    
     public function storeInitialValues()
     {
-        
         if (!is_writable(self::$configfilePath)) {
             return;
         }
@@ -155,15 +141,21 @@ class ConfigController
                 $predefinedConstants[$constant] = $value;
             }
         }
-        update_site_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE , $predefinedConstants);
+        
+        update_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE, $predefinedConstants);
     }
     
     
-    public function deactivate()
+    public function restoreInitialState()
     {
-        //todo restore initial constant as it was and remove all current config items
+        $settings = get_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE);
+        if (!is_writable(self::$configfilePath)) {
+            return;
+        }
+        foreach ($settings as $key => $value) {
+            (new ConfigController())->update($key, $value);
+        }
     }
     
-  
     
 }

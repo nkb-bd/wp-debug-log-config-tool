@@ -1133,3 +1133,13 @@
   padding: 10px;
   background-color: rgb(253, 252, 232);
 }
+.dlct-wrapper .menu-page {
+  padding: 20px;
+}
+.dlct-wrapper .menu-page .info {
+  font-size: 16px;
+}
+
+.notice-success {
+  margin-left: 0px;
+}

@@ -13,7 +13,7 @@
             <DataTable paginator :rows="20" :rowsPerPageOptions="[ 20,30, 50]" v-if="state.logs && Object.entries(state.logs).length > 0" :value="state.logs"  >
                 <Column field="details" header="Log">
                     <template #body="slotProps">
-                       <span v-html="formattedText(slotProps.data.details )"></span>
+                       <div v-html="formattedText(slotProps.data.details )"></div>
                     </template>
                 </Column>
                 <Column field="time" header="Time"></Column>
@@ -106,7 +106,7 @@
                     cssClass = 'highlight-error-warning';
                 }
             const regex = new RegExp(str, 'gi');
-            formatted =  `<span class="${cssClass}">${text}</span>`;
+            formatted =  `<div class="${cssClass}">${text}</div>`;
             // formatted = formatted.replace(regex, `<span class="${cssClass}">$&</span>`);
         }
         });
