@@ -3,8 +3,8 @@ Contributors: pyrobd
 Tags: debug, log , debug constant, config
 Requires at least: 5.6
 Tested up to: 6.2.2
-Requires PHP: 5.2
-Stable tag: 1.2
+Requires PHP: 5.6
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ Just Download and activate the plugin. Then go to Tools  -> WP Debug Log
 = 1.0.0
  -Initial Version
 
-= 1.2
+= 1.4
  - Clean UI
  - Refresh Log
  - Email Notification

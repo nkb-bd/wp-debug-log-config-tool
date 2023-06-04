@@ -4,7 +4,7 @@
             <template #start>
             </template>
 
-            <template #end>
+            <template v-if="path == '/'" #end>
                 <Button @click="$emit('triggerEventDlc','delete')" size="small" style="margin-right: 10px;"
                         icon="pi pi-trash" severity="danger"/>
                 <Button @click="$emit('triggerEventDlc','refresh')" size="small" icon="pi pi-refresh" severity="info"/>
@@ -15,8 +15,13 @@
 </template>
 
 <script setup>
-    import {ref} from "vue";
+    import {ref,watch} from "vue";
+    import {useRoute} from 'vue-router'
+    import {computed} from 'vue'
 
+    const route=useRoute();
+
+    const path = computed(() =>route.path)
     const items = ref([
         {
             label: 'Logs',
