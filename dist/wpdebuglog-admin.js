@@ -17113,17 +17113,6 @@ __webpack_require__.r(__webpack_exports__);
     var path = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
       return route.path;
     });
-    // watch(question, async (newQuestion, oldQuestion) => {
-    //     if (newQuestion.indexOf('?') > -1) {
-    //         answer.value = 'Thinking...'
-    //         try {
-    //             const res = await fetch('https://yesno.wtf/api')
-    //             answer.value = (await res.json()).answer
-    //         } catch (error) {
-    //             answer.value = 'Error! Could not reach the API. ' + error
-    //         }
-    //     }
-    // })
     var items = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([{
       label: 'Logs',
       icon: 'pi pi-fw pi-file',
