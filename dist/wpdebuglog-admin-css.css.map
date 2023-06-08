@@ -1,0 +1,1 @@
+{"version":3,"file":"wpdebuglog-admin-css.css","mappings":"AACA;EACE;EACA;EACA;AAAF,C","sources":["webpack://debug-log-config-tool-x/./resources/assets/main.scss"],"sourcesContent":["\n.dlct-wrapper{\n  background-color: #fff;\n  margin-right: 20px;\n  margin-top: 20px;\n}\n\n"],"names":[],"sourceRoot":""}
