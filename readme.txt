@@ -1,20 +1,62 @@
-=== WP Debug Log - Config Tool ===
+=== WP Debug Log - Configuration Tool ===
 Contributors: pyrobd
-Tags: debug, log , debug constant, config
+Donate link:
+Tags: debug ,wp-config, debug log, WP_DEBUG, WP_DEBUG_LOG
 Requires at least: 5.6
 Tested up to: 6.2.2
+Stable tag: 1.4.2
 Requires PHP: 5.6
-Stable tag: 1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A simple debug log plugin. See debug log file in your dashboard. Enable WP_DEBUG & WP_DEBUG_LOG from dashboard. Please note that debug mode will be automatically turned on after activating the plugin.
+The "Debug Log Config Tool" simplifies debug log management. Enable/disable logging, view levels, clear logs, and set admin notifications from the dashboard
 
 == Description ==
-A simple debug log plugin. Check **Debug Log** from the dashboard. Enable and disable **Debug** ( *' WP_DEBUG', 'WP_DEBUG_LOG', 'SCRIPT_DEBUG '* ) with one click. Insert new Constant Item in the config file without editing it directly.
+
+A simple debug helper plugin. Check **Debug Log** from the dashboard. Admin Email notification can also be set. It will trigger an **email notification** using wp-cron job if there is any data in the log file. By default, it is turned off.
+
+
+* Enable or disable debug constants with a single click.
+
+* See different highlighted log levels.
+* Set custom log file paths for loading debug logs.
+>  apply_filters('wp_debuglog_log_file_path', $file);
+* Accessible from the dashboard's WordPress admin top nav bar.
+* Simplifies the debugging process by managing to log debug without modifying the wp-config.php file directly.
+
+
+Constants Available
+
+1. **WP_DEBUG** :: Default Value : true
+2. **WP_DEBUG_LOG**:: Default Value : true
+3. **SCRIPT_DEBUG** :: Default Value : false
+4. **WP_DEBUG_DISPLAY** :: Default Value : false
+5. **SAVEQUERIES**:: Default Value : false
+
+Please note: Constant values will be restored on plugin deactivation as it was before activating the plugin.
+
 
 == Installation ==
-Just Download and activate the plugin. Then go to Tools  -> WP Debug Log
+
+1. Upload the plugin files to the `/wp-content/plugins/debug-log-config-tool` directory, or install the plugin through the WordPress plugins screen directly.
+1. Activate the plugin through the 'Plugins' screen in WordPress
+1. Go to Tools-> Debug Logs screen to see the debug logs or access it from the top navbar.
+
+
+== Frequently Asked Questions ==
+
+= Do I need to edit wp-config.php fie ? =
+
+No activate the plugin and turn off/on debug constants from dashboard
+
+= Can I add more debug constants ?  =
+
+Currently, you can use the filter  apply_filters('dlct_constants', $constants);
+
+
+== Screenshots ==
+1. ** Plugin Settings **
+1. ** Debug Log **
 
 == Changelog ==
 = 1.0.0
@@ -24,9 +66,9 @@ Just Download and activate the plugin. Then go to Tools  -> WP Debug Log
  - Clean UI
  - Refresh Log
  - Email Notification
+= 1.4.2
+ - New Constants
+ - Removed database dependency
 
 
-== Screenshots ==
-1. ** Plugin Settings **
-1. ** Debug Log **
 

@@ -152,9 +152,5 @@ final class DLCT_Bootstrap
     }
 }
 
-register_deactivation_hook(DLCT_PLUGIN_MAIN_FILE, function () {
-    DLCT_Bootstrap::deactivate();
-});
-
 
 

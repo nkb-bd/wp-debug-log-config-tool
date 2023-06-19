@@ -57,10 +57,11 @@ class LogController
             $parts = explode($sep, $line);
             if (count($parts) >= 4) {
                 $info = stripslashes($parts[3]);
-    
+                $time = strtotime($parts[1] );
+                
                 $logs[] = [
                     'date' => date('d/m/y', strtotime($parts[0])),
-                    'time' => $parts[1],
+                    'time' => human_time_diff($time,time()) .' ago',
                     'timezone' => $parts[2],
                     'details' => $info,
                 ];

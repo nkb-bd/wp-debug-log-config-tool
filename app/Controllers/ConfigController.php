@@ -55,7 +55,7 @@ class ConfigController
             $this->maybeRemoveDeletedConstants($constants);
             
             foreach ($constants as $constant) {
-//          $defaults['raw'] = ($constant['type'] === 'raw') ? true : false;
+
                 $key = sanitize_title($constant['name']);
                 $value = sanitize_text_field($constant['value']);
                 if (empty($key)) {
@@ -135,10 +135,12 @@ class ConfigController
             return;
         }
         $predefinedConstants = [];
-        foreach ($this->debugConstants as $constant) {
-            if ($this->exists(strtoupper($constant))) {
-                $value = $this->getValue(strtoupper($constant));
-                $predefinedConstants[$constant] = $value;
+        $constants =  (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
+    
+        foreach ($constants as $constantKey => $constantValue) {
+            if ($this->exists(strtoupper($constantKey))) {
+                $value = $this->getValue(strtoupper($constantKey));
+                $predefinedConstants[$constantKey] = $value;
             }
         }
         
@@ -148,12 +150,19 @@ class ConfigController
     
     public function restoreInitialState()
     {
-        $settings = get_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE);
+        $initialSettings = get_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE);
         if (!is_writable(self::$configfilePath)) {
             return;
         }
-        foreach ($settings as $key => $value) {
-            (new ConfigController())->update($key, $value);
+     
+        $constants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
+        //first turn off all
+        foreach ($constants as $key => $constants) {
+            (new ConfigController())->update($key, false);
+        }
+        //then restore as before
+        foreach ($initialSettings as $key => $value) {
+           (new ConfigController())->update($key, $value);
         }
     }
     

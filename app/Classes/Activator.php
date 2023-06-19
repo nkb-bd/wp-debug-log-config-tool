@@ -8,8 +8,6 @@ use DebugLogConfigTool\Controllers\SettingsController;
 
 class Activator
 {
-    private $debugConstants = ['WP_DEBUG', 'WP_DEBUG_LOG', 'SCRIPT_DEBUG'];
-    
     public function run()
     {
         $this->saveInitialConstants();
@@ -29,9 +27,9 @@ class Activator
     {
         $constantManager = new ConfigController();
         $updatedConstants = [];
-        $debugConstants = apply_filters('DebugLogConfigTool_initial_constants', $this->debugConstants);
-        foreach ($debugConstants as $constantKey) {
-            $value = 'true';
+        $debugConstants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
+        foreach ($debugConstants as $constantKey=>$constant) {
+            $value = $constant['value'];
             // Set all debug constants to true or get the existing value if already true
             $success = $constantManager->update($constantKey, $value, '');
             if (!$success) {

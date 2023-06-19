@@ -1,14 +1,5 @@
 @import 'primeicons/primeicons.css';
 
-//@font-face {
-//  font-family: 'primeicons';
-//  font-display: block;
-//  src: url('./fonts-test/primeicons.eot');
-//  src: url('./fonts-test/primeicons.eot?#iefix') format('embedded-opentype'), url('./fonts-test/primeicons.woff2') format('woff2'), url('./fonts-test/primeicons.woff') format('woff'), url('./fonts-test/primeicons.ttf') format('truetype'), url('./fonts-test/primeicons.svg?#primeicons') format('svg')!important;
-//  font-weight: normal;
-//  font-style: normal;
-//}
-
 .dlct-wrapper{
   background-color: #fff;
   margin-right: 20px;
@@ -51,14 +42,40 @@
     background-color: rgb(253 232 232);
   }
 
-  .highlight-error-warningl{
+  .highlight-error-warning{
     padding:10px;
     background-color: rgb(253 252 232);
+  }
+
+  .highlight-error-deprecated{
+    padding:10px;
+    background-color: rgb(245 245 244);
+  }
+
+  .highlight-error-info{
+    padding:10px;
+    background-color: aliceblue;
+  }
+
+  .highlight-error-parse{
+    padding:10px;
+    background-color: rgb(255 240 255);;
   }
   .menu-page{
     padding:20px;
     .info{
       font-size: 16px;
+    }
+  }
+  .p-paginator-element{
+    min-width: 2rem!important;
+    height: 2rem!important;
+   
+  }
+  .p-dropdown{
+    height: 2rem!important;
+    span{
+      align-self: center!important;
     }
   }
 

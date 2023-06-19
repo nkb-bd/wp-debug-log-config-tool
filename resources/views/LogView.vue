@@ -10,7 +10,7 @@
             <div v-if="state.logs && Object.entries(state.logs).length == 0" >
                 <p style="margin: 20px auto;padding-bottom:20px;text-align: center">Logs Empty</p>
             </div>
-            <DataTable paginator :rows="20" :rowsPerPageOptions="[ 20,30, 50]" v-if="state.logs && Object.entries(state.logs).length > 0" :value="state.logs"  >
+            <DataTable :paginator ='state.logs && Object.entries(state.logs).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]" v-if="state.logs && Object.entries(state.logs).length > 0" :value="state.logs"  >
                 <Column field="details" header="Log">
                     <template #body="slotProps">
                        <div v-html="formattedText(slotProps.data.details )"></div>
@@ -32,7 +32,7 @@
 
     const toast = useToast()
     const props = defineProps(['trigger'])
-    const searchString = ref(['PHP Fatal error', 'PHP Warning error']);
+    const searchString = ref(['Fatal error', 'Warning','Deprecated','Notice','Parse']);
 
     const display = (props) => {
         return h(props);
@@ -98,16 +98,21 @@
 
         searchString.value.forEach(str => {
         if (str && formatted.includes(str)) {
-            // Inject <span> tag around the search string
+                // Inject <span> tag around the search string
                 var cssClass = 'highlight-error'
-                if(str == 'PHP Fatal error'){
+                if(str == 'Fatal error'){
                     cssClass = 'highlight-error-fatal';
-                }else if (str == 'PHP Warning error'){
+                }else if (str == 'Warning'){
                     cssClass = 'highlight-error-warning';
+                }else if (str == 'Deprecated'){
+                    cssClass = 'highlight-error-deprecated';
+                }else if (str == 'Notice'){
+                    cssClass = 'highlight-error-info';
+                }else if (str == 'Parse'){
+                    cssClass = 'highlight-error-parse';
                 }
             const regex = new RegExp(str, 'gi');
             formatted =  `<div class="${cssClass}">${text}</div>`;
-            // formatted = formatted.replace(regex, `<span class="${cssClass}">$&</span>`);
         }
         });
 

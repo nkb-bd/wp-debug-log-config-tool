@@ -1129,15 +1129,37 @@
   padding: 10px;
   background-color: rgb(253, 232, 232);
 }
-.dlct-wrapper .highlight-error-warningl {
+.dlct-wrapper .highlight-error-warning {
   padding: 10px;
   background-color: rgb(253, 252, 232);
+}
+.dlct-wrapper .highlight-error-deprecated {
+  padding: 10px;
+  background-color: rgb(245, 245, 244);
+}
+.dlct-wrapper .highlight-error-info {
+  padding: 10px;
+  background-color: aliceblue;
+}
+.dlct-wrapper .highlight-error-parse {
+  padding: 10px;
+  background-color: rgb(255, 240, 255);
 }
 .dlct-wrapper .menu-page {
   padding: 20px;
 }
 .dlct-wrapper .menu-page .info {
   font-size: 16px;
+}
+.dlct-wrapper .p-paginator-element {
+  min-width: 2rem !important;
+  height: 2rem !important;
+}
+.dlct-wrapper .p-dropdown {
+  height: 2rem !important;
+}
+.dlct-wrapper .p-dropdown span {
+  align-self: center !important;
 }
 
 .notice-success {

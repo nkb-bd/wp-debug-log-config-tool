@@ -39,7 +39,7 @@
             to: "/notification"
         },
         {
-            label: 'Support',
+            label: 'Contact',
             to: "/support"
         },
 
