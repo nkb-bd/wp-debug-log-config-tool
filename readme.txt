@@ -1,7 +1,7 @@
 === WP Debug Log - Configuration Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug ,wp-config, debug log, WP_DEBUG, WP_DEBUG_LOG
+Tags: debug ,wp-config, debug log, WP_DEBUG, WP_DEBUG_LOG, support, developer tools
 Requires at least: 5.6
 Tested up to: 6.2.2
 Stable tag: 1.4.2
@@ -14,13 +14,14 @@ The "Debug Log Config Tool" simplifies debug log management. Enable/disable logg
 == Description ==
 
 A simple debug helper plugin. Check **Debug Log** from the dashboard. Admin Email notification can also be set. It will trigger an **email notification** using wp-cron job if there is any data in the log file. By default, it is turned off.
+Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show whether inside HTML pages or not. By default,it is turned off so users will not see any debug or error information.
 
 
 * Enable or disable debug constants with a single click.
 
 * See different highlighted log levels.
 * Set custom log file paths for loading debug logs.
->  apply_filters('wp_debuglog_log_file_path', $file);
+>  **apply_filters('wp_debuglog_log_file_path', $file);**
 * Accessible from the dashboard's WordPress admin top nav bar.
 * Simplifies the debugging process by managing to log debug without modifying the wp-config.php file directly.
 
