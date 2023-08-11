@@ -1125,23 +1125,23 @@
   font-weight: bold;
   font-size: 14px;
 }
-.dlct-wrapper .highlight-error-fatal {
+.dlct-wrapper .p-datatable-tbody > tr.highlight-error-fatal {
   padding: 10px;
   background-color: rgb(253, 232, 232);
 }
-.dlct-wrapper .highlight-error-warning {
+.dlct-wrapper .p-datatable-tbody > tr.highlight-error-warning {
   padding: 10px;
   background-color: rgb(253, 252, 232);
 }
-.dlct-wrapper .highlight-error-deprecated {
+.dlct-wrapper .p-datatable-tbody > tr.highlight-error-deprecated {
   padding: 10px;
   background-color: rgb(245, 245, 244);
 }
-.dlct-wrapper .highlight-error-info {
+.dlct-wrapper .p-datatable-tbody > tr.highlight-error-info {
   padding: 10px;
   background-color: aliceblue;
 }
-.dlct-wrapper .highlight-error-parse {
+.dlct-wrapper .p-datatable-tbody > tr.highlight-error-parse {
   padding: 10px;
   background-color: rgb(255, 240, 255);
 }
@@ -1160,6 +1160,21 @@
 }
 .dlct-wrapper .p-dropdown span {
   align-self: center !important;
+}
+.dlct-wrapper .table-header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.dlct-wrapper .p-column-title {
+  color: #4a4e56;
+}
+.dlct-wrapper .log-table .p-datatable-header {
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+}
+.dlct-wrapper .p-datatable > .p-datatable-wrapper, .dlct-wrapper .dlct-form, .dlct-wrapper .menu-page {
+  border: 1px solid #e5e7eb;
 }
 
 .notice-success {

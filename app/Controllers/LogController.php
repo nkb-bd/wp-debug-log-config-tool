@@ -14,10 +14,12 @@ class LogController
             if( !file_exists( $file )){
                 wp_send_json_error(['message' => 'Debug file not found']);
             }
+            $logData =  $this->loadLogs();
             
-            wp_send_json_success( [
-                'logs'    => $this->loadLogs(),
-                'file_size' => $this->getFilesize(),
+            wp_send_json_success([
+                'logs'        => $logData['logs'],
+                'error_types' => $logData['unique_error_types'],
+                'file_size'   => $this->getFilesize(),
             ]);
         }
         catch (\Exception $e) {
@@ -49,30 +51,55 @@ class LogController
             return '';
         }
         $logs = [];
+        $errorTypes = [];
         $i = 0;
         while ($line = @fgets($fh)) {
             $sep = '$!$';
-    
+            $originalLog = $line;
             $line = preg_replace("/^\[([0-9a-zA-Z-]+) ([0-9:]+) ([a-zA-Z_\/]+)\] (.*)$/i", "$1".$sep."$2".$sep."$3".$sep."$4", $line);
             $parts = explode($sep, $line);
             if (count($parts) >= 4) {
                 $info = stripslashes($parts[3]);
                 $time = strtotime($parts[1] );
-                
+                //error type
+                $errorType = '';
+                $pattern = '/PHP (Fatal error|Notice):/'; // Regular expression pattern
+                if (preg_match($pattern, $originalLog, $matches)) {
+                    $errorType = trim($matches[1]);
+                }
+                // Store unique error types
+                if (!empty($errorType)) {
+                    $errorTypes[$errorType] = true;
+                }
+                //plugin name
+                if (preg_match('/\/plugins\/([^\/]+)\//', $info, $pluginMatches)) {
+                    $pluginName = $pluginMatches[1];
+                    if (!file_exists(WP_PLUGIN_DIR . '/' . $pluginName . '/' . $pluginName . '.php')) {
+                        $pluginName = '';
+                    }
+                }
+    
                 $logs[] = [
                     'date' => date('d/m/y', strtotime($parts[0])),
                     'time' => human_time_diff($time,time()) .' ago',
                     'timezone' => $parts[2],
                     'details' => $info,
+                    'error_type' => $errorType != ''?  $errorType:'',
+                    'plugin_name' =>ucwords(str_replace('-', ' ', $pluginName))
                 ];
     
+                
+    
             }
-    
-    
+            
         }
         
         @fclose($fh);
-        return $logs;
+        $uniqueErrorTypes = array_keys($errorTypes);
+        return [
+            'logs' => array_reverse($logs),
+            'unique_error_types' => $uniqueErrorTypes
+        ];
     }
     
     public function clear()

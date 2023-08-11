@@ -31,8 +31,8 @@ class NotificationController
             return;
         }
         $logData = (new LogController())->loadLogs();
-        if (!empty($logData)) {
-            $this->sendEmail($logData);
+        if (!empty($logData['logs'])) {
+            $this->sendEmail($logData['logs']);
         }
     }
     
