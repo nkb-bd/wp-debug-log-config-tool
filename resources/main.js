@@ -4,6 +4,7 @@
 // import "primevue/resources/themes/fluent-light/theme.css";
 import "primevue/resources/themes/tailwind-light/theme.css";
 
+
 import "primevue/resources/primevue.min.css";
 import './assets/main.scss';
 
@@ -27,6 +28,7 @@ import Toast from 'primevue/toast';
 import InputSwitch from 'primevue/inputswitch';
 import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';
+import MultiSelect from 'primevue/multiselect';
 
 
 window.onload = function () {
@@ -45,6 +47,7 @@ window.onload = function () {
         application.component('Toast', Toast);
         application.component('InputSwitch', InputSwitch);
         application.component('InputText', InputText);
+        application.component('MultiSelect', MultiSelect);
         application.use(ToastService);
         application.use(router).mount(appEl);
     }

@@ -8,35 +8,43 @@ class SettingsController
     
     public function get()
     {
-        $formattedSettings = $this->getSettings();
-        $mismatch = [];
-        foreach ($formattedSettings as $setting){
-            $databaseValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting->name);
-            if($databaseValue != $setting->value){
-                $mismatch[] = $setting->name;
+        $configs = $this->getConstants();
+        $formattedSettings = [];
+        foreach ($configs as $setting) {
+            $databaseValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting['name']);
+            if ($databaseValue != null) {
+                # value exists in config so do nothing
+            } else {
+                # value does not exist in config so update
+                $databaseValue = $setting['value'];
+                (new \DebugLogConfigTool\Controllers\ConfigController())->update($setting['name'], $setting['value']);
             }
+            $formattedSettings[] = [
+                'name'  => $setting['name'],
+                'value' => $databaseValue === true || $databaseValue === 'true',
+                'info'  => $setting['info'],
+            ];
         }
         wp_send_json_success([
-            'has_mismatch' => !empty($mismatch),
-            'settings'     => $formattedSettings,
-            'success'      => true
+            'settings' => $formattedSettings,
+            'success'  => true
         ]);
     }
     
     public function store($settings)
     {
-        update_option($this->optionKey,json_encode($settings));
+        update_option($this->optionKey, json_encode($settings));
     }
     
     public function update()
     {
         $updateValue = filter_var($_REQUEST['setting_value'], FILTER_VALIDATE_BOOLEAN);
         $updateKey = sanitize_text_field($_REQUEST['setting_key']);
-        $settings = $this->getSettings();
+        $settings = $this->getConstants();
         $updatedSettings = [];
-        foreach ($settings as $setting){
-            if($setting->name == $updateKey){
-                $setting->value = $updateValue;
+        foreach ($settings as $setting) {
+            if ($setting['name'] == $updateKey) {
+                $setting['value'] = $updateValue;
                 #Write to wp-config.php file
                 (new \DebugLogConfigTool\Controllers\ConfigController())->update($updateKey, $updateValue);
             }
@@ -46,27 +54,48 @@ class SettingsController
         $this->store($updatedSettings);
         wp_send_json_success([
             'updated_settings' => $updatedSettings,
-            'message' => 'Debug Constant updated successfully',
-            'success' => true
+            'message'          => 'Debug Constant updated successfully',
+            'success'          => true
         ]);
     }
     
-    private function getSettings()
+    public function getConstants()
     {
-        $settings = get_option($this->optionKey, false);
-        if($settings && !$this->is_json($settings)){
-            return  [];
+        $constants = [
+            'WP_DEBUG'         => [
+                'name'  => 'WP_DEBUG',
+                'value' => true,
+                'info'  => 'Enable WP_DEBUG mode',
+            ],
+            'WP_DEBUG_LOG'     => [
+                'name'  => 'WP_DEBUG_LOG',
+                'value' => true,
+                'info'  => 'Enable Debug logging to the /wp-content/debug.log file',
+            
+            ],
+            'SCRIPT_DEBUG'     => [
+                'name'  => 'SCRIPT_DEBUG',
+                'value' => true,
+                'info'  => 'Use the “dev” versions of core CSS and JavaScript files'
+            ],
+            'WP_DEBUG_DISPLAY' => [
+                'name'  => 'WP_DEBUG_DISPLAY',
+                'value' => false,
+                'info'  => 'Disable or hide display of errors and warnings in html pages'
+            ],
+            'SAVEQUERIES'      => [
+                'name'  => 'SAVEQUERIES',
+                'value' => false,
+                'info'  => 'Enable database query logging, turn it off when not debuging cause it will effect site performace. The array is stored in the global $wpdb->queries.'
+            ],
+        ];
+        $settings = apply_filters('dlct_constants', $constants);
+        
+        if (empty($settings)) {
+            return [];
         }
-        $settings = json_decode($settings);
-        $formattedSettings = [];
-        foreach ($settings as $setting) {
-            $setting->value = $setting->value == 'true' || $setting->value == true;
-            $formattedSettings[] = $setting;
-        }
-        return $formattedSettings;
+        
+        return $settings;
     }
-    public function is_json($string,$return_data = false) {
-        $data = json_decode($string);
-        return (json_last_error() == JSON_ERROR_NONE) ? ($return_data ? $data : TRUE) : FALSE;
-    }
+    
 }

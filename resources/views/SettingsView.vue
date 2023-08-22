@@ -1,7 +1,7 @@
 
 <template>
     <div >
-    
+
         <Toast style="margin-top: 20px;" label="Sticky" position="bottom-right" group="br" />
 
         <div v-if="state.isLoading" class=" flex text-center justify-content-center">
@@ -9,11 +9,14 @@
                                     display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
                              aria-label="Loading"/>
         </div>
-        <DataTable v-else @row-dblclick="updateSettingFromRow" :value="state.settings" tableStyle="min-width: 50rem">
+        <DataTable v-else @row-dblclick="updateSettingFromRow" :value="state.settings" >
             <Column field="name" header="Key">
-
+                <template #body="slotProps">
+                   <b> {{slotProps.data.name}}</b>
+                </template>
             </Column>
-            <Column field="value" header="Status"  style="text-align:end; ">
+            <Column field="info" header="Info"></Column>
+            <Column field="value" header="Status"  style="width: 15%" >
                 <template #body="slotProps">
                     <ProgressSpinner v-if="update.isLoading && update.updating_key == slotProps.data.name" style=" margin-bottom: 5px;margin-right: 10px;text-align: center;width: 20px; height: 20px" strokeWidth="4" fill="var(--surface-ground)" aria-label="Loading"/>
                      <InputSwitch :disabled="update.isLoading" @change="updateSettingFromSwitch(slotProps.index, slotProps.data.name, slotProps.data.value)" size="small"  v-model="state.settings[slotProps.index].value " />
@@ -63,7 +66,7 @@
 
             if (data) {
                 showTopLeft(data.value.data.message, data.value.data.success)
-                
+
             } else if (fetchError) {
                 state.error = fetchError;
             }
@@ -94,7 +97,7 @@
         }
     }
     const showTopLeft = (message,success) => {
-        toast.add({ severity: success ? 'success' : 'warn', summary: '', detail: message, group: 'br', life: 100000 });
+        toast.add({ severity: success ? 'success' : 'warn', summary: '', detail: message, group: 'br', life: 1200 });
     };
     onMounted(() => {
         fetchSettings();
@@ -104,14 +107,15 @@
 
 </script>
 <style type="text/css">
-   .p-datatable-wrapper > table > thead > tr > th:nth-child(2) > div{
-         justify-content:end
-     }
+
      svg.p-icon.null.p-toast-message-icon {
         width: 16px!important;
         height: 16px!important;
      }
      .p-toast-message-content{
         align-items: center!important;
+     }
+     .p-column-header-content {
+        justify-content: left;
      }
 </style>

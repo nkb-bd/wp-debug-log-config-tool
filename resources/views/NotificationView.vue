@@ -10,21 +10,21 @@
             </div>
 
             <div class=" flex justify-content-center dlct-form-item">
-                <p> A notification email will be sent with when a deubg</p>   
+                <p> A notification email will be sent with when a deubg</p>
             </div>
-           
+
 
             <div class=" flex justify-content-center dlct-form-item">
-                <p> Turn on/off schedule mail if there is any log created</p>   
+                <p> Turn on/off daily schedule mail if there is any log created</p>
                 <InputSwitch @change="updatetNotificationEmail" v-model="state.status" />
             </div>
-           
+
         </div>
     </div>
 </template>
 
 <script setup>
-    import {ref, reactive, onMounted} from 'vue';
+    import {ref, reactive, onMounted, computed} from 'vue';
     import {useFetch, $post, $get} from "../request";
     import { useToast } from "primevue/usetoast";
 

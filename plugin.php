@@ -5,7 +5,7 @@
  * Plugin Name:       Debug Log - Config Tool
  * Plugin URI:        #
  * Description:       Simple Debug log and Debug Toggle Tool
- * Version:           1.4
+ * Version:           1.4.3
  * Author:            Lukman Nakib
  * Author URI:        https://nkb-bd.github.io/
  * License:           GPL-2.0+
@@ -14,19 +14,26 @@
  */
 
 
+use DebugLogConfigTool\Classes\DLCT_Bootstrap;
+
 if (!defined('ABSPATH')) {
     exit;
 }
 define('DLCT_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DLCT_PLUGIN_VERSION', '1.4');
+define('DLCT_PLUGIN_VERSION', '1.4.3');
 define('DLCT_PLUGIN_MAIN_FILE', __FILE__);
 define('DLCT_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('DLCT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 include dirname( __FILE__ ) . '/autoload.php';
 add_action('init', function () {
-    (new DebugLogConfigTool\Classes\DLCT_Bootstrap())->init();
+    (new DLCT_Bootstrap())->init();
 }, 10, 1);
 register_activation_hook(DLCT_PLUGIN_MAIN_FILE, function () {
-    DebugLogConfigTool\Classes\DLCT_Bootstrap::activate();
+    DLCT_Bootstrap::activate();
 });
+
+register_deactivation_hook(DLCT_PLUGIN_MAIN_FILE, function () {
+    DLCT_Bootstrap::deactivate();
+});
+
