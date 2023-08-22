@@ -3,7 +3,7 @@ Contributors: pyrobd
 Donate link:
 Tags: debug ,wp-config, debug log, WP_DEBUG, WP_DEBUG_LOG, support, developer tools
 Requires at least: 5.6
-Tested up to: 6.2.2
+Tested up to: 6.3
 Stable tag: 1.4.2
 Requires PHP: 5.6
 License: GPLv2 or later

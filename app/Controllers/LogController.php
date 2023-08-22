@@ -15,10 +15,10 @@ class LogController
                 wp_send_json_error(['message' => 'Debug file not found']);
             }
             $logData =  $this->loadLogs();
-            
+    
             wp_send_json_success([
-                'logs'        => $logData['logs'],
-                'error_types' => $logData['unique_error_types'],
+                'logs'        => isset($logData['logs']) ? $logData['logs'] : '',
+                'error_types' => isset($logData['unique_error_types']) ? $logData['unique_error_types'] : '',
                 'file_size'   => $this->getFilesize(),
             ]);
         }
@@ -72,6 +72,7 @@ class LogController
                     $errorTypes[$errorType] = true;
                 }
                 //plugin name
+                $pluginName = '';
                 if (preg_match('/\/plugins\/([^\/]+)\//', $info, $pluginMatches)) {
                     $pluginName = $pluginMatches[1];
                     if (!file_exists(WP_PLUGIN_DIR . '/' . $pluginName . '/' . $pluginName . '.php')) {
@@ -87,11 +88,8 @@ class LogController
                     'error_type' => $errorType != ''?  $errorType:'',
                     'plugin_name' =>ucwords(str_replace('-', ' ', $pluginName))
                 ];
-    
                 
-    
             }
-            
         }
         
         @fclose($fh);
