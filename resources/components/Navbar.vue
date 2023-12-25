@@ -1,13 +1,21 @@
 <template>
     <div class=" relative z-2">
-        <Menubar exact :model="items">
-            <template #start>
-            </template>
+        <Menubar :model="items">
+            <template #item="{ item, props, hasSubmenu }">
+                <router-link v-if="item.to" v-slot="{ href, navigate }" :to="item.to" custom>
+                    <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="item.icon" />
+                        <span class="ml-4">{{ item.label }}</span>
+                    </a>
+                </router-link>
 
-            <template v-if="path == '/'" #end>
-                <Button @click="$emit('triggerEventDlc','delete')" size="small" style="margin-right: 10px;"
-                        icon="pi pi-trash" severity="danger"/>
-                <Button @click="$emit('triggerEventDlc','refresh')" size="small" icon="pi pi-refresh" severity="info"/>
+            </template>
+            <template #end>
+                <div v-if="path == '/'" #end>
+                    <Button @click="$emit('triggerEventDlc','delete')" size="small" style="margin-right: 10px;"
+                            icon="pi pi-trash" severity="danger"/>
+                    <Button @click="$emit('triggerEventDlc','refresh')" size="small" icon="pi pi-refresh" severity="info"/>
+                </div>
             </template>
 
         </Menubar>
@@ -31,7 +39,7 @@
         {
             label: 'Settings',
             icon: 'pi pi-fw pi-cog',
-            to: "/settings"
+            to: '/settings'
         },
         {
             label: 'Notification',

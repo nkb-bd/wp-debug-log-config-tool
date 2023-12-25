@@ -17,7 +17,7 @@
                 <template #header>
                     <div class="table-header">
 
-                        <MultiSelect @change="filteredEntries" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
+                        <MultiSelect @change="filteredEntries" v-if="state.error_types.length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
                                      :maxSelectedLabels="3" class="w-full md:w-20rem" />
                         <span class="p-input-icon-left">
                           <i class="pi pi-search" />

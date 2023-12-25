@@ -1,6 +1,9 @@
 @import 'primeicons/primeicons.css';
 
 .dlct-wrapper{
+  .ml-4{
+    margin-left: 4px;
+  }
   background-color: #fff;
   margin-right: 20px;
   margin-top: 20px;
@@ -101,6 +104,12 @@
   .p-datatable > .p-datatable-wrapper,.dlct-form,.menu-page {
     border: 1px solid #e5e7eb;
   }
+  .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.7rem .8rem;
+    border: 1px solid #f4f4f5;
+
+  }
+
 }
 
 .notice-success{

@@ -4,17 +4,20 @@ namespace DebugLogConfigTool\Classes;
 
 use DebugLogConfigTool\Controllers\NotificationController;
 
+use DebugLogConfigTool\Classes\DashboardWidget;
+
+
 final class DLCT_Bootstrap
 {
     const DLCT_LOG = 'dlct_logs';
-    
+
     /**
      * All registered keys.
      *
      * @var array
      */
     protected static $registry = [];
-    
+
     /**
      * Bind a new key/value into the container.
      * @param string $key
@@ -24,7 +27,7 @@ final class DLCT_Bootstrap
     {
         static::$registry[$key] = $value;
     }
-    
+
     /**
      * Retrieve a value from the registry.
      * @param string $key
@@ -36,55 +39,60 @@ final class DLCT_Bootstrap
         }
         return static::$registry[$key];
     }
-    
+
     public static function activate()
     {
         (new Activator())->run();
     }
-    
+
     public static function deactivate()
     {
         (new DeActivator())->run();
     }
-    
+
     public function init()
     {
         if (!is_admin()) {
             return;
         }
         $this->loadTextDomain();
-        
+
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('wp_before_admin_bar_render', [$this, 'adminTopMenu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_script']);
         add_action('wpdd_admin_page_render', [$this, 'showMsg']);
         add_action('admin_init', [$this, 'msgDismissed']);
+
+        add_action('wp_dashboard_setup', [$this, 'dashboardWidget']);
         (new NotificationController())->boot();
         (new NotificationController())->scheduleCron();
         (new AjaxHandler())->boot();
     }
-    
+
     public function loadTextDomain()
     {
-//        todo
-//        load_plugin_textdomain(self::DLCT_LOG . '-domain', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        //        todo
+        //        load_plugin_textdomain(self::DLCT_LOG . '-domain', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
-    
-    public function getAccessRole()
-    {
-        return apply_filters('DLCT_LOG_admin_access_role', 'manage_options');
-    }
-    
+
+
+
     public function enqueue_admin_script()
     {
         if (isset($_GET['page']) && $_GET['page'] == '' . self::DLCT_LOG . '') {
             wp_enqueue_style('dlct_style', DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin-css.css', array(), '1.0');
-            wp_enqueue_script('dlct_main_js', DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin.js', array('jquery'),
-                '1.0');
+            wp_enqueue_script(
+                'dlct_main_js',
+                DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin.js',
+                array('jquery'),
+                '1.0'
+            );
             global $wp;
             $url = home_url($wp->request);
-            
-            wp_localize_script('dlct_main_js', 'dlct_wpdebuglog',
+
+            wp_localize_script(
+                'dlct_main_js',
+                'dlct_wpdebuglog',
                 [
                     'ajax_url'      => admin_url('admin-ajax.php'),
                     'base_url'      => $url,
@@ -95,7 +103,7 @@ final class DLCT_Bootstrap
             );
         }
     }
-    
+
     public function adminMenu()
     {
         add_submenu_page(
@@ -107,7 +115,7 @@ final class DLCT_Bootstrap
             array($this, 'adminPage')
         );
     }
-    
+
     public function adminTopMenu()
     {
         global $wp_admin_bar;
@@ -120,17 +128,17 @@ final class DLCT_Bootstrap
             // title/menu text to display
             'href'   => site_url('wp-admin/tools.php?page=') . self::DLCT_LOG . '#/',
             // target url of this menu item
-        
+
         ));
     }
-    
+
     public function adminPage()
     {
         do_action('wpdd_admin_page_render');
         echo "<div id='main-app'></div>";
         do_action('wpdd_admin_page_render_after');
     }
-    
+
     public function showMsg()
     {
         static  $messageShown = false;
@@ -143,14 +151,27 @@ final class DLCT_Bootstrap
             $messageShown = true;
         }
     }
-    
+
     public function msgDismissed()
     {
         if (isset($_GET['page']) && $_GET['page'] == '' . self::DLCT_LOG . '' && isset($_GET['dimiss_msg'])) {
             update_option('DLCT_LOGconfig_notice_dismissed_20', true);
         }
     }
+
+    public function dashboardWidget()
+    {
+        if (!current_user_can($this->getAccessRole())) {
+            return;
+        }
+
+        wp_add_dashboard_widget('dlct_widget', __('Recent Debug Logs', 'dlct_logs'), function () {
+            (new DashboardWidget())->init();
+        }, 10, 1);
+    }
+
+    public function getAccessRole()
+    {
+        return apply_filters('DLCT_LOG_admin_access_role', 'manage_options');
+    }
 }
-
-
-
