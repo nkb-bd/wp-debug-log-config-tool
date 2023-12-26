@@ -1,10 +1,10 @@
 === WP Debug Log - Configuration Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug ,wp-config, debug log, WP_DEBUG, WP_DEBUG_LOG, support, developer tools
+Tags: debug ,wp config, debug log, support, developer tools
 Requires at least: 5.6
-Tested up to: 6.3
-Stable tag: 1.4.2
+Tested up to: 6.4.2
+Stable tag: 1.4.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -63,6 +63,9 @@ Currently, you can use the filter  apply_filters('dlct_constants', $constants);
 = 1.0.0
  -Initial Version
 
+= 1.4.4
+- Fixed Refresh Log
+- Added dashboard widget
 = 1.4
  - Clean UI
  - Refresh Log
