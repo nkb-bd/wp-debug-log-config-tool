@@ -7,13 +7,8 @@
                              aria-label="Loading"/>
         </div>
         <div v-else>
-            <div v-if="state.logs && Object.entries(state.logs).length == 0" >
-                <p style="margin: 20px auto;padding-bottom:20px;text-align: center">Logs Empty</p>
-            </div>
 
-
-
-            <DataTable class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]" v-if="state.logs && Object.entries(state.logs).length > 0" :value="filteredEntries"  >
+            <DataTable class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]"  :value="filteredEntries"  >
                 <template #header>
                     <div class="table-header">
 
@@ -21,8 +16,11 @@
                                      :maxSelectedLabels="3" class="w-full md:w-20rem" />
                         <span class="p-input-icon-left">
                           <i class="pi pi-search" />
-                          <InputText  @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
+                          <InputText  v-if="!isNotEmptyLog" @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
                         </span>
+                        <Button   v-if="isNotEmptyLog" @click="deleteLogs()" size="small" style="margin-right: 10px;"
+                                icon="pi pi-trash" severity="danger"/>
+                        <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" severity="info"/>
                     </div>
                 </template>
                 <Column field="details" header="Log">
@@ -52,6 +50,7 @@
     const toast = useToast()
     const props = defineProps(['trigger'])
     const searchString = ref(['Fatal error', 'Warning','Deprecated','Notice','Parse']);
+    const trigger = computed(() => props)
 
     const selectedErrorTypes = ref([]);
     const searchText = ref('');
@@ -60,13 +59,15 @@
     const display = (props) => {
         return h(props);
     };
-    watch(() => props.trigger, (trigger) => {
-        if (trigger == 'refresh'){
-            fetchLogs()
-        } else if (trigger == 'delete'){
-            deleteLogs()
+    watch(trigger, (newValue, oldValue) => {
+        console.log('x',newValue);
+        if (newValue.trigger === 'refresh') {
+            // fetchLogs()
+        } else if (newValue.trigger === 'delete') {
+            deleteLogs();
         }
     });
+
 
     const state = reactive({
         response: null,
@@ -77,7 +78,9 @@
         error_types: {}
     });
 
-
+    function isNotEmptyLog(){
+        return state.logs && Object.entries(state.logs).length > 0;
+    }
     function fetchLogs() {
         return new Promise(async (resolve) => {
             try {
@@ -180,10 +183,13 @@
         }
 
         return logs.filter(entry => {
-            const matchesErrorType = selectedErrorTypes.value.length === 0 || selectedErrorTypes.value.includes(entry.error_type);
-            const matchesSearchText = entry.details.toLowerCase().includes(searchText.value.toLowerCase());
+            if (entry.details){
+                const matchesErrorType = selectedErrorTypes.value.length === 0 || selectedErrorTypes.value.includes(entry.error_type);
+                const matchesSearchText = entry.details.toLowerCase().includes(searchText.value.toLowerCase());
 
-            return matchesErrorType && matchesSearchText;
+                return matchesErrorType && matchesSearchText;
+            }
+
         });
     };
 

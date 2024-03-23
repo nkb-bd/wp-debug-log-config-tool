@@ -3,6 +3,7 @@
         <p class="info">
            If you have any feedback you can visit <a href="https://nkb-bd.github.io/" target="_blank">here</a> and drop me a message or find me in
             <a target="_blank" href="https://twitter.com/mr_mihi">Twitter</a> /
+            <a target="_blank" href="https://www.linkedin.com/in/lukman-nakib/">LinkedIn</a> /
             <a target="_blank" href="https://github.com/nkb-bd">Github</a>.
         </p>
 

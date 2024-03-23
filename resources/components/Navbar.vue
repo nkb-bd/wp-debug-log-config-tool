@@ -11,11 +11,7 @@
 
             </template>
             <template #end>
-                <div v-if="path == '/'" #end>
-                    <Button @click="$emit('triggerEventDlc','delete')" size="small" style="margin-right: 10px;"
-                            icon="pi pi-trash" severity="danger"/>
-                    <Button @click="$emit('triggerEventDlc','refresh')" size="small" icon="pi pi-refresh" severity="info"/>
-                </div>
+
             </template>
 
         </Menubar>

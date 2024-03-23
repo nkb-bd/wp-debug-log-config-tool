@@ -55,12 +55,13 @@ class LogController
         
         while ($line = @fgets($fh)) {
             $logEntry = $this->parseLogLine($line);
+         
             
             if ($logEntry !== false) {
                 $logs[] = $logEntry;
                 
                 // Extract and store error type
-                if (!empty($logEntry['error_type'])) {
+                if (is_array($logEntry) && !empty($logEntry['error_type'])) {
                     $errorTypes[$logEntry['error_type']] = true;
                 }
                 
@@ -71,7 +72,7 @@ class LogController
                 }
             }
         }
-        
+       
         fclose($fh);
         $uniqueErrorTypes = array_keys($errorTypes);
         
@@ -93,22 +94,51 @@ class LogController
             $info = stripslashes($parts[3]);
             $time = strtotime($parts[1]);
             
-            $errorType = $this->extractErrorType($line);
-            
             $pluginName = $this->extractPluginName($info);
             
-            return [
-                'date'        => date('d/m/y', strtotime($parts[0])),
-                'time'        => human_time_diff($time, current_time('U')) . ' ago',
-                'timezone'    => $parts[2],
-                'details'     => $info,
-                'error_type'  => $errorType,
-                'plugin_name' => ucwords(str_replace('-', ' ', $pluginName)),
-            ];
+            // Check if the line contains a PHP array
+            if (preg_match('/\[(.*?)\]/', $info, $matches)) {
+                // Extracting the PHP array string
+                $arrayString = $matches[1];
+                // Convert the array string to a PHP array
+                $dataArray = eval("return [$arrayString];");
+                
+                return [
+                    'date' => date('d/m/y', strtotime($parts[0])),
+                    'time' => human_time_diff($time, current_time('U')) . ' ago',
+                    'timezone' => $parts[2],
+                    'details' => $info,
+                    'plugin_name' => ucwords(str_replace('-', ' ', $pluginName)),
+                    'data_array' => $dataArray
+                ];
+            } else {
+                // Extract file location and line number
+                preg_match('/^(.*?) on line (\d+)/', $info, $errorDetails);
+                $fileLocation = isset($errorDetails[1]) ? trim($errorDetails[1]) : '';
+                // Extract file location using regular expression
+                preg_match('/in\s(.*?)(?=\(\d+\))/', $fileLocation, $locationMatches);
+                $fileLocation = isset($locationMatches[1]) ? $locationMatches[1] : '';
+// Extracted file location
+                $lineNumber = isset($errorDetails[2]) ? $errorDetails[2] : '';
+                
+                $errorType = $this->extractErrorType($line);
+                return [
+                    'date' => date('d/m/y', strtotime($parts[0])),
+                    'time' => human_time_diff($time, current_time('U')) . ' ago',
+                    'timezone' => $parts[2],
+                    'details' => $info,
+                    'error_type' => $errorType,
+                    'plugin_name' => ucwords(str_replace('-', ' ', $pluginName)),
+                    'file_location' => $fileLocation,
+                    'line_number' => $lineNumber
+                ];
+            }
         }
         
         return false;
     }
+    
+    
     
     private function extractErrorType($logLine)
     {

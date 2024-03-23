@@ -17,7 +17,18 @@ final class DLCT_Bootstrap
      * @var array
      */
     protected static $registry = [];
-
+    /**
+     * @var DLCT_Bootstrap
+     */
+    protected static $instance;
+    
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
     /**
      * Bind a new key/value into the container.
      * @param string $key
@@ -55,6 +66,7 @@ final class DLCT_Bootstrap
         if (!is_admin()) {
             return;
         }
+    
         $this->loadTextDomain();
 
         add_action('admin_menu', [$this, 'adminMenu']);

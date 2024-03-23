@@ -4,7 +4,7 @@ Donate link:
 Tags: debug ,wp config, debug log, support, developer tools
 Requires at least: 5.6
 Tested up to: 6.4.2
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
