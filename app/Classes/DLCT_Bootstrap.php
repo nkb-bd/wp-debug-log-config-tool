@@ -92,12 +92,12 @@ final class DLCT_Bootstrap
     public function enqueue_admin_script()
     {
         if (isset($_GET['page']) && $_GET['page'] == '' . self::DLCT_LOG . '') {
-            wp_enqueue_style('dlct_style', DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin-css.css', array(), '1.0');
+            wp_enqueue_style('dlct_style', DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin-css.css', array(), DLCT_PLUGIN_VERSION);
             wp_enqueue_script(
                 'dlct_main_js',
                 DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin.js',
                 array('jquery'),
-                '1.0'
+                DLCT_PLUGIN_VERSION
             );
             global $wp;
             $url = home_url($wp->request);

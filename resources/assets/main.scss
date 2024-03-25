@@ -1,97 +1,117 @@
 @import 'primeicons/primeicons.css';
 
-.dlct-wrapper{
-  .ml-4{
+.dlct-wrapper {
+  .ml-4 {
     margin-left: 4px;
   }
   background-color: #fff;
   margin-right: 20px;
   margin-top: 20px;
-  .p-toolbar{
-    border: none!important;
+
+  .p-toolbar {
+    border: none !important;
   }
+  .p-multiselect .p-multiselect-label {
+    padding: 0.65rem 0.75rem;
+    font-weight: 600;
+  }
+  .p-multiselect {
+    height: 2.8em;
+  }
+
   .p-button.p-button-sm {
     padding: 0.4rem 0.5rem;
+    height: 2.7em;
   }
-  .p-component{
+
+  .p-component {
     font-size: 0.9rem;
   }
-  .p-menubar{
+
+  .p-menubar {
     border-radius: 0;
     font-weight: 500;
   }
-  .p-menuitem-icon{
+
+  .p-menuitem-icon {
     font-weight: 500;
   }
-  .router-link-active{
+
+  .router-link-active {
     background-color: #d4d4d8;
     border-radius: 4px;
   }
-  .dlct-form{
+
+  .dlct-form {
     padding: 20px;
-  }
-  .dlct-form-item{
-    margin-bottom: 10px;
-    display: flex;
-    gap: 20px;
-    align-items: baseline;
-    label {
+
+    &-item {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 20px;
+
+      label {
         font-weight: bold;
         font-size: 14px;
+      }
     }
   }
+
   .p-datatable-tbody > tr {
-    &.highlight-error-fatal{
-      padding:10px;
-      background-color: rgb(253 232 232);
+    &.highlight-error-fatal {
+      padding: 10px;
+      background-color: rgb(253, 232, 232);
     }
 
-    &.highlight-error-warning{
-      padding:10px;
-      background-color: rgb(253 252 232);
+    &.highlight-error-warning {
+      padding: 10px;
+      background-color: rgb(253, 252, 232);
     }
 
-    &.highlight-error-deprecated{
-      padding:10px;
-      background-color: rgb(245 245 244);
+    &.highlight-error-deprecated {
+      padding: 10px;
+      background-color: rgb(245, 245, 244);
     }
 
-    &.highlight-error-info{
-      padding:10px;
+    &.highlight-error-info {
+      padding: 10px;
       background-color: aliceblue;
     }
 
-    &.highlight-error-parse{
-      padding:10px;
-      background-color: rgb(255 240 255);;
+    &.highlight-error-parse {
+      padding: 10px;
+      background-color: rgb(255, 240, 255);
     }
   }
 
-  .menu-page{
-    padding:20px;
-    .info{
+  .menu-page {
+    padding: 20px;
+
+    .info {
       font-size: 16px;
     }
   }
-  .p-paginator-element{
-    min-width: 2rem!important;
-    height: 2rem!important;
 
+  .p-paginator-element {
+    min-width: 2rem !important;
+    height: 2rem !important;
   }
-  .p-dropdown{
-    height: 2rem!important;
-    span{
-      align-self: center!important;
+
+  .p-dropdown {
+    height: 2rem !important;
+
+    span {
+      align-self: center !important;
     }
   }
 
   .table-header {
     display: flex;
     justify-content: flex-end;
-    gap: 10px
-
+    gap: 10px;
   }
-  .p-column-title{
+
+  .p-column-title {
     color: #4a4e56;
   }
 
@@ -101,17 +121,19 @@
       border: 1px solid #e5e7eb;
     }
   }
-  .p-datatable > .p-datatable-wrapper,.dlct-form,.menu-page {
+
+  .p-datatable > .p-datatable-wrapper,
+  .dlct-form,
+  .menu-page {
     border: 1px solid #e5e7eb;
   }
+
   .p-datatable .p-datatable-tbody > tr > td {
-    padding: 0.7rem .8rem;
+    padding: 0.7rem 0.8rem;
     border: 1px solid #f4f4f5;
-
   }
-
 }
 
-.notice-success{
+.notice-success {
   margin-left: 0px;
 }

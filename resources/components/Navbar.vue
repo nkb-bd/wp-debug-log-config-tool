@@ -3,7 +3,7 @@
         <Menubar :model="items">
             <template #item="{ item, props, hasSubmenu }">
                 <router-link v-if="item.to" v-slot="{ href, navigate }" :to="item.to" custom>
-                    <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                    <a  :href="href" v-bind="props.action" @click="navigate">
                         <span :class="item.icon" />
                         <span class="ml-4">{{ item.label }}</span>
                     </a>

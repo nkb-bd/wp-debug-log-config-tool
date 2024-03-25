@@ -12,15 +12,15 @@
                 <template #header>
                     <div class="table-header">
 
-                        <MultiSelect @change="filteredEntries" v-if="state.error_types.length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
+                        <MultiSelect @change="filteredEntries" v-if="state.logs && Object.entries(state.logs).length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
                                      :maxSelectedLabels="3" class="w-full md:w-20rem" />
                         <span class="p-input-icon-left">
                           <i class="pi pi-search" />
-                          <InputText  v-if="!isNotEmptyLog" @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
+                          <InputText  v-if="state.logs && Object.entries(state.logs).length" @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
                         </span>
-                        <Button   v-if="isNotEmptyLog" @click="deleteLogs()" size="small" style="margin-right: 10px;"
+                        <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs()" size="small"
                                 icon="pi pi-trash" severity="danger"/>
-                        <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" severity="info"/>
+                        <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="Refresh" severity="info"/>
                     </div>
                 </template>
                 <Column field="details" header="Log">
@@ -60,7 +60,6 @@
         return h(props);
     };
     watch(trigger, (newValue, oldValue) => {
-        console.log('x',newValue);
         if (newValue.trigger === 'refresh') {
             // fetchLogs()
         } else if (newValue.trigger === 'delete') {
@@ -79,8 +78,9 @@
     });
 
     function isNotEmptyLog(){
-        return state.logs && Object.entries(state.logs).length > 0;
+        return filteredEntries && filteredEntries.length >= 0
     }
+    const isNotEmpty = computed(isNotEmptyLog);
     function fetchLogs() {
         return new Promise(async (resolve) => {
             try {

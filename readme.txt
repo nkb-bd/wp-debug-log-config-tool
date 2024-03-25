@@ -1,7 +1,7 @@
 === WP Debug Log - Configuration Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug ,wp config, debug log, support, developer tools
+Tags: debug ,wp config, debug log, developer, tools, support
 Requires at least: 5.6
 Tested up to: 6.4.2
 Stable tag: 1.4.5
@@ -73,6 +73,8 @@ Currently, you can use the filter  apply_filters('dlct_constants', $constants);
 = 1.4.2
  - New Constants
  - Removed database dependency
+= 1.4.5
+ - Fixed refresh
 
 
 
