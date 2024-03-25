@@ -100,16 +100,13 @@ class LogController
             if (preg_match('/\[(.*?)\]/', $info, $matches)) {
                 // Extracting the PHP array string
                 $arrayString = $matches[1];
-                // Convert the array string to a PHP array
-                $dataArray = eval("return [$arrayString];");
-                
                 return [
-                    'date' => date('d/m/y', strtotime($parts[0])),
-                    'time' => human_time_diff($time, current_time('U')) . ' ago',
-                    'timezone' => $parts[2],
-                    'details' => $info,
-                    'plugin_name' => ucwords(str_replace('-', ' ', $pluginName)),
-                    'data_array' => $dataArray
+                    'date' => '',
+                    'time' => '',
+                    'timezone' => '',
+                    'details' => $arrayString,
+                    'plugin_name' => '',
+                    'data_array' => ''
                 ];
             } else {
                 // Extract file location and line number
@@ -118,7 +115,7 @@ class LogController
                 // Extract file location using regular expression
                 preg_match('/in\s(.*?)(?=\(\d+\))/', $fileLocation, $locationMatches);
                 $fileLocation = isset($locationMatches[1]) ? $locationMatches[1] : '';
-// Extracted file location
+                // Extracted file location
                 $lineNumber = isset($errorDetails[2]) ? $errorDetails[2] : '';
                 
                 $errorType = $this->extractErrorType($line);
