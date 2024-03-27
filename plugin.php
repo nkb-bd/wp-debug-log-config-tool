@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 define('DLCT_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DLCT_PLUGIN_VERSION', '1.4.5');
+define('DLCT_PLUGIN_VERSION', '1.4.5'.time());
 define('DLCT_PLUGIN_MAIN_FILE', __FILE__);
 define('DLCT_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('DLCT_PLUGIN_DIR', plugin_dir_path(__FILE__));

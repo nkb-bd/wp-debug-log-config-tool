@@ -3,6 +3,7 @@ import LogView from '../views/LogView'
 import  SettingsView from '../views/SettingsView'
 import NotificationView from '../views/NotificationView.vue'
 import SupportView from "../views/supportView";
+import SafeMode from  "../views/SafeMode";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -11,6 +12,11 @@ const router = createRouter({
       path: '/',
       name: 'logs',
       component: LogView
+    },
+    {
+      path: '/safemode',
+      name: 'safemode',
+      component: SafeMode
     },
     {
       path: '/settings',

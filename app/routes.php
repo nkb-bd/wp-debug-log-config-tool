@@ -7,5 +7,7 @@ $router->get('get_settings', 'SettingsController@get');
 $router->post('update_settings', 'SettingsController@update');
 $router->get('get_notification_email', 'NotificationController@getNotificationEmail');
 $router->post('update_notification_email', 'NotificationController@updateNotificationEmail');
+$router->post('update_safe_mode', 'SafeModeController@update');
+$router->get('get_safe_mode', 'SafeModeController@get');
 
 

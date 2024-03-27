@@ -38,6 +38,11 @@
             to: '/settings'
         },
         {
+            label: 'Safe Mode',
+            icon: 'pi pi-fw pi-shield',
+            to: '/safemode'
+        },
+        {
             label: 'Notification',
             icon: 'pi pi-fw pi-bell',
             to: "/notification"

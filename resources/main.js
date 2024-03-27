@@ -29,6 +29,7 @@ import InputSwitch from 'primevue/inputswitch';
 import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
+import SelectButton from 'primevue/selectbutton';
 
 
 window.onload = function () {
@@ -48,6 +49,8 @@ window.onload = function () {
         application.component('InputSwitch', InputSwitch);
         application.component('InputText', InputText);
         application.component('MultiSelect', MultiSelect);
+        application.component('SelectButton', SelectButton);
+
         application.use(ToastService);
         application.use(router).mount(appEl);
     }

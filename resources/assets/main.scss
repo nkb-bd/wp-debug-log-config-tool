@@ -41,7 +41,14 @@
     background-color: #d4d4d8;
     border-radius: 4px;
   }
-
+  .message{
+    border: solid #bfdbfe;
+    border-width: 1px;
+    color: #2563eb;
+    background: rgba(239, 246, 255, 0.95);
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+  }
   .dlct-form {
     padding: 20px;
 
@@ -49,11 +56,19 @@
       margin-bottom: 10px;
       display: flex;
       gap: 20px;
+      justify-content: space-between;
+      max-width: 700px;
 
       label {
         font-weight: bold;
         font-size: 14px;
       }
+    }
+    .p-multiselect{
+      width: 320px;
+    }
+    .highlight{
+      color: #d96554;
     }
   }
 
