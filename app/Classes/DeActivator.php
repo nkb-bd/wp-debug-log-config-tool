@@ -9,7 +9,7 @@ class DeActivator
 
     public function run()
     {
-        (new ConfigController())->restoreInitialState();
+        @(new ConfigController())->restoreInitialState();
         (new NotificationController())->deactivate();
     }
     

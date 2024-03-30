@@ -149,20 +149,25 @@ class ConfigController
     
     public function restoreInitialState()
     {
-        $initialSettings = get_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE);
-        if (!is_writable(self::$configfilePath)) {
-            return;
+        try {
+            $initialSettings = get_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE);
+            if (!is_writable(self::$configfilePath)) {
+                return;
+            }
+    
+            $constants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
+            //first turn off all
+            foreach ($constants as $key => $constants) {
+                (new ConfigController())->update($key, false);
+            }
+            //then restore as before
+            foreach ($initialSettings as $key => $value) {
+                (new ConfigController())->update($key, $value);
+            }
+        } catch (\Exception $e){
+        
         }
-     
-        $constants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
-        //first turn off all
-        foreach ($constants as $key => $constants) {
-            (new ConfigController())->update($key, false);
-        }
-        //then restore as before
-        foreach ($initialSettings as $key => $value) {
-           (new ConfigController())->update($key, $value);
-        }
+       
     }
     
     
