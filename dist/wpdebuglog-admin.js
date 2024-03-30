@@ -17367,6 +17367,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       response: null,
       logs: null,
       error: null,
+      log_path: null,
       isLoading: false,
       search: '',
       error_types: {}
@@ -17394,6 +17395,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 data = _yield$$get.data;
                 fetchError = _yield$$get.error;
                 if (data && data.value) {
+                  state.log_path = data.value.data.log_path;
                   state.logs = data.value.data.logs;
                   state.error_types = data.value.data.error_types;
                 } else if (fetchError) {
@@ -18284,7 +18286,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     rows: 20,
     rowsPerPageOptions: [20, 30, 50],
     value: $setup.filteredEntries
-  }, {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createSlots)({
     header: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [$setup.state.logs && Object.entries($setup.state.logs).length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MultiSelect, {
         key: 0,
@@ -18350,8 +18352,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         header: "Date"
       })];
     }),
-    _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["paginator", "value"]), $setup.filteredEntries && $setup.filteredEntries.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [].concat(_hoisted_9))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state.error), 1 /* TEXT */)]);
+    _: 2 /* DYNAMIC */
+  }, [$setup.state.log_path ? {
+    name: "footer",
+    fn: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", null, "Log Path: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state.log_path) + ". Path randomized for security reasons. ", 1 /* TEXT */)];
+    }),
+
+    key: "0"
+  } : undefined]), 1032 /* PROPS, DYNAMIC_SLOTS */, ["paginator", "value"]), $setup.filteredEntries && $setup.filteredEntries.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [].concat(_hoisted_9))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state.error), 1 /* TEXT */)]);
 }
 
 /***/ }),
@@ -18521,6 +18530,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ProgressSpinner = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ProgressSpinner");
   var _component_Column = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Column");
   var _component_InputSwitch = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("InputSwitch");
+  var _component_InputText = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("InputText");
   var _component_DataTable = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("DataTable");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Toast, {
     style: {
@@ -18562,7 +18572,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         field: "value",
         header: "Status",
         style: {
-          "width": "15%"
+          "width": "40%"
         }
       }, {
         body: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (slotProps) {
@@ -18578,7 +18588,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             strokeWidth: "4",
             fill: "var(--surface-ground)",
             "aria-label": "Loading"
-          })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputSwitch, {
+          })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), slotProps.data.name != 'WP_DEBUG_LOG' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_InputSwitch, {
+            key: 1,
             disabled: $setup.update.isLoading,
             onChange: function onChange($event) {
               return $setup.updateSettingFromSwitch(slotProps.index, slotProps.data.name, slotProps.data.value);
@@ -18588,7 +18599,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             "onUpdate:modelValue": function onUpdateModelValue($event) {
               return $setup.state.settings[slotProps.index].value = $event;
             }
-          }, null, 8 /* PROPS */, ["disabled", "onChange", "modelValue", "onUpdate:modelValue"])];
+          }, null, 8 /* PROPS */, ["disabled", "onChange", "modelValue", "onUpdate:modelValue"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), slotProps.data.name == 'WP_DEBUG_LOG' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_InputText, {
+            key: 2,
+            readonly: "",
+            style: {
+              "width": "100%"
+            },
+            disabled: $setup.update.isLoading,
+            onChange: function onChange($event) {
+              return $setup.updateSettingFromSwitch(slotProps.index, slotProps.data.name, slotProps.data.value);
+            },
+            size: "small",
+            modelValue: $setup.state.settings[slotProps.index].value,
+            "onUpdate:modelValue": function onUpdateModelValue($event) {
+              return $setup.state.settings[slotProps.index].value = $event;
+            }
+          }, null, 8 /* PROPS */, ["disabled", "onChange", "modelValue", "onUpdate:modelValue"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
         }),
         _: 1 /* STABLE */
       })];

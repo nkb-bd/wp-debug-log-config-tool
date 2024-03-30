@@ -16,10 +16,11 @@
                 </template>
             </Column>
             <Column field="info" header="Info"></Column>
-            <Column field="value" header="Status"  style="width: 15%" >
+            <Column field="value" header="Status"  style="width: 40%" >
                 <template #body="slotProps">
                     <ProgressSpinner v-if="update.isLoading && update.updating_key == slotProps.data.name" style=" margin-bottom: 5px;margin-right: 10px;text-align: center;width: 20px; height: 20px" strokeWidth="4" fill="var(--surface-ground)" aria-label="Loading"/>
-                     <InputSwitch :disabled="update.isLoading" @change="updateSettingFromSwitch(slotProps.index, slotProps.data.name, slotProps.data.value)" size="small"  v-model="state.settings[slotProps.index].value " />
+                     <InputSwitch v-if="slotProps.data.name != 'WP_DEBUG_LOG'" :disabled="update.isLoading" @change="updateSettingFromSwitch(slotProps.index, slotProps.data.name, slotProps.data.value)" size="small"  v-model="state.settings[slotProps.index].value " />
+                     <InputText readonly style="width:100%;"  v-if="slotProps.data.name == 'WP_DEBUG_LOG'" :disabled="update.isLoading" @change="updateSettingFromSwitch(slotProps.index, slotProps.data.name, slotProps.data.value)" size="small"  v-model="state.settings[slotProps.index].value " />
                 </template>
             </Column>
         </DataTable>

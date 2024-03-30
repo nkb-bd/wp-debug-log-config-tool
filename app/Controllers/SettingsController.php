@@ -9,19 +9,25 @@ class SettingsController
     public function get()
     {
         $configs = $this->getConstants();
+
         $formattedSettings = [];
         foreach ($configs as $setting) {
-            $databaseValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting['name']);
-            if ($databaseValue != null) {
+            $configFileValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting['name']);
+            if ($configFileValue != null) {
                 # value exists in config so do nothing
             } else {
                 # value does not exist in config so update
-                $databaseValue = $setting['value'];
+                $configFileValue = $setting['value'];
                 (new \DebugLogConfigTool\Controllers\ConfigController())->update($setting['name'], $setting['value']);
+            }
+            if ($setting['name'] !== 'WP_DEBUG_LOG') {
+                $value = $configFileValue === true || $configFileValue === 'true';
+            } else {
+                $value = $configFileValue;
             }
             $formattedSettings[] = [
                 'name'  => $setting['name'],
-                'value' => $databaseValue === true || $databaseValue === 'true',
+                'value' => $value,
                 'info'  => $setting['info'],
             ];
         }
@@ -61,6 +67,7 @@ class SettingsController
     
     public function getConstants()
     {
+    
         $constants = [
             'WP_DEBUG'         => [
                 'name'  => 'WP_DEBUG',

@@ -2,13 +2,18 @@
 
 namespace DebugLogConfigTool\Controllers;
 
+use DebugLogConfigTool\Classes\DLCT_Bootstrap;
+
 class LogController
 {
     private $logFilePath;
+    private $originalLogFilePath;
     
     public function __construct()
     {
-        $this->logFilePath = apply_filters('wp_dlct_log_file_path', WP_CONTENT_DIR . '/debug.log');
+        $dlct_bootstrap = DLCT_Bootstrap::getInstance();
+        $debugPath = $dlct_bootstrap->setRandomLogPath();
+        $this->logFilePath = apply_filters('wp_dlct_log_file_path', $debugPath);
     }
     
     public function get()
@@ -19,8 +24,9 @@ class LogController
             }
             
             $logData = $this->loadLogs();
-            
+    
             wp_send_json_success([
+                'log_path'    => $this->logFilePath,
                 'logs'        => $logData['logs'] ?? '',
                 'error_types' => $logData['unique_error_types'] ?? '',
                 'file_size'   => $this->getFilesize(),
@@ -42,6 +48,7 @@ class LogController
         if (!file_exists($this->logFilePath)) {
             return [];
         }
+        self::maybeCopyLogFromDefaultLogFile();
         
         $fh = fopen($this->logFilePath, 'r');
         
@@ -135,8 +142,6 @@ class LogController
         return false;
     }
     
-    
-    
     private function extractErrorType($logLine)
     {
         $pattern = '/PHP (Fatal error|Notice):/';
@@ -182,5 +187,44 @@ class LogController
     {
         $iso_date = strtotime('Y-m-d H:i:s', $gmt_timestamp);
         return get_date_from_gmt($iso_date, 'Y-m-d h:i a');
+    }
+    
+    /**
+     * @param mixed $logFilePath
+     */
+    public function setLogFilePath($logFilePath)
+    {
+        $this->logFilePath = $logFilePath;
+    }
+    
+    private function getRandomPath()
+    {
+        if (get_option('dlct_debug_file_path_generated') == 'yes') {
+            $debugPath = get_option('dlct_debug_file_path');
+        } else {
+            $randomString = uniqid();
+            $debugPath = apply_filters('dlct_debug_file_path', ABSPATH . "wp-content/debug-" . $randomString . ".log");
+            update_option('dlct_ddebug_file_path', $debugPath, false);
+            update_option('dlct_debug_file_path_generated', 'yes', false);
+        }
+        return $debugPath;
+    }
+    
+    public static function maybeCopyLogFromDefaultLogFile()
+    {
+        if (get_option('dlct_debug_file_path_generated') !== 'yes') {
+            return; // If the debug file path is not generated, exit the function
+        }
+    
+        if (!get_option('dlct_log_file_copied')) {
+            $currentLogPath = get_option('dlct_debug_file_path');
+            $defaultLogPath = apply_filters('wp_dlct_default_log_file_path', WP_CONTENT_DIR . '/debug.log');
+        
+            $content = file_get_contents($defaultLogPath);
+            file_put_contents($currentLogPath, $content);
+            file_put_contents($defaultLogPath, 'Content Moved');
+        
+            update_option('dlct_log_file_copied', true);
+        }
     }
 }

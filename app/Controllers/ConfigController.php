@@ -6,7 +6,7 @@ use DebugLogConfigTool\vendor\WPConfigTransformer;
 
 class ConfigController
 {
-    const WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE = 'DebugLogConfigTool_data_initial';
+    const WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE = 'dlct_data_initial';
     private static $configfilePath;
     
     protected $optionKey = 'debuglogconfigtool_updated_constant';
@@ -143,8 +143,7 @@ class ConfigController
                 $predefinedConstants[$constantKey] = $value;
             }
         }
-        
-        update_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE, $predefinedConstants);
+        update_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE, $predefinedConstants ,false);
     }
     
     

@@ -31,7 +31,7 @@
                 <Column sortable field="time" header="Time"></Column>
                 <Column sortable field="plugin_name" header="Plugin Name"></Column>
                 <Column sortable field="date" header="Date"></Column>
-
+                <template  v-tooltip="'Enter your username'"  v-if="state.log_path" #footer><small>Log Path: {{state.log_path}}. Path randomized for security reasons. </small></template>
             </DataTable>
             <div v-if="filteredEntries && filteredEntries.length === 0" >
                 <p style="margin: 20px auto;padding-bottom:20px;text-align: center">  No result found !</p>
@@ -72,6 +72,7 @@
         response: null,
         logs: null,
         error: null,
+        log_path: null,
         isLoading: false,
         search: '',
         error_types: {}
@@ -90,6 +91,7 @@
                 };
                 const {data, error: fetchError} = await $get(args);
                 if (data && data.value) {
+                    state.log_path = data.value.data.log_path;
                     state.logs = data.value.data.logs;
                     state.error_types = data.value.data.error_types;
                 } else if (fetchError) {
