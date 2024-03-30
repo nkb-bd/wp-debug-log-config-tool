@@ -17385,53 +17385,52 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _context.prev = 0;
                 state.isLoading = true;
-                state.error = false;
                 args = {
                   route: 'get_log'
                 };
-                _context.next = 6;
+                _context.next = 5;
                 return (0,_request__WEBPACK_IMPORTED_MODULE_1__.$get)(args);
-              case 6:
+              case 5:
                 _yield$$get = _context.sent;
                 data = _yield$$get.data;
                 fetchError = _yield$$get.error;
                 if (!(data && data.value)) {
-                  _context.next = 18;
+                  _context.next = 17;
                   break;
                 }
                 if (data.value.data.success) {
-                  _context.next = 13;
+                  _context.next = 12;
                   break;
                 }
                 state.error = data.value.data.message;
                 return _context.abrupt("return");
-              case 13:
+              case 12:
                 state.log_path = data.value.data.log_path;
                 state.logs = data.value.data.logs;
                 state.error_types = data.value.data.error_types;
-                _context.next = 19;
+                _context.next = 18;
                 break;
-              case 18:
+              case 17:
                 if (fetchError) {
                   state.error = fetchError;
                 }
-              case 19:
-                _context.next = 24;
+              case 18:
+                _context.next = 23;
                 break;
-              case 21:
-                _context.prev = 21;
+              case 20:
+                _context.prev = 20;
                 _context.t0 = _context["catch"](0);
                 state.error = _context.t0;
-              case 24:
-                _context.prev = 24;
+              case 23:
+                _context.prev = 23;
                 state.isLoading = false;
                 resolve();
-                return _context.finish(24);
-              case 28:
+                return _context.finish(23);
+              case 27:
               case "end":
                 return _context.stop();
             }
-          }, _callee, null, [[0, 21, 24, 28]]);
+          }, _callee, null, [[0, 20, 23, 27]]);
         }));
         return function (_x) {
           return _ref2.apply(this, arguments);
@@ -17449,13 +17448,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 0:
               _context2.prev = 0;
               state.isLoading = true;
-              state.error = false;
               args = {
                 route: 'clear_logs'
               };
-              _context2.next = 6;
+              _context2.next = 5;
               return (0,_request__WEBPACK_IMPORTED_MODULE_1__.$post)(args);
-            case 6:
+            case 5:
               _yield$$post = _context2.sent;
               data = _yield$$post.data;
               fetchError = _yield$$post.error;
@@ -17464,22 +17462,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               } else if (fetchError) {
                 state.error = fetchError;
               }
-              _context2.next = 15;
+              _context2.next = 14;
               break;
-            case 12:
-              _context2.prev = 12;
+            case 11:
+              _context2.prev = 11;
               _context2.t0 = _context2["catch"](0);
               state.error = _context2.t0;
-            case 15:
-              _context2.prev = 15;
+            case 14:
+              _context2.prev = 14;
               state.isLoading = false;
               showTopLeft();
-              return _context2.finish(15);
-            case 19:
+              return _context2.finish(14);
+            case 18:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[0, 12, 15, 19]]);
+        }, _callee2, null, [[0, 11, 14, 18]]);
       }));
       return _deleteLogs.apply(this, arguments);
     }
@@ -17800,24 +17798,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     __expose();
     var toast = (0,primevue_usetoast__WEBPACK_IMPORTED_MODULE_2__.useToast)();
     var selectedPlugins = (0,vue__WEBPACK_IMPORTED_MODULE_0__.reactive)([{
-      label: "Debug Log Viewer & Control",
-      value: "debug-log-config-tool/plugin.php"
+      "label": "Debug Log Viewer & Control",
+      "value": "debug-log-config-tool/plugin.php"
     }]);
     var pluginList = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
-    var selectedCity = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)();
-    var cities = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([{
-      name: "Debug Log Viewer & Control",
-      value: 'debug-log-config-tool/plugin.php'
-    }, {
-      name: 'Paris',
-      value: 'PRS'
-    }]);
-    function resetSelection() {
-      selectedCity.value = [];
-    }
-    function selectAll() {
-      selectedCity.value = cities.value;
-    }
     var state = (0,vue__WEBPACK_IMPORTED_MODULE_0__.reactive)({
       error: null,
       isLoading: false,
@@ -17836,7 +17820,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
     function _updateSetting() {
       _updateSetting = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var args, _yield$$post, data, _fetchError;
+        var args, _yield$$post, data, fetchError;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
@@ -17845,21 +17829,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               args = {
                 route: 'update_safe_mode',
                 safe_mode: this.state.isSafeMode,
-                selected_plugins: JSON.stringify(selectedCity.value)
+                selected_plugins: JSON.stringify(selectedPlugins.value.map(function (item) {
+                  return item.value;
+                }))
               };
               _context.next = 5;
               return (0,_request__WEBPACK_IMPORTED_MODULE_1__.$post)(args);
             case 5:
               _yield$$post = _context.sent;
               data = _yield$$post.data;
-              _fetchError = _yield$$post.error;
+              fetchError = _yield$$post.error;
               if (data) {
                 setTimeout(function () {
-                  // window.location.reload();
+                  window.location.reload();
                 }, 1000);
                 showTopLeft(data.value.data.message, data.value.data.success);
-              } else if (_fetchError) {
-                state.error = _fetchError;
+              } else if (fetchError) {
+                state.error = fetchError;
               }
               update.isLoading = false;
               _context.next = 15;
@@ -17881,7 +17867,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
     function _fetchSettings() {
       _fetchSettings = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var args, _yield$$get, data, _fetchError2;
+        var args, _yield$$get, data, fetchError;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
@@ -17895,34 +17881,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 5:
               _yield$$get = _context2.sent;
               data = _yield$$get.data;
-              _fetchError2 = _yield$$get.error;
+              fetchError = _yield$$get.error;
               if (data) {
                 console.log(selectedPlugins.value);
                 console.log(data.value.data.selected_active_plugins_list);
-                selectedCity.value = data.value.data.selected_active_plugins_list;
-                cities.value = data.value.data.all_plugins;
+                selectedPlugins.value = data.value.data.selected_active_plugins_list;
+                pluginList.value = data.value.data.all_plugins;
                 state.isSafeMode = data.value.data.safe_mode_status;
-              } else if (_fetchError2) {
-                console.log('fetchError', _fetchError2);
-                state.error = _fetchError2;
+              } else if (fetchError) {
+                state.error = fetchError;
               }
-              _context2.next = 15;
+              _context2.next = 14;
               break;
             case 11:
               _context2.prev = 11;
               _context2.t0 = _context2["catch"](0);
-              console.log('err', fetchError);
               state.error = _context2.t0;
-            case 15:
-              _context2.prev = 15;
-              console.log('finally');
+            case 14:
+              _context2.prev = 14;
               state.isLoading = false;
-              return _context2.finish(15);
-            case 19:
+              return _context2.finish(14);
+            case 17:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[0, 11, 15, 19]]);
+        }, _callee2, null, [[0, 11, 14, 17]]);
       }));
       return _fetchSettings.apply(this, arguments);
     }
@@ -17942,10 +17925,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       toast: toast,
       selectedPlugins: selectedPlugins,
       pluginList: pluginList,
-      selectedCity: selectedCity,
-      cities: cities,
-      resetSelection: resetSelection,
-      selectAll: selectAll,
       state: state,
       update: update,
       otherPluginState: otherPluginState,
@@ -18295,7 +18274,6 @@ var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 }, " No Log found !", -1 /* HOISTED */);
 var _hoisted_9 = [_hoisted_8];
 var _hoisted_10 = {
-  key: 2,
   "class": "dlct-error-msg"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -18404,7 +18382,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
 
     key: "0"
-  } : undefined]), 1032 /* PROPS, DYNAMIC_SLOTS */, ["paginator", "value"]), $setup.filteredEntries && $setup.filteredEntries.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [].concat(_hoisted_9))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])), $setup.state.error ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state.error), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+  } : undefined]), 1032 /* PROPS, DYNAMIC_SLOTS */, ["paginator", "value"]), $setup.filteredEntries && $setup.filteredEntries.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [].concat(_hoisted_9))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state.error), 1 /* TEXT */)]);
 }
 
 /***/ }),
@@ -18493,7 +18471,7 @@ var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
   severity: "info"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
   "class": "pi pi-fw pi-info-circle"
-}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" This will deactivate/activate all selected plugins when turned on. After turning off previous active plugins will be restored. Please note that it is in beta version currently. ")])], -1 /* HOISTED */);
+}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" This will deactivate/activate all selected plugins when turned on. After turning off previous active plugins will be restored. ")])], -1 /* HOISTED */);
 var _hoisted_3 = {
   "class": "flex justify-content-center dlct-form-item"
 };
@@ -18504,23 +18482,22 @@ var _hoisted_5 = {
   key: 0,
   "class": "flex justify-content-center dlct-form-item"
 };
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Select Plugins that will remain active during safe mode ", -1 /* HOISTED */);
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1 /* HOISTED */);
-var _hoisted_8 = {
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Select Plugins that will remain active during safe mode ")], -1 /* HOISTED */);
+var _hoisted_7 = {
   key: 1,
   "class": "flex justify-content-center dlct-form-item"
 };
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, null, -1 /* HOISTED */);
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", null, "Other plugins will remain deactivated")], -1 /* HOISTED */);
-var _hoisted_11 = [_hoisted_9, _hoisted_10];
-var _hoisted_12 = {
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, null, -1 /* HOISTED */);
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", null, "Other plugins will remain deactivated")], -1 /* HOISTED */);
+var _hoisted_10 = [_hoisted_8, _hoisted_9];
+var _hoisted_11 = {
   "class": "flex justify-content-center dlct-form-item"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Toast = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toast");
   var _component_InputSwitch = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("InputSwitch");
+  var _component_MultiSelect = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("MultiSelect");
   var _component_Button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Button");
-  var _component_Listbox = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Listbox");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Toast, {
     style: {
       "margin-top": "20px"
@@ -18534,33 +18511,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $setup.state.isSafeMode = $event;
     })
-  }, null, 8 /* PROPS */, ["modelValue"])]), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_6, _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
-    outlined: "",
-    raised: "false",
-    severity: "secondary",
-    size: "small",
-    onClick: $setup.resetSelection,
-    label: "Reset"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("  "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
-    outlined: "",
-    raised: "false",
-    severity: "info",
-    size: "small",
-    onClick: $setup.selectAll,
-    label: "Select All"
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Listbox, {
-    listStyle: "max-height:350px",
-    filter: "",
-    "option-vale": "value",
-    modelValue: $setup.selectedCity,
+  }, null, 8 /* PROPS */, ["modelValue"])]), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_MultiSelect, {
+    modelValue: $setup.selectedPlugins,
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-      return $setup.selectedCity = $event;
+      return $setup.selectedPlugins = $event;
     }),
-    multiple: "",
-    options: $setup.cities,
-    optionLabel: "name",
-    "class": "w-full md:w-14rem"
-  }, null, 8 /* PROPS */, ["modelValue", "options"])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [].concat(_hoisted_11))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+    options: $setup.pluginList,
+    optionLabel: "label",
+    optionGroupLabel: "label",
+    optionGroupChildren: "items",
+    display: "chip",
+    placeholder: "Select Plugins",
+    "class": "w-full md:w-20rem"
+  }, null, 8 /* PROPS */, ["modelValue", "options"])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [].concat(_hoisted_10))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
     loading: $setup.update.isLoading,
     size: "medium",
     onClick: _cache[2] || (_cache[2] = function ($event) {
@@ -18738,7 +18701,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var primevue_inputswitch__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! primevue/inputswitch */ "./node_modules/primevue/inputswitch/inputswitch.esm.js");
 /* harmony import */ var primevue_toastservice__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! primevue/toastservice */ "./node_modules/primevue/toastservice/toastservice.esm.js");
 /* harmony import */ var primevue_inputtext__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! primevue/inputtext */ "./node_modules/primevue/inputtext/inputtext.esm.js");
-/* harmony import */ var primevue_listbox__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! primevue/listbox */ "./node_modules/primevue/listbox/listbox.esm.js");
+/* harmony import */ var primevue_multiselect__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! primevue/multiselect */ "./node_modules/primevue/multiselect/multiselect.esm.js");
 /* harmony import */ var primevue_selectbutton__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! primevue/selectbutton */ "./node_modules/primevue/selectbutton/selectbutton.esm.js");
 //style
 //core
@@ -18783,7 +18746,7 @@ window.onload = function () {
     application.component('Toast', primevue_toast__WEBPACK_IMPORTED_MODULE_15__["default"]);
     application.component('InputSwitch', primevue_inputswitch__WEBPACK_IMPORTED_MODULE_16__["default"]);
     application.component('InputText', primevue_inputtext__WEBPACK_IMPORTED_MODULE_18__["default"]);
-    application.component('Listbox', primevue_listbox__WEBPACK_IMPORTED_MODULE_19__["default"]);
+    application.component('MultiSelect', primevue_multiselect__WEBPACK_IMPORTED_MODULE_19__["default"]);
     application.component('SelectButton', primevue_selectbutton__WEBPACK_IMPORTED_MODULE_20__["default"]);
     application.use(primevue_toastservice__WEBPACK_IMPORTED_MODULE_17__["default"]);
     application.use(_router__WEBPACK_IMPORTED_MODULE_5__["default"]).mount(appEl);
@@ -32331,1014 +32294,6 @@ var InputTextStyle = primevue_base_style__WEBPACK_IMPORTED_MODULE_0__["default"]
 
 /***/ }),
 
-/***/ "./node_modules/primevue/listbox/listbox.esm.js":
-/*!******************************************************!*\
-  !*** ./node_modules/primevue/listbox/listbox.esm.js ***!
-  \******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ script)
-/* harmony export */ });
-/* harmony import */ var primevue_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primevue/api */ "./node_modules/primevue/api/api.esm.js");
-/* harmony import */ var primevue_icons_search__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primevue/icons/search */ "./node_modules/primevue/icons/search/index.esm.js");
-/* harmony import */ var primevue_ripple__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primevue/ripple */ "./node_modules/primevue/ripple/ripple.esm.js");
-/* harmony import */ var primevue_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! primevue/utils */ "./node_modules/primevue/utils/utils.esm.js");
-/* harmony import */ var primevue_virtualscroller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primevue/virtualscroller */ "./node_modules/primevue/virtualscroller/virtualscroller.esm.js");
-/* harmony import */ var primevue_basecomponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primevue/basecomponent */ "./node_modules/primevue/basecomponent/basecomponent.esm.js");
-/* harmony import */ var primevue_listbox_style__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primevue/listbox/style */ "./node_modules/primevue/listbox/style/listboxstyle.esm.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-
-
-
-
-
-
-
-
-
-var script$1 = {
-  name: 'BaseListbox',
-  "extends": primevue_basecomponent__WEBPACK_IMPORTED_MODULE_5__["default"],
-  props: {
-    modelValue: null,
-    options: Array,
-    optionLabel: null,
-    optionValue: null,
-    optionDisabled: null,
-    optionGroupLabel: null,
-    optionGroupChildren: null,
-    listStyle: null,
-    disabled: {
-      type: Boolean,
-      "default": false
-    },
-    dataKey: null,
-    multiple: {
-      type: Boolean,
-      "default": false
-    },
-    metaKeySelection: {
-      type: Boolean,
-      "default": false
-    },
-    filter: Boolean,
-    filterPlaceholder: String,
-    filterLocale: String,
-    filterMatchMode: {
-      type: String,
-      "default": 'contains'
-    },
-    filterFields: {
-      type: Array,
-      "default": null
-    },
-    filterInputProps: null,
-    virtualScrollerOptions: {
-      type: Object,
-      "default": null
-    },
-    autoOptionFocus: {
-      type: Boolean,
-      "default": true
-    },
-    selectOnFocus: {
-      type: Boolean,
-      "default": false
-    },
-    filterMessage: {
-      type: String,
-      "default": null
-    },
-    selectionMessage: {
-      type: String,
-      "default": null
-    },
-    emptySelectionMessage: {
-      type: String,
-      "default": null
-    },
-    emptyFilterMessage: {
-      type: String,
-      "default": null
-    },
-    emptyMessage: {
-      type: String,
-      "default": null
-    },
-    filterIcon: {
-      type: String,
-      "default": undefined
-    },
-    tabindex: {
-      type: Number,
-      "default": 0
-    },
-    ariaLabel: {
-      type: String,
-      "default": null
-    },
-    ariaLabelledby: {
-      type: String,
-      "default": null
-    }
-  },
-  style: primevue_listbox_style__WEBPACK_IMPORTED_MODULE_6__["default"],
-  provide: function provide() {
-    return {
-      $parentInstance: this
-    };
-  }
-};
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-var script = {
-  name: 'Listbox',
-  "extends": script$1,
-  emits: ['update:modelValue', 'change', 'focus', 'blur', 'filter'],
-  list: null,
-  virtualScroller: null,
-  optionTouched: false,
-  startRangeIndex: -1,
-  searchTimeout: null,
-  searchValue: '',
-  focusOnHover: false,
-  data: function data() {
-    return {
-      id: this.$attrs.id,
-      filterValue: null,
-      focused: false,
-      focusedOptionIndex: -1
-    };
-  },
-  watch: {
-    '$attrs.id': function $attrsId(newValue) {
-      this.id = newValue || (0,primevue_utils__WEBPACK_IMPORTED_MODULE_3__.UniqueComponentId)();
-    },
-    options: function options() {
-      this.autoUpdateModel();
-    }
-  },
-  mounted: function mounted() {
-    this.id = this.id || (0,primevue_utils__WEBPACK_IMPORTED_MODULE_3__.UniqueComponentId)();
-    this.autoUpdateModel();
-  },
-  methods: {
-    getOptionIndex: function getOptionIndex(index, fn) {
-      return this.virtualScrollerDisabled ? index : fn && fn(index)['index'];
-    },
-    getOptionLabel: function getOptionLabel(option) {
-      return this.optionLabel ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.resolveFieldData(option, this.optionLabel) : option;
-    },
-    getOptionValue: function getOptionValue(option) {
-      return this.optionValue ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.resolveFieldData(option, this.optionValue) : option;
-    },
-    getOptionRenderKey: function getOptionRenderKey(option, index) {
-      return (this.dataKey ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.resolveFieldData(option, this.dataKey) : this.getOptionLabel(option)) + '_' + index;
-    },
-    getPTOptions: function getPTOptions(option, itemOptions, index, key) {
-      return this.ptm(key, {
-        context: {
-          selected: this.isSelected(option),
-          focused: this.focusedOptionIndex === this.getOptionIndex(index, itemOptions),
-          disabled: this.isOptionDisabled(option)
-        }
-      });
-    },
-    isOptionDisabled: function isOptionDisabled(option) {
-      return this.optionDisabled ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.resolveFieldData(option, this.optionDisabled) : false;
-    },
-    isOptionGroup: function isOptionGroup(option) {
-      return this.optionGroupLabel && option.optionGroup && option.group;
-    },
-    getOptionGroupLabel: function getOptionGroupLabel(optionGroup) {
-      return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupLabel);
-    },
-    getOptionGroupChildren: function getOptionGroupChildren(optionGroup) {
-      return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupChildren);
-    },
-    getAriaPosInset: function getAriaPosInset(index) {
-      var _this = this;
-      return (this.optionGroupLabel ? index - this.visibleOptions.slice(0, index).filter(function (option) {
-        return _this.isOptionGroup(option);
-      }).length : index) + 1;
-    },
-    onFirstHiddenFocus: function onFirstHiddenFocus() {
-      primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.focus(this.list);
-      var firstFocusableEl = primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.getFirstFocusableElement(this.$el, ':not([data-p-hidden-focusable="true"])');
-      this.$refs.lastHiddenFocusableElement.tabIndex = primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.isElement(firstFocusableEl) ? undefined : -1;
-      this.$refs.firstHiddenFocusableElement.tabIndex = -1;
-    },
-    onLastHiddenFocus: function onLastHiddenFocus(event) {
-      var relatedTarget = event.relatedTarget;
-      if (relatedTarget === this.list) {
-        var firstFocusableEl = primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.getFirstFocusableElement(this.$el, ':not([data-p-hidden-focusable="true"])');
-        primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.focus(firstFocusableEl);
-        this.$refs.firstHiddenFocusableElement.tabIndex = undefined;
-      } else {
-        primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.focus(this.$refs.firstHiddenFocusableElement);
-      }
-      this.$refs.lastHiddenFocusableElement.tabIndex = -1;
-    },
-    onFocusout: function onFocusout(event) {
-      if (!this.$el.contains(event.relatedTarget) && this.$refs.lastHiddenFocusableElement && this.$refs.firstHiddenFocusableElement) {
-        this.$refs.lastHiddenFocusableElement.tabIndex = this.$refs.firstHiddenFocusableElement.tabIndex = undefined;
-      }
-    },
-    onListFocus: function onListFocus(event) {
-      this.focused = true;
-      this.focusedOptionIndex = this.focusedOptionIndex !== -1 ? this.focusedOptionIndex : this.autoOptionFocus ? this.findFirstFocusedOptionIndex() : -1;
-      this.autoUpdateModel();
-      this.$emit('focus', event);
-    },
-    onListBlur: function onListBlur(event) {
-      this.focused = false;
-      this.focusedOptionIndex = this.startRangeIndex = -1;
-      this.searchValue = '';
-      this.$emit('blur', event);
-    },
-    onListKeyDown: function onListKeyDown(event) {
-      var _this2 = this;
-      var metaKey = event.metaKey || event.ctrlKey;
-      switch (event.code) {
-        case 'ArrowDown':
-          this.onArrowDownKey(event);
-          break;
-        case 'ArrowUp':
-          this.onArrowUpKey(event);
-          break;
-        case 'Home':
-          this.onHomeKey(event);
-          break;
-        case 'End':
-          this.onEndKey(event);
-          break;
-        case 'PageDown':
-          this.onPageDownKey(event);
-          break;
-        case 'PageUp':
-          this.onPageUpKey(event);
-          break;
-        case 'Enter':
-        case 'NumpadEnter':
-        case 'Space':
-          this.onSpaceKey(event);
-          break;
-        case 'Tab':
-          //NOOP
-          break;
-        case 'ShiftLeft':
-        case 'ShiftRight':
-          this.onShiftKey(event);
-          break;
-        default:
-          if (this.multiple && event.code === 'KeyA' && metaKey) {
-            var value = this.visibleOptions.filter(function (option) {
-              return _this2.isValidOption(option);
-            }).map(function (option) {
-              return _this2.getOptionValue(option);
-            });
-            this.updateModel(event, value);
-            event.preventDefault();
-            break;
-          }
-          if (!metaKey && primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.isPrintableCharacter(event.key)) {
-            this.searchOptions(event, event.key);
-            event.preventDefault();
-          }
-          break;
-      }
-    },
-    onOptionSelect: function onOptionSelect(event, option) {
-      var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1;
-      if (this.disabled || this.isOptionDisabled(option)) {
-        return;
-      }
-      this.multiple ? this.onOptionSelectMultiple(event, option) : this.onOptionSelectSingle(event, option);
-      this.optionTouched = false;
-      index !== -1 && (this.focusedOptionIndex = index);
-    },
-    onOptionMouseDown: function onOptionMouseDown(event, index) {
-      this.changeFocusedOptionIndex(event, index);
-    },
-    onOptionMouseMove: function onOptionMouseMove(event, index) {
-      if (this.focusOnHover) {
-        this.changeFocusedOptionIndex(event, index);
-      }
-    },
-    onOptionTouchEnd: function onOptionTouchEnd() {
-      if (this.disabled) {
-        return;
-      }
-      this.optionTouched = true;
-    },
-    onOptionSelectSingle: function onOptionSelectSingle(event, option) {
-      var selected = this.isSelected(option);
-      var valueChanged = false;
-      var value = null;
-      var metaSelection = this.optionTouched ? false : this.metaKeySelection;
-      if (metaSelection) {
-        var metaKey = event && (event.metaKey || event.ctrlKey);
-        if (selected) {
-          if (metaKey) {
-            value = null;
-            valueChanged = true;
-          }
-        } else {
-          value = this.getOptionValue(option);
-          valueChanged = true;
-        }
-      } else {
-        value = selected ? null : this.getOptionValue(option);
-        valueChanged = true;
-      }
-      if (valueChanged) {
-        this.updateModel(event, value);
-      }
-    },
-    onOptionSelectMultiple: function onOptionSelectMultiple(event, option) {
-      var selected = this.isSelected(option);
-      var value = null;
-      var metaSelection = this.optionTouched ? false : this.metaKeySelection;
-      if (metaSelection) {
-        var metaKey = event.metaKey || event.ctrlKey;
-        if (selected) {
-          value = metaKey ? this.removeOption(option) : [this.getOptionValue(option)];
-        } else {
-          value = metaKey ? this.modelValue || [] : [];
-          value = [].concat(_toConsumableArray(value), [this.getOptionValue(option)]);
-        }
-      } else {
-        value = selected ? this.removeOption(option) : [].concat(_toConsumableArray(this.modelValue || []), [this.getOptionValue(option)]);
-      }
-      this.updateModel(event, value);
-    },
-    onOptionSelectRange: function onOptionSelectRange(event) {
-      var _this3 = this;
-      var start = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
-      var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1;
-      start === -1 && (start = this.findNearestSelectedOptionIndex(end, true));
-      end === -1 && (end = this.findNearestSelectedOptionIndex(start));
-      if (start !== -1 && end !== -1) {
-        var rangeStart = Math.min(start, end);
-        var rangeEnd = Math.max(start, end);
-        var value = this.visibleOptions.slice(rangeStart, rangeEnd + 1).filter(function (option) {
-          return _this3.isValidOption(option);
-        }).map(function (option) {
-          return _this3.getOptionValue(option);
-        });
-        this.updateModel(event, value);
-      }
-    },
-    onFilterChange: function onFilterChange(event) {
-      this.$emit('filter', {
-        originalEvent: event,
-        value: event.target.value
-      });
-      this.focusedOptionIndex = this.startRangeIndex = -1;
-    },
-    onFilterBlur: function onFilterBlur() {
-      this.focusedOptionIndex = this.startRangeIndex = -1;
-    },
-    onFilterKeyDown: function onFilterKeyDown(event) {
-      switch (event.code) {
-        case 'ArrowDown':
-          this.onArrowDownKey(event);
-          break;
-        case 'ArrowUp':
-          this.onArrowUpKey(event);
-          break;
-        case 'ArrowLeft':
-        case 'ArrowRight':
-          this.onArrowLeftKey(event, true);
-          break;
-        case 'Home':
-          this.onHomeKey(event, true);
-          break;
-        case 'End':
-          this.onEndKey(event, true);
-          break;
-        case 'Enter':
-        case 'NumpadEnter':
-          this.onEnterKey(event);
-          break;
-        case 'ShiftLeft':
-        case 'ShiftRight':
-          this.onShiftKey(event);
-          break;
-      }
-    },
-    onArrowDownKey: function onArrowDownKey(event) {
-      var optionIndex = this.focusedOptionIndex !== -1 ? this.findNextOptionIndex(this.focusedOptionIndex) : this.findFirstFocusedOptionIndex();
-      if (this.multiple && event.shiftKey) {
-        this.onOptionSelectRange(event, this.startRangeIndex, optionIndex);
-      }
-      this.changeFocusedOptionIndex(event, optionIndex);
-      event.preventDefault();
-    },
-    onArrowUpKey: function onArrowUpKey(event) {
-      var optionIndex = this.focusedOptionIndex !== -1 ? this.findPrevOptionIndex(this.focusedOptionIndex) : this.findLastFocusedOptionIndex();
-      if (this.multiple && event.shiftKey) {
-        this.onOptionSelectRange(event, optionIndex, this.startRangeIndex);
-      }
-      this.changeFocusedOptionIndex(event, optionIndex);
-      event.preventDefault();
-    },
-    onArrowLeftKey: function onArrowLeftKey(event) {
-      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      pressedInInputText && (this.focusedOptionIndex = -1);
-    },
-    onHomeKey: function onHomeKey(event) {
-      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      if (pressedInInputText) {
-        event.currentTarget.setSelectionRange(0, 0);
-        this.focusedOptionIndex = -1;
-      } else {
-        var metaKey = event.metaKey || event.ctrlKey;
-        var optionIndex = this.findFirstOptionIndex();
-        if (this.multiple && event.shiftKey && metaKey) {
-          this.onOptionSelectRange(event, optionIndex, this.startRangeIndex);
-        }
-        this.changeFocusedOptionIndex(event, optionIndex);
-      }
-      event.preventDefault();
-    },
-    onEndKey: function onEndKey(event) {
-      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      if (pressedInInputText) {
-        var target = event.currentTarget;
-        var len = target.value.length;
-        target.setSelectionRange(len, len);
-        this.focusedOptionIndex = -1;
-      } else {
-        var metaKey = event.metaKey || event.ctrlKey;
-        var optionIndex = this.findLastOptionIndex();
-        if (this.multiple && event.shiftKey && metaKey) {
-          this.onOptionSelectRange(event, this.startRangeIndex, optionIndex);
-        }
-        this.changeFocusedOptionIndex(event, optionIndex);
-      }
-      event.preventDefault();
-    },
-    onPageUpKey: function onPageUpKey(event) {
-      this.scrollInView(0);
-      event.preventDefault();
-    },
-    onPageDownKey: function onPageDownKey(event) {
-      this.scrollInView(this.visibleOptions.length - 1);
-      event.preventDefault();
-    },
-    onEnterKey: function onEnterKey(event) {
-      if (this.focusedOptionIndex !== -1) {
-        if (this.multiple && event.shiftKey) this.onOptionSelectRange(event, this.focusedOptionIndex);else this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
-      }
-      event.preventDefault();
-    },
-    onSpaceKey: function onSpaceKey(event) {
-      this.onEnterKey(event);
-    },
-    onShiftKey: function onShiftKey() {
-      this.startRangeIndex = this.focusedOptionIndex;
-    },
-    isOptionMatched: function isOptionMatched(option) {
-      return this.isValidOption(option) && this.getOptionLabel(option).toLocaleLowerCase(this.filterLocale).startsWith(this.searchValue.toLocaleLowerCase(this.filterLocale));
-    },
-    isValidOption: function isValidOption(option) {
-      return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.isNotEmpty(option) && !(this.isOptionDisabled(option) || this.isOptionGroup(option));
-    },
-    isValidSelectedOption: function isValidSelectedOption(option) {
-      return this.isValidOption(option) && this.isSelected(option);
-    },
-    isSelected: function isSelected(option) {
-      var _this4 = this;
-      var optionValue = this.getOptionValue(option);
-      if (this.multiple) return (this.modelValue || []).some(function (value) {
-        return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.equals(value, optionValue, _this4.equalityKey);
-      });else return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.equals(this.modelValue, optionValue, this.equalityKey);
-    },
-    findFirstOptionIndex: function findFirstOptionIndex() {
-      var _this5 = this;
-      return this.visibleOptions.findIndex(function (option) {
-        return _this5.isValidOption(option);
-      });
-    },
-    findLastOptionIndex: function findLastOptionIndex() {
-      var _this6 = this;
-      return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.findLastIndex(this.visibleOptions, function (option) {
-        return _this6.isValidOption(option);
-      });
-    },
-    findNextOptionIndex: function findNextOptionIndex(index) {
-      var _this7 = this;
-      var matchedOptionIndex = index < this.visibleOptions.length - 1 ? this.visibleOptions.slice(index + 1).findIndex(function (option) {
-        return _this7.isValidOption(option);
-      }) : -1;
-      return matchedOptionIndex > -1 ? matchedOptionIndex + index + 1 : index;
-    },
-    findPrevOptionIndex: function findPrevOptionIndex(index) {
-      var _this8 = this;
-      var matchedOptionIndex = index > 0 ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.findLastIndex(this.visibleOptions.slice(0, index), function (option) {
-        return _this8.isValidOption(option);
-      }) : -1;
-      return matchedOptionIndex > -1 ? matchedOptionIndex : index;
-    },
-    findFirstSelectedOptionIndex: function findFirstSelectedOptionIndex() {
-      var _this9 = this;
-      return this.hasSelectedOption ? this.visibleOptions.findIndex(function (option) {
-        return _this9.isValidSelectedOption(option);
-      }) : -1;
-    },
-    findLastSelectedOptionIndex: function findLastSelectedOptionIndex() {
-      var _this10 = this;
-      return this.hasSelectedOption ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.findLastIndex(this.visibleOptions, function (option) {
-        return _this10.isValidSelectedOption(option);
-      }) : -1;
-    },
-    findNextSelectedOptionIndex: function findNextSelectedOptionIndex(index) {
-      var _this11 = this;
-      var matchedOptionIndex = this.hasSelectedOption && index < this.visibleOptions.length - 1 ? this.visibleOptions.slice(index + 1).findIndex(function (option) {
-        return _this11.isValidSelectedOption(option);
-      }) : -1;
-      return matchedOptionIndex > -1 ? matchedOptionIndex + index + 1 : -1;
-    },
-    findPrevSelectedOptionIndex: function findPrevSelectedOptionIndex(index) {
-      var _this12 = this;
-      var matchedOptionIndex = this.hasSelectedOption && index > 0 ? primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.findLastIndex(this.visibleOptions.slice(0, index), function (option) {
-        return _this12.isValidSelectedOption(option);
-      }) : -1;
-      return matchedOptionIndex > -1 ? matchedOptionIndex : -1;
-    },
-    findNearestSelectedOptionIndex: function findNearestSelectedOptionIndex(index) {
-      var firstCheckUp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var matchedOptionIndex = -1;
-      if (this.hasSelectedOption) {
-        if (firstCheckUp) {
-          matchedOptionIndex = this.findPrevSelectedOptionIndex(index);
-          matchedOptionIndex = matchedOptionIndex === -1 ? this.findNextSelectedOptionIndex(index) : matchedOptionIndex;
-        } else {
-          matchedOptionIndex = this.findNextSelectedOptionIndex(index);
-          matchedOptionIndex = matchedOptionIndex === -1 ? this.findPrevSelectedOptionIndex(index) : matchedOptionIndex;
-        }
-      }
-      return matchedOptionIndex > -1 ? matchedOptionIndex : index;
-    },
-    findFirstFocusedOptionIndex: function findFirstFocusedOptionIndex() {
-      var selectedIndex = this.findFirstSelectedOptionIndex();
-      return selectedIndex < 0 ? this.findFirstOptionIndex() : selectedIndex;
-    },
-    findLastFocusedOptionIndex: function findLastFocusedOptionIndex() {
-      var selectedIndex = this.findLastSelectedOptionIndex();
-      return selectedIndex < 0 ? this.findLastOptionIndex() : selectedIndex;
-    },
-    searchOptions: function searchOptions(event, _char) {
-      var _this13 = this;
-      this.searchValue = (this.searchValue || '') + _char;
-      var optionIndex = -1;
-      if (this.focusedOptionIndex !== -1) {
-        optionIndex = this.visibleOptions.slice(this.focusedOptionIndex).findIndex(function (option) {
-          return _this13.isOptionMatched(option);
-        });
-        optionIndex = optionIndex === -1 ? this.visibleOptions.slice(0, this.focusedOptionIndex).findIndex(function (option) {
-          return _this13.isOptionMatched(option);
-        }) : optionIndex + this.focusedOptionIndex;
-      } else {
-        optionIndex = this.visibleOptions.findIndex(function (option) {
-          return _this13.isOptionMatched(option);
-        });
-      }
-      if (optionIndex === -1 && this.focusedOptionIndex === -1) {
-        optionIndex = this.findFirstFocusedOptionIndex();
-      }
-      if (optionIndex !== -1) {
-        this.changeFocusedOptionIndex(event, optionIndex);
-      }
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-      }
-      this.searchTimeout = setTimeout(function () {
-        _this13.searchValue = '';
-        _this13.searchTimeout = null;
-      }, 500);
-    },
-    removeOption: function removeOption(option) {
-      var _this14 = this;
-      return this.modelValue.filter(function (val) {
-        return !primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.equals(val, _this14.getOptionValue(option), _this14.equalityKey);
-      });
-    },
-    changeFocusedOptionIndex: function changeFocusedOptionIndex(event, index) {
-      if (this.focusedOptionIndex !== index) {
-        this.focusedOptionIndex = index;
-        this.scrollInView();
-        if (this.selectOnFocus && !this.multiple) {
-          this.onOptionSelect(event, this.visibleOptions[index]);
-        }
-      }
-    },
-    scrollInView: function scrollInView() {
-      var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : -1;
-      var id = index !== -1 ? "".concat(this.id, "_").concat(index) : this.focusedOptionId;
-      var element = primevue_utils__WEBPACK_IMPORTED_MODULE_3__.DomHandler.findSingle(this.list, "li[id=\"".concat(id, "\"]"));
-      if (element) {
-        element.scrollIntoView && element.scrollIntoView({
-          block: 'nearest',
-          inline: 'nearest'
-        });
-      } else if (!this.virtualScrollerDisabled) {
-        this.virtualScroller && this.virtualScroller.scrollToIndex(index !== -1 ? index : this.focusedOptionIndex);
-      }
-    },
-    autoUpdateModel: function autoUpdateModel() {
-      if (this.selectOnFocus && this.autoOptionFocus && !this.hasSelectedOption && !this.multiple && this.focused) {
-        this.focusedOptionIndex = this.findFirstFocusedOptionIndex();
-        this.onOptionSelect(null, this.visibleOptions[this.focusedOptionIndex]);
-      }
-    },
-    updateModel: function updateModel(event, value) {
-      this.$emit('update:modelValue', value);
-      this.$emit('change', {
-        originalEvent: event,
-        value: value
-      });
-    },
-    flatOptions: function flatOptions(options) {
-      var _this15 = this;
-      return (options || []).reduce(function (result, option, index) {
-        result.push({
-          optionGroup: option,
-          group: true,
-          index: index
-        });
-        var optionGroupChildren = _this15.getOptionGroupChildren(option);
-        optionGroupChildren && optionGroupChildren.forEach(function (o) {
-          return result.push(o);
-        });
-        return result;
-      }, []);
-    },
-    listRef: function listRef(el, contentRef) {
-      this.list = el;
-      contentRef && contentRef(el); // For VirtualScroller
-    },
-    virtualScrollerRef: function virtualScrollerRef(el) {
-      this.virtualScroller = el;
-    }
-  },
-  computed: {
-    visibleOptions: function visibleOptions() {
-      var options = this.optionGroupLabel ? this.flatOptions(this.options) : this.options || [];
-      return this.filterValue ? primevue_api__WEBPACK_IMPORTED_MODULE_0__.FilterService.filter(options, this.searchFields, this.filterValue, this.filterMatchMode, this.filterLocale) : options;
-    },
-    hasSelectedOption: function hasSelectedOption() {
-      return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.isNotEmpty(this.modelValue);
-    },
-    equalityKey: function equalityKey() {
-      return this.optionValue ? null : this.dataKey;
-    },
-    searchFields: function searchFields() {
-      return this.filterFields || [this.optionLabel];
-    },
-    filterResultMessageText: function filterResultMessageText() {
-      return primevue_utils__WEBPACK_IMPORTED_MODULE_3__.ObjectUtils.isNotEmpty(this.visibleOptions) ? this.filterMessageText.replaceAll('{0}', this.visibleOptions.length) : this.emptyFilterMessageText;
-    },
-    filterMessageText: function filterMessageText() {
-      return this.filterMessage || this.$primevue.config.locale.searchMessage || '';
-    },
-    emptyFilterMessageText: function emptyFilterMessageText() {
-      return this.emptyFilterMessage || this.$primevue.config.locale.emptySearchMessage || this.$primevue.config.locale.emptyFilterMessage || '';
-    },
-    emptyMessageText: function emptyMessageText() {
-      return this.emptyMessage || this.$primevue.config.locale.emptyMessage || '';
-    },
-    selectionMessageText: function selectionMessageText() {
-      return this.selectionMessage || this.$primevue.config.locale.selectionMessage || '';
-    },
-    emptySelectionMessageText: function emptySelectionMessageText() {
-      return this.emptySelectionMessage || this.$primevue.config.locale.emptySelectionMessage || '';
-    },
-    selectedMessageText: function selectedMessageText() {
-      return this.hasSelectedOption ? this.selectionMessageText.replaceAll('{0}', this.multiple ? this.modelValue.length : '1') : this.emptySelectionMessageText;
-    },
-    focusedOptionId: function focusedOptionId() {
-      return this.focusedOptionIndex !== -1 ? "".concat(this.id, "_").concat(this.focusedOptionIndex) : null;
-    },
-    ariaSetSize: function ariaSetSize() {
-      var _this16 = this;
-      return this.visibleOptions.filter(function (option) {
-        return !_this16.isOptionGroup(option);
-      }).length;
-    },
-    virtualScrollerDisabled: function virtualScrollerDisabled() {
-      return !this.virtualScrollerOptions;
-    }
-  },
-  directives: {
-    ripple: primevue_ripple__WEBPACK_IMPORTED_MODULE_2__["default"]
-  },
-  components: {
-    VirtualScroller: primevue_virtualscroller__WEBPACK_IMPORTED_MODULE_4__["default"],
-    SearchIcon: primevue_icons_search__WEBPACK_IMPORTED_MODULE_1__["default"]
-  }
-};
-
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var _hoisted_1 = ["id"];
-var _hoisted_2 = ["tabindex"];
-var _hoisted_3 = ["placeholder", "aria-owns", "aria-activedescendant", "tabindex"];
-var _hoisted_4 = ["id", "aria-multiselectable", "aria-label", "aria-labelledby", "aria-activedescendant", "aria-disabled"];
-var _hoisted_5 = ["id"];
-var _hoisted_6 = ["id", "aria-label", "aria-selected", "aria-disabled", "aria-setsize", "aria-posinset", "onClick", "onMousedown", "onMousemove", "data-p-highlight", "data-p-focused", "data-p-disabled"];
-var _hoisted_7 = ["tabindex"];
-function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_VirtualScroller = (0,vue__WEBPACK_IMPORTED_MODULE_7__.resolveComponent)("VirtualScroller");
-  var _directive_ripple = (0,vue__WEBPACK_IMPORTED_MODULE_7__.resolveDirective)("ripple");
-  return (0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    id: $data.id,
-    "class": _ctx.cx('root'),
-    onFocusout: _cache[10] || (_cache[10] = function () {
-      return $options.onFocusout && $options.onFocusout.apply($options, arguments);
-    })
-  }, _ctx.ptm('root'), {
-    "data-pc-name": "listbox"
-  }), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    ref: "firstHiddenFocusableElement",
-    role: "presentation",
-    "aria-hidden": "true",
-    "class": "p-hidden-accessible p-hidden-focusable",
-    tabindex: !_ctx.disabled ? _ctx.tabindex : -1,
-    onFocus: _cache[0] || (_cache[0] = function () {
-      return $options.onFirstHiddenFocus && $options.onFirstHiddenFocus.apply($options, arguments);
-    })
-  }, _ctx.ptm('hiddenFirstFocusableEl'), {
-    "data-p-hidden-accessible": true,
-    "data-p-hidden-focusable": true
-  }), null, 16, _hoisted_2), (0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "header", {
-    value: _ctx.modelValue,
-    options: $options.visibleOptions
-  }), _ctx.filter ? ((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    key: 0,
-    "class": _ctx.cx('header')
-  }, _ctx.ptm('header')), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    "class": _ctx.cx('filterContainer')
-  }, _ctx.ptm('filterContainer')), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("input", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    ref: "filterInput",
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-      return $data.filterValue = $event;
-    }),
-    type: "text",
-    "class": _ctx.cx('filterInput'),
-    placeholder: _ctx.filterPlaceholder,
-    role: "searchbox",
-    autocomplete: "off",
-    "aria-owns": $data.id + '_list',
-    "aria-activedescendant": $options.focusedOptionId,
-    tabindex: !_ctx.disabled && !$data.focused ? _ctx.tabindex : -1,
-    onInput: _cache[2] || (_cache[2] = function () {
-      return $options.onFilterChange && $options.onFilterChange.apply($options, arguments);
-    }),
-    onBlur: _cache[3] || (_cache[3] = function () {
-      return $options.onFilterBlur && $options.onFilterBlur.apply($options, arguments);
-    }),
-    onKeydown: _cache[4] || (_cache[4] = function () {
-      return $options.onFilterKeyDown && $options.onFilterKeyDown.apply($options, arguments);
-    })
-  }, _objectSpread(_objectSpread({}, _ctx.filterInputProps), _ctx.ptm('filterInput'))), null, 16, _hoisted_3), [[vue__WEBPACK_IMPORTED_MODULE_7__.vModelText, $data.filterValue]]), (0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "filtericon", {
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_7__.normalizeClass)(_ctx.cx('filterIcon'))
-  }, function () {
-    return [((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_7__.resolveDynamicComponent)(_ctx.filterIcon ? 'span' : 'SearchIcon'), (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-      "class": [_ctx.cx('filterIcon'), _ctx.filterIcon]
-    }, _ctx.ptm('filterIcon')), null, 16, ["class"]))];
-  })], 16), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    role: "status",
-    "aria-live": "polite",
-    "class": "p-hidden-accessible"
-  }, _ctx.ptm('hiddenFilterResult'), {
-    "data-p-hidden-accessible": true
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.filterResultMessageText), 17)], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_7__.createCommentVNode)("", true), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    ref: "listWrapper",
-    "class": _ctx.cx('wrapper'),
-    style: _ctx.listStyle
-  }, _ctx.ptm('wrapper')), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createVNode)(_component_VirtualScroller, (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    ref: $options.virtualScrollerRef
-  }, _ctx.virtualScrollerOptions, {
-    style: _ctx.listStyle,
-    items: $options.visibleOptions,
-    tabindex: -1,
-    disabled: $options.virtualScrollerDisabled,
-    pt: _ctx.ptm('virtualScroller')
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createSlots)({
-    content: (0,vue__WEBPACK_IMPORTED_MODULE_7__.withCtx)(function (_ref) {
-      var styleClass = _ref.styleClass,
-        contentRef = _ref.contentRef,
-        items = _ref.items,
-        getItemOptions = _ref.getItemOptions,
-        contentStyle = _ref.contentStyle,
-        itemSize = _ref.itemSize;
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("ul", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-        ref: function ref(el) {
-          return $options.listRef(el, contentRef);
-        },
-        id: $data.id + '_list',
-        "class": [_ctx.cx('list'), styleClass],
-        style: contentStyle,
-        tabindex: -1,
-        role: "listbox",
-        "aria-multiselectable": _ctx.multiple,
-        "aria-label": _ctx.ariaLabel,
-        "aria-labelledby": _ctx.ariaLabelledby,
-        "aria-activedescendant": $data.focused ? $options.focusedOptionId : undefined,
-        "aria-disabled": _ctx.disabled,
-        onFocus: _cache[6] || (_cache[6] = function () {
-          return $options.onListFocus && $options.onListFocus.apply($options, arguments);
-        }),
-        onBlur: _cache[7] || (_cache[7] = function () {
-          return $options.onListBlur && $options.onListBlur.apply($options, arguments);
-        }),
-        onKeydown: _cache[8] || (_cache[8] = function () {
-          return $options.onListKeyDown && $options.onListKeyDown.apply($options, arguments);
-        })
-      }, _ctx.ptm('list')), [((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_7__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_7__.renderList)(items, function (option, i) {
-        return (0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-          key: $options.getOptionRenderKey(option, $options.getOptionIndex(i, getItemOptions))
-        }, [$options.isOptionGroup(option) ? ((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-          key: 0,
-          id: $data.id + '_' + $options.getOptionIndex(i, getItemOptions),
-          style: {
-            height: itemSize ? itemSize + 'px' : undefined
-          },
-          "class": _ctx.cx('itemGroup'),
-          role: "option"
-        }, _ctx.ptm('itemGroup')), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "optiongroup", {
-          option: option.optionGroup,
-          index: $options.getOptionIndex(i, getItemOptions)
-        }, function () {
-          return [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.getOptionGroupLabel(option.optionGroup)), 1)];
-        })], 16, _hoisted_5)) : (0,vue__WEBPACK_IMPORTED_MODULE_7__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-          key: 1,
-          id: $data.id + '_' + $options.getOptionIndex(i, getItemOptions),
-          style: {
-            height: itemSize ? itemSize + 'px' : undefined
-          },
-          "class": _ctx.cx('item', {
-            option: option,
-            index: i,
-            getItemOptions: getItemOptions
-          }),
-          role: "option",
-          "aria-label": $options.getOptionLabel(option),
-          "aria-selected": $options.isSelected(option),
-          "aria-disabled": $options.isOptionDisabled(option),
-          "aria-setsize": $options.ariaSetSize,
-          "aria-posinset": $options.getAriaPosInset($options.getOptionIndex(i, getItemOptions)),
-          onClick: function onClick($event) {
-            return $options.onOptionSelect($event, option, $options.getOptionIndex(i, getItemOptions));
-          },
-          onMousedown: function onMousedown($event) {
-            return $options.onOptionMouseDown($event, $options.getOptionIndex(i, getItemOptions));
-          },
-          onMousemove: function onMousemove($event) {
-            return $options.onOptionMouseMove($event, $options.getOptionIndex(i, getItemOptions));
-          },
-          onTouchend: _cache[5] || (_cache[5] = function ($event) {
-            return $options.onOptionTouchEnd();
-          })
-        }, $options.getPTOptions(option, getItemOptions, i, 'item'), {
-          "data-p-highlight": $options.isSelected(option),
-          "data-p-focused": $data.focusedOptionIndex === $options.getOptionIndex(i, getItemOptions),
-          "data-p-disabled": $options.isOptionDisabled(option)
-        }), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "option", {
-          option: option,
-          index: $options.getOptionIndex(i, getItemOptions)
-        }, function () {
-          return [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.getOptionLabel(option)), 1)];
-        })], 16, _hoisted_6)), [[_directive_ripple]])], 64);
-      }), 128)), $data.filterValue && (!items || items && items.length === 0) ? ((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-        key: 0,
-        "class": _ctx.cx('emptyMessage'),
-        role: "option"
-      }, _ctx.ptm('emptyMessage')), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "emptyfilter", {}, function () {
-        return [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.emptyFilterMessageText), 1)];
-      })], 16)) : !_ctx.options || _ctx.options && _ctx.options.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-        key: 1,
-        "class": _ctx.cx('emptyMessage'),
-        role: "option"
-      }, _ctx.ptm('emptyMessage')), [(0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "empty", {}, function () {
-        return [(0,vue__WEBPACK_IMPORTED_MODULE_7__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.emptyMessageText), 1)];
-      })], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_7__.createCommentVNode)("", true)], 16, _hoisted_4)];
-    }),
-    _: 2
-  }, [_ctx.$slots.loader ? {
-    name: "loader",
-    fn: (0,vue__WEBPACK_IMPORTED_MODULE_7__.withCtx)(function (_ref2) {
-      var options = _ref2.options;
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "loader", {
-        options: options
-      })];
-    }),
-    key: "0"
-  } : undefined]), 1040, ["style", "items", "disabled", "pt"])], 16), (0,vue__WEBPACK_IMPORTED_MODULE_7__.renderSlot)(_ctx.$slots, "footer", {
-    value: _ctx.modelValue,
-    options: $options.visibleOptions
-  }), !_ctx.options || _ctx.options && _ctx.options.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_7__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    key: 1,
-    role: "status",
-    "aria-live": "polite",
-    "class": "p-hidden-accessible"
-  }, _ctx.ptm('hiddenEmptyMessage'), {
-    "data-p-hidden-accessible": true
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.emptyMessageText), 17)) : (0,vue__WEBPACK_IMPORTED_MODULE_7__.createCommentVNode)("", true), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    role: "status",
-    "aria-live": "polite",
-    "class": "p-hidden-accessible"
-  }, _ctx.ptm('hiddenSelectedMessage'), {
-    "data-p-hidden-accessible": true
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_7__.toDisplayString)($options.selectedMessageText), 17), (0,vue__WEBPACK_IMPORTED_MODULE_7__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_7__.mergeProps)({
-    ref: "lastHiddenFocusableElement",
-    role: "presentation",
-    "aria-hidden": "true",
-    "class": "p-hidden-accessible p-hidden-focusable",
-    tabindex: !_ctx.disabled ? _ctx.tabindex : -1,
-    onFocus: _cache[9] || (_cache[9] = function () {
-      return $options.onLastHiddenFocus && $options.onLastHiddenFocus.apply($options, arguments);
-    })
-  }, _ctx.ptm('hiddenLastFocusableEl'), {
-    "data-p-hidden-accessible": true,
-    "data-p-hidden-focusable": true
-  }), null, 16, _hoisted_7)], 16, _hoisted_1);
-}
-
-script.render = render;
-
-
-
-
-/***/ }),
-
-/***/ "./node_modules/primevue/listbox/style/listboxstyle.esm.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/primevue/listbox/style/listboxstyle.esm.js ***!
-  \*****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ ListboxStyle)
-/* harmony export */ });
-/* harmony import */ var primevue_base_style__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primevue/base/style */ "./node_modules/primevue/base/style/basestyle.esm.js");
-
-
-var css = "\n@layer primevue {\n    .p-listbox-list-wrapper {\n        overflow: auto;\n    }\n\n    .p-listbox-list {\n        list-style-type: none;\n        margin: 0;\n        padding: 0;\n    }\n\n    .p-listbox-item {\n        cursor: pointer;\n        position: relative;\n        overflow: hidden;\n    }\n\n    .p-listbox-item-group {\n        cursor: auto;\n    }\n\n    .p-listbox-filter-container {\n        position: relative;\n    }\n\n    .p-listbox-filter-icon {\n        position: absolute;\n        top: 50%;\n        margin-top: -0.5rem;\n    }\n\n    .p-listbox-filter {\n        width: 100%;\n    }\n}\n";
-var classes = {
-  root: function root(_ref) {
-    var instance = _ref.instance,
-      props = _ref.props;
-    return ['p-listbox p-component', {
-      'p-focus': instance.focused,
-      'p-disabled': props.disabled
-    }];
-  },
-  header: 'p-listbox-header',
-  filterContainer: 'p-listbox-filter-container',
-  filterInput: 'p-listbox-filter p-inputtext p-component',
-  filterIcon: 'p-listbox-filter-icon',
-  wrapper: 'p-listbox-list-wrapper',
-  list: 'p-listbox-list',
-  itemGroup: 'p-listbox-item-group',
-  item: function item(_ref2) {
-    var instance = _ref2.instance,
-      option = _ref2.option,
-      index = _ref2.index,
-      getItemOptions = _ref2.getItemOptions;
-    return ['p-listbox-item', {
-      'p-highlight': instance.isSelected(option),
-      'p-focus': instance.focusedOptionIndex === instance.getOptionIndex(index, getItemOptions),
-      'p-disabled': instance.isOptionDisabled(option)
-    }];
-  },
-  emptyMessage: 'p-listbox-empty-message'
-};
-var ListboxStyle = primevue_base_style__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
-  name: 'listbox',
-  css: css,
-  classes: classes
-});
-
-
-
-
-/***/ }),
-
 /***/ "./node_modules/primevue/menubar/menubar.esm.js":
 /*!******************************************************!*\
   !*** ./node_modules/primevue/menubar/menubar.esm.js ***!
@@ -34387,6 +33342,1615 @@ var classes = {
 };
 var MenubarStyle = primevue_base_style__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
   name: 'menubar',
+  css: css,
+  classes: classes,
+  inlineStyles: inlineStyles
+});
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/primevue/multiselect/multiselect.esm.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/primevue/multiselect/multiselect.esm.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ script)
+/* harmony export */ });
+/* harmony import */ var primevue_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primevue/api */ "./node_modules/primevue/api/api.esm.js");
+/* harmony import */ var primevue_icons_check__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primevue/icons/check */ "./node_modules/primevue/icons/check/index.esm.js");
+/* harmony import */ var primevue_icons_chevrondown__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primevue/icons/chevrondown */ "./node_modules/primevue/icons/chevrondown/index.esm.js");
+/* harmony import */ var primevue_icons_search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! primevue/icons/search */ "./node_modules/primevue/icons/search/index.esm.js");
+/* harmony import */ var primevue_icons_spinner__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primevue/icons/spinner */ "./node_modules/primevue/icons/spinner/index.esm.js");
+/* harmony import */ var primevue_icons_times__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primevue/icons/times */ "./node_modules/primevue/icons/times/index.esm.js");
+/* harmony import */ var primevue_icons_timescircle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primevue/icons/timescircle */ "./node_modules/primevue/icons/timescircle/index.esm.js");
+/* harmony import */ var primevue_overlayeventbus__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! primevue/overlayeventbus */ "./node_modules/primevue/overlayeventbus/overlayeventbus.esm.js");
+/* harmony import */ var primevue_portal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! primevue/portal */ "./node_modules/primevue/portal/portal.esm.js");
+/* harmony import */ var primevue_ripple__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primevue/ripple */ "./node_modules/primevue/ripple/ripple.esm.js");
+/* harmony import */ var primevue_utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! primevue/utils */ "./node_modules/primevue/utils/utils.esm.js");
+/* harmony import */ var primevue_virtualscroller__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! primevue/virtualscroller */ "./node_modules/primevue/virtualscroller/virtualscroller.esm.js");
+/* harmony import */ var primevue_basecomponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! primevue/basecomponent */ "./node_modules/primevue/basecomponent/basecomponent.esm.js");
+/* harmony import */ var primevue_multiselect_style__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! primevue/multiselect/style */ "./node_modules/primevue/multiselect/style/multiselectstyle.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var script$1 = {
+  name: 'BaseMultiSelect',
+  "extends": primevue_basecomponent__WEBPACK_IMPORTED_MODULE_12__["default"],
+  props: {
+    modelValue: null,
+    options: Array,
+    optionLabel: null,
+    optionValue: null,
+    optionDisabled: null,
+    optionGroupLabel: null,
+    optionGroupChildren: null,
+    scrollHeight: {
+      type: String,
+      "default": '200px'
+    },
+    placeholder: String,
+    disabled: Boolean,
+    inputId: {
+      type: String,
+      "default": null
+    },
+    inputProps: {
+      type: null,
+      "default": null
+    },
+    panelClass: {
+      type: String,
+      "default": null
+    },
+    panelStyle: {
+      type: null,
+      "default": null
+    },
+    panelProps: {
+      type: null,
+      "default": null
+    },
+    filterInputProps: {
+      type: null,
+      "default": null
+    },
+    closeButtonProps: {
+      type: null,
+      "default": null
+    },
+    dataKey: null,
+    filter: Boolean,
+    filterPlaceholder: String,
+    filterLocale: String,
+    filterMatchMode: {
+      type: String,
+      "default": 'contains'
+    },
+    filterFields: {
+      type: Array,
+      "default": null
+    },
+    appendTo: {
+      type: String,
+      "default": 'body'
+    },
+    display: {
+      type: String,
+      "default": 'comma'
+    },
+    selectedItemsLabel: {
+      type: String,
+      "default": '{0} items selected'
+    },
+    maxSelectedLabels: {
+      type: Number,
+      "default": null
+    },
+    selectionLimit: {
+      type: Number,
+      "default": null
+    },
+    showToggleAll: {
+      type: Boolean,
+      "default": true
+    },
+    loading: {
+      type: Boolean,
+      "default": false
+    },
+    checkboxIcon: {
+      type: String,
+      "default": undefined
+    },
+    closeIcon: {
+      type: String,
+      "default": undefined
+    },
+    dropdownIcon: {
+      type: String,
+      "default": undefined
+    },
+    filterIcon: {
+      type: String,
+      "default": undefined
+    },
+    loadingIcon: {
+      type: String,
+      "default": undefined
+    },
+    removeTokenIcon: {
+      type: String,
+      "default": undefined
+    },
+    selectAll: {
+      type: Boolean,
+      "default": null
+    },
+    resetFilterOnHide: {
+      type: Boolean,
+      "default": false
+    },
+    virtualScrollerOptions: {
+      type: Object,
+      "default": null
+    },
+    autoOptionFocus: {
+      type: Boolean,
+      "default": true
+    },
+    autoFilterFocus: {
+      type: Boolean,
+      "default": false
+    },
+    filterMessage: {
+      type: String,
+      "default": null
+    },
+    selectionMessage: {
+      type: String,
+      "default": null
+    },
+    emptySelectionMessage: {
+      type: String,
+      "default": null
+    },
+    emptyFilterMessage: {
+      type: String,
+      "default": null
+    },
+    emptyMessage: {
+      type: String,
+      "default": null
+    },
+    tabindex: {
+      type: Number,
+      "default": 0
+    },
+    ariaLabel: {
+      type: String,
+      "default": null
+    },
+    ariaLabelledby: {
+      type: String,
+      "default": null
+    }
+  },
+  style: primevue_multiselect_style__WEBPACK_IMPORTED_MODULE_13__["default"],
+  provide: function provide() {
+    return {
+      $parentInstance: this
+    };
+  }
+};
+
+function _typeof$1(o) { "@babel/helpers - typeof"; return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof$1(o); }
+function ownKeys$1(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread$1(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys$1(Object(t), !0).forEach(function (r) { _defineProperty$1(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys$1(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty$1(obj, key, value) { key = _toPropertyKey$1(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey$1(t) { var i = _toPrimitive$1(t, "string"); return "symbol" == _typeof$1(i) ? i : String(i); }
+function _toPrimitive$1(t, r) { if ("object" != _typeof$1(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof$1(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+var script = {
+  name: 'MultiSelect',
+  "extends": script$1,
+  emits: ['update:modelValue', 'change', 'focus', 'blur', 'before-show', 'before-hide', 'show', 'hide', 'filter', 'selectall-change'],
+  outsideClickListener: null,
+  scrollHandler: null,
+  resizeListener: null,
+  overlay: null,
+  list: null,
+  virtualScroller: null,
+  startRangeIndex: -1,
+  searchTimeout: null,
+  searchValue: '',
+  selectOnFocus: false,
+  focusOnHover: false,
+  data: function data() {
+    return {
+      id: this.$attrs.id,
+      focused: false,
+      focusedOptionIndex: -1,
+      headerCheckboxFocused: false,
+      filterValue: null,
+      overlayVisible: false
+    };
+  },
+  watch: {
+    '$attrs.id': function $attrsId(newValue) {
+      this.id = newValue || (0,primevue_utils__WEBPACK_IMPORTED_MODULE_10__.UniqueComponentId)();
+    },
+    options: function options() {
+      this.autoUpdateModel();
+    }
+  },
+  mounted: function mounted() {
+    this.id = this.id || (0,primevue_utils__WEBPACK_IMPORTED_MODULE_10__.UniqueComponentId)();
+    this.autoUpdateModel();
+  },
+  beforeUnmount: function beforeUnmount() {
+    this.unbindOutsideClickListener();
+    this.unbindResizeListener();
+    if (this.scrollHandler) {
+      this.scrollHandler.destroy();
+      this.scrollHandler = null;
+    }
+    if (this.overlay) {
+      primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ZIndexUtils.clear(this.overlay);
+      this.overlay = null;
+    }
+  },
+  methods: {
+    getOptionIndex: function getOptionIndex(index, fn) {
+      return this.virtualScrollerDisabled ? index : fn && fn(index)['index'];
+    },
+    getOptionLabel: function getOptionLabel(option) {
+      return this.optionLabel ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.resolveFieldData(option, this.optionLabel) : option;
+    },
+    getOptionValue: function getOptionValue(option) {
+      return this.optionValue ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.resolveFieldData(option, this.optionValue) : option;
+    },
+    getOptionRenderKey: function getOptionRenderKey(option) {
+      return this.dataKey ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.resolveFieldData(option, this.dataKey) : this.getOptionLabel(option);
+    },
+    getHeaderCheckboxPTOptions: function getHeaderCheckboxPTOptions(key) {
+      return this.ptm(key, {
+        context: {
+          selected: this.allSelected,
+          focused: this.headerCheckboxFocused
+        }
+      });
+    },
+    getCheckboxPTOptions: function getCheckboxPTOptions(option, itemOptions, index, key) {
+      return this.ptm(key, {
+        context: {
+          selected: this.isSelected(option),
+          focused: this.focusedOptionIndex === this.getOptionIndex(index, itemOptions),
+          disabled: this.isOptionDisabled(option)
+        }
+      });
+    },
+    isOptionDisabled: function isOptionDisabled(option) {
+      if (this.maxSelectionLimitReached && !this.isSelected(option)) {
+        return true;
+      }
+      return this.optionDisabled ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.resolveFieldData(option, this.optionDisabled) : false;
+    },
+    isOptionGroup: function isOptionGroup(option) {
+      return this.optionGroupLabel && option.optionGroup && option.group;
+    },
+    getOptionGroupLabel: function getOptionGroupLabel(optionGroup) {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupLabel);
+    },
+    getOptionGroupChildren: function getOptionGroupChildren(optionGroup) {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.resolveFieldData(optionGroup, this.optionGroupChildren);
+    },
+    getAriaPosInset: function getAriaPosInset(index) {
+      var _this = this;
+      return (this.optionGroupLabel ? index - this.visibleOptions.slice(0, index).filter(function (option) {
+        return _this.isOptionGroup(option);
+      }).length : index) + 1;
+    },
+    show: function show(isFocus) {
+      this.$emit('before-show');
+      this.overlayVisible = true;
+      this.focusedOptionIndex = this.focusedOptionIndex !== -1 ? this.focusedOptionIndex : this.autoOptionFocus ? this.findFirstFocusedOptionIndex() : -1;
+      isFocus && primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(this.$refs.focusInput);
+    },
+    hide: function hide(isFocus) {
+      var _this2 = this;
+      var _hide = function _hide() {
+        _this2.$emit('before-hide');
+        _this2.overlayVisible = false;
+        _this2.focusedOptionIndex = -1;
+        _this2.searchValue = '';
+        _this2.resetFilterOnHide && (_this2.filterValue = null);
+        isFocus && primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(_this2.$refs.focusInput);
+      };
+      setTimeout(function () {
+        _hide();
+      }, 0); // For ScreenReaders
+    },
+    onFocus: function onFocus(event) {
+      if (this.disabled) {
+        // For ScreenReaders
+        return;
+      }
+      this.focused = true;
+      this.focusedOptionIndex = this.focusedOptionIndex !== -1 ? this.focusedOptionIndex : this.overlayVisible && this.autoOptionFocus ? this.findFirstFocusedOptionIndex() : -1;
+      this.overlayVisible && this.scrollInView(this.focusedOptionIndex);
+      this.$emit('focus', event);
+    },
+    onBlur: function onBlur(event) {
+      this.focused = false;
+      this.focusedOptionIndex = -1;
+      this.searchValue = '';
+      this.$emit('blur', event);
+    },
+    onKeyDown: function onKeyDown(event) {
+      var _this3 = this;
+      if (this.disabled) {
+        event.preventDefault();
+        return;
+      }
+      var metaKey = event.metaKey || event.ctrlKey;
+      switch (event.code) {
+        case 'ArrowDown':
+          this.onArrowDownKey(event);
+          break;
+        case 'ArrowUp':
+          this.onArrowUpKey(event);
+          break;
+        case 'Home':
+          this.onHomeKey(event);
+          break;
+        case 'End':
+          this.onEndKey(event);
+          break;
+        case 'PageDown':
+          this.onPageDownKey(event);
+          break;
+        case 'PageUp':
+          this.onPageUpKey(event);
+          break;
+        case 'Enter':
+        case 'NumpadEnter':
+        case 'Space':
+          this.onEnterKey(event);
+          break;
+        case 'Escape':
+          this.onEscapeKey(event);
+          break;
+        case 'Tab':
+          this.onTabKey(event);
+          break;
+        case 'ShiftLeft':
+        case 'ShiftRight':
+          this.onShiftKey(event);
+          break;
+        default:
+          if (event.code === 'KeyA' && metaKey) {
+            var value = this.visibleOptions.filter(function (option) {
+              return _this3.isValidOption(option);
+            }).map(function (option) {
+              return _this3.getOptionValue(option);
+            });
+            this.updateModel(event, value);
+            event.preventDefault();
+            break;
+          }
+          if (!metaKey && primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isPrintableCharacter(event.key)) {
+            !this.overlayVisible && this.show();
+            this.searchOptions(event);
+            event.preventDefault();
+          }
+          break;
+      }
+    },
+    onContainerClick: function onContainerClick(event) {
+      if (this.disabled || this.loading) {
+        return;
+      }
+      if (!this.overlay || !this.overlay.contains(event.target)) {
+        this.overlayVisible ? this.hide(true) : this.show(true);
+      }
+    },
+    onFirstHiddenFocus: function onFirstHiddenFocus(event) {
+      var focusableEl = event.relatedTarget === this.$refs.focusInput ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.getFirstFocusableElement(this.overlay, ':not([data-p-hidden-focusable="true"])') : this.$refs.focusInput;
+      primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(focusableEl);
+    },
+    onLastHiddenFocus: function onLastHiddenFocus(event) {
+      var focusableEl = event.relatedTarget === this.$refs.focusInput ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.getLastFocusableElement(this.overlay, ':not([data-p-hidden-focusable="true"])') : this.$refs.focusInput;
+      primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(focusableEl);
+    },
+    onCloseClick: function onCloseClick() {
+      this.hide(true);
+    },
+    onHeaderCheckboxFocus: function onHeaderCheckboxFocus() {
+      this.headerCheckboxFocused = true;
+    },
+    onHeaderCheckboxBlur: function onHeaderCheckboxBlur() {
+      this.headerCheckboxFocused = false;
+    },
+    onOptionSelect: function onOptionSelect(event, option) {
+      var _this4 = this;
+      var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1;
+      var isFocus = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+      if (this.disabled || this.isOptionDisabled(option)) {
+        return;
+      }
+      var selected = this.isSelected(option);
+      var value = null;
+      if (selected) value = this.modelValue.filter(function (val) {
+        return !primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.equals(val, _this4.getOptionValue(option), _this4.equalityKey);
+      });else value = [].concat(_toConsumableArray(this.modelValue || []), [this.getOptionValue(option)]);
+      this.updateModel(event, value);
+      index !== -1 && (this.focusedOptionIndex = index);
+      isFocus && primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(this.$refs.focusInput);
+    },
+    onOptionMouseMove: function onOptionMouseMove(event, index) {
+      if (this.focusOnHover) {
+        this.changeFocusedOptionIndex(event, index);
+      }
+    },
+    onOptionSelectRange: function onOptionSelectRange(event) {
+      var _this5 = this;
+      var start = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+      var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1;
+      start === -1 && (start = this.findNearestSelectedOptionIndex(end, true));
+      end === -1 && (end = this.findNearestSelectedOptionIndex(start));
+      if (start !== -1 && end !== -1) {
+        var rangeStart = Math.min(start, end);
+        var rangeEnd = Math.max(start, end);
+        var value = this.visibleOptions.slice(rangeStart, rangeEnd + 1).filter(function (option) {
+          return _this5.isValidOption(option);
+        }).map(function (option) {
+          return _this5.getOptionValue(option);
+        });
+        this.updateModel(event, value);
+      }
+    },
+    onFilterChange: function onFilterChange(event) {
+      var value = event.target.value;
+      this.filterValue = value;
+      this.focusedOptionIndex = -1;
+      this.$emit('filter', {
+        originalEvent: event,
+        value: value
+      });
+      !this.virtualScrollerDisabled && this.virtualScroller.scrollToIndex(0);
+    },
+    onFilterKeyDown: function onFilterKeyDown(event) {
+      switch (event.code) {
+        case 'ArrowDown':
+          this.onArrowDownKey(event);
+          break;
+        case 'ArrowUp':
+          this.onArrowUpKey(event, true);
+          break;
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          this.onArrowLeftKey(event, true);
+          break;
+        case 'Home':
+          this.onHomeKey(event, true);
+          break;
+        case 'End':
+          this.onEndKey(event, true);
+          break;
+        case 'Enter':
+        case 'NumpadEnter':
+          this.onEnterKey(event);
+          break;
+        case 'Escape':
+          this.onEscapeKey(event);
+          break;
+        case 'Tab':
+          this.onTabKey(event, true);
+          break;
+      }
+    },
+    onFilterBlur: function onFilterBlur() {
+      this.focusedOptionIndex = -1;
+    },
+    onFilterUpdated: function onFilterUpdated() {
+      if (this.overlayVisible) {
+        this.alignOverlay();
+      }
+    },
+    onOverlayClick: function onOverlayClick(event) {
+      primevue_overlayeventbus__WEBPACK_IMPORTED_MODULE_7__["default"].emit('overlay-click', {
+        originalEvent: event,
+        target: this.$el
+      });
+    },
+    onOverlayKeyDown: function onOverlayKeyDown(event) {
+      switch (event.code) {
+        case 'Escape':
+          this.onEscapeKey(event);
+          break;
+      }
+    },
+    onArrowDownKey: function onArrowDownKey(event) {
+      var optionIndex = this.focusedOptionIndex !== -1 ? this.findNextOptionIndex(this.focusedOptionIndex) : this.findFirstFocusedOptionIndex();
+      if (event.shiftKey) {
+        this.onOptionSelectRange(event, this.startRangeIndex, optionIndex);
+      }
+      this.changeFocusedOptionIndex(event, optionIndex);
+      !this.overlayVisible && this.show();
+      event.preventDefault();
+    },
+    onArrowUpKey: function onArrowUpKey(event) {
+      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      if (event.altKey && !pressedInInputText) {
+        if (this.focusedOptionIndex !== -1) {
+          this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
+        }
+        this.overlayVisible && this.hide();
+        event.preventDefault();
+      } else {
+        var optionIndex = this.focusedOptionIndex !== -1 ? this.findPrevOptionIndex(this.focusedOptionIndex) : this.findLastFocusedOptionIndex();
+        if (event.shiftKey) {
+          this.onOptionSelectRange(event, optionIndex, this.startRangeIndex);
+        }
+        this.changeFocusedOptionIndex(event, optionIndex);
+        !this.overlayVisible && this.show();
+        event.preventDefault();
+      }
+    },
+    onArrowLeftKey: function onArrowLeftKey(event) {
+      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      pressedInInputText && (this.focusedOptionIndex = -1);
+    },
+    onHomeKey: function onHomeKey(event) {
+      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var currentTarget = event.currentTarget;
+      if (pressedInInputText) {
+        var len = currentTarget.value.length;
+        currentTarget.setSelectionRange(0, event.shiftKey ? len : 0);
+        this.focusedOptionIndex = -1;
+      } else {
+        var metaKey = event.metaKey || event.ctrlKey;
+        var optionIndex = this.findFirstOptionIndex();
+        if (event.shiftKey && metaKey) {
+          this.onOptionSelectRange(event, optionIndex, this.startRangeIndex);
+        }
+        this.changeFocusedOptionIndex(event, optionIndex);
+        !this.overlayVisible && this.show();
+      }
+      event.preventDefault();
+    },
+    onEndKey: function onEndKey(event) {
+      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var currentTarget = event.currentTarget;
+      if (pressedInInputText) {
+        var len = currentTarget.value.length;
+        currentTarget.setSelectionRange(event.shiftKey ? 0 : len, len);
+        this.focusedOptionIndex = -1;
+      } else {
+        var metaKey = event.metaKey || event.ctrlKey;
+        var optionIndex = this.findLastOptionIndex();
+        if (event.shiftKey && metaKey) {
+          this.onOptionSelectRange(event, this.startRangeIndex, optionIndex);
+        }
+        this.changeFocusedOptionIndex(event, optionIndex);
+        !this.overlayVisible && this.show();
+      }
+      event.preventDefault();
+    },
+    onPageUpKey: function onPageUpKey(event) {
+      this.scrollInView(0);
+      event.preventDefault();
+    },
+    onPageDownKey: function onPageDownKey(event) {
+      this.scrollInView(this.visibleOptions.length - 1);
+      event.preventDefault();
+    },
+    onEnterKey: function onEnterKey(event) {
+      if (!this.overlayVisible) {
+        this.onArrowDownKey(event);
+      } else {
+        if (this.focusedOptionIndex !== -1) {
+          if (event.shiftKey) this.onOptionSelectRange(event, this.focusedOptionIndex);else this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
+        }
+      }
+      event.preventDefault();
+    },
+    onEscapeKey: function onEscapeKey(event) {
+      this.overlayVisible && this.hide(true);
+      event.preventDefault();
+    },
+    onTabKey: function onTabKey(event) {
+      var pressedInInputText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      if (!pressedInInputText) {
+        if (this.overlayVisible && this.hasFocusableElements()) {
+          primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(event.shiftKey ? this.$refs.lastHiddenFocusableElementOnOverlay : this.$refs.firstHiddenFocusableElementOnOverlay);
+          event.preventDefault();
+        } else {
+          if (this.focusedOptionIndex !== -1) {
+            this.onOptionSelect(event, this.visibleOptions[this.focusedOptionIndex]);
+          }
+          this.overlayVisible && this.hide(this.filter);
+        }
+      }
+    },
+    onShiftKey: function onShiftKey() {
+      this.startRangeIndex = this.focusedOptionIndex;
+    },
+    onOverlayEnter: function onOverlayEnter(el) {
+      primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ZIndexUtils.set('overlay', el, this.$primevue.config.zIndex.overlay);
+      primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.addStyles(el, {
+        position: 'absolute',
+        top: '0',
+        left: '0'
+      });
+      this.alignOverlay();
+      this.scrollInView();
+      this.autoFilterFocus && primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.focus(this.$refs.filterInput);
+    },
+    onOverlayAfterEnter: function onOverlayAfterEnter() {
+      this.bindOutsideClickListener();
+      this.bindScrollListener();
+      this.bindResizeListener();
+      this.$emit('show');
+    },
+    onOverlayLeave: function onOverlayLeave() {
+      this.unbindOutsideClickListener();
+      this.unbindScrollListener();
+      this.unbindResizeListener();
+      this.$emit('hide');
+      this.overlay = null;
+    },
+    onOverlayAfterLeave: function onOverlayAfterLeave(el) {
+      primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ZIndexUtils.clear(el);
+    },
+    alignOverlay: function alignOverlay() {
+      if (this.appendTo === 'self') {
+        primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.relativePosition(this.overlay, this.$el);
+      } else {
+        this.overlay.style.minWidth = primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.getOuterWidth(this.$el) + 'px';
+        primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.absolutePosition(this.overlay, this.$el);
+      }
+    },
+    bindOutsideClickListener: function bindOutsideClickListener() {
+      var _this6 = this;
+      if (!this.outsideClickListener) {
+        this.outsideClickListener = function (event) {
+          if (_this6.overlayVisible && _this6.isOutsideClicked(event)) {
+            _this6.hide();
+          }
+        };
+        document.addEventListener('click', this.outsideClickListener);
+      }
+    },
+    unbindOutsideClickListener: function unbindOutsideClickListener() {
+      if (this.outsideClickListener) {
+        document.removeEventListener('click', this.outsideClickListener);
+        this.outsideClickListener = null;
+      }
+    },
+    bindScrollListener: function bindScrollListener() {
+      var _this7 = this;
+      if (!this.scrollHandler) {
+        this.scrollHandler = new primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ConnectedOverlayScrollHandler(this.$refs.container, function () {
+          if (_this7.overlayVisible) {
+            _this7.hide();
+          }
+        });
+      }
+      this.scrollHandler.bindScrollListener();
+    },
+    unbindScrollListener: function unbindScrollListener() {
+      if (this.scrollHandler) {
+        this.scrollHandler.unbindScrollListener();
+      }
+    },
+    bindResizeListener: function bindResizeListener() {
+      var _this8 = this;
+      if (!this.resizeListener) {
+        this.resizeListener = function () {
+          if (_this8.overlayVisible && !primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.isTouchDevice()) {
+            _this8.hide();
+          }
+        };
+        window.addEventListener('resize', this.resizeListener);
+      }
+    },
+    unbindResizeListener: function unbindResizeListener() {
+      if (this.resizeListener) {
+        window.removeEventListener('resize', this.resizeListener);
+        this.resizeListener = null;
+      }
+    },
+    isOutsideClicked: function isOutsideClicked(event) {
+      return !(this.$el.isSameNode(event.target) || this.$el.contains(event.target) || this.overlay && this.overlay.contains(event.target));
+    },
+    getLabelByValue: function getLabelByValue(value) {
+      var _this9 = this;
+      var options = this.optionGroupLabel ? this.flatOptions(this.options) : this.options || [];
+      var matchedOption = options.find(function (option) {
+        return !_this9.isOptionGroup(option) && primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.equals(_this9.getOptionValue(option), value, _this9.equalityKey);
+      });
+      return matchedOption ? this.getOptionLabel(matchedOption) : null;
+    },
+    getSelectedItemsLabel: function getSelectedItemsLabel() {
+      var pattern = /{(.*?)}/;
+      var selectedItemsLabel = this.selectedItemsLabel || this.$primevue.config.locale.selectionMessage;
+      if (pattern.test(selectedItemsLabel)) {
+        return selectedItemsLabel.replace(selectedItemsLabel.match(pattern)[0], this.modelValue.length + '');
+      }
+      return selectedItemsLabel;
+    },
+    onToggleAll: function onToggleAll(event) {
+      var _this10 = this;
+      if (this.selectAll !== null) {
+        this.$emit('selectall-change', {
+          originalEvent: event,
+          checked: !this.allSelected
+        });
+      } else {
+        var value = this.allSelected ? [] : this.visibleOptions.filter(function (option) {
+          return _this10.isValidOption(option);
+        }).map(function (option) {
+          return _this10.getOptionValue(option);
+        });
+        this.updateModel(event, value);
+      }
+      this.headerCheckboxFocused = true;
+    },
+    removeOption: function removeOption(event, optionValue) {
+      var _this11 = this;
+      var value = this.modelValue.filter(function (val) {
+        return !primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.equals(val, optionValue, _this11.equalityKey);
+      });
+      this.updateModel(event, value);
+    },
+    clearFilter: function clearFilter() {
+      this.filterValue = null;
+    },
+    hasFocusableElements: function hasFocusableElements() {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.getFocusableElements(this.overlay, ':not([data-p-hidden-focusable="true"])').length > 0;
+    },
+    isOptionMatched: function isOptionMatched(option) {
+      return this.isValidOption(option) && this.getOptionLabel(option).toLocaleLowerCase(this.filterLocale).startsWith(this.searchValue.toLocaleLowerCase(this.filterLocale));
+    },
+    isValidOption: function isValidOption(option) {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isNotEmpty(option) && !(this.isOptionDisabled(option) || this.isOptionGroup(option));
+    },
+    isValidSelectedOption: function isValidSelectedOption(option) {
+      return this.isValidOption(option) && this.isSelected(option);
+    },
+    isSelected: function isSelected(option) {
+      var _this12 = this;
+      var optionValue = this.getOptionValue(option);
+      return (this.modelValue || []).some(function (value) {
+        return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.equals(value, optionValue, _this12.equalityKey);
+      });
+    },
+    findFirstOptionIndex: function findFirstOptionIndex() {
+      var _this13 = this;
+      return this.visibleOptions.findIndex(function (option) {
+        return _this13.isValidOption(option);
+      });
+    },
+    findLastOptionIndex: function findLastOptionIndex() {
+      var _this14 = this;
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.findLastIndex(this.visibleOptions, function (option) {
+        return _this14.isValidOption(option);
+      });
+    },
+    findNextOptionIndex: function findNextOptionIndex(index) {
+      var _this15 = this;
+      var matchedOptionIndex = index < this.visibleOptions.length - 1 ? this.visibleOptions.slice(index + 1).findIndex(function (option) {
+        return _this15.isValidOption(option);
+      }) : -1;
+      return matchedOptionIndex > -1 ? matchedOptionIndex + index + 1 : index;
+    },
+    findPrevOptionIndex: function findPrevOptionIndex(index) {
+      var _this16 = this;
+      var matchedOptionIndex = index > 0 ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.findLastIndex(this.visibleOptions.slice(0, index), function (option) {
+        return _this16.isValidOption(option);
+      }) : -1;
+      return matchedOptionIndex > -1 ? matchedOptionIndex : index;
+    },
+    findFirstSelectedOptionIndex: function findFirstSelectedOptionIndex() {
+      var _this17 = this;
+      return this.hasSelectedOption ? this.visibleOptions.findIndex(function (option) {
+        return _this17.isValidSelectedOption(option);
+      }) : -1;
+    },
+    findLastSelectedOptionIndex: function findLastSelectedOptionIndex() {
+      var _this18 = this;
+      return this.hasSelectedOption ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.findLastIndex(this.visibleOptions, function (option) {
+        return _this18.isValidSelectedOption(option);
+      }) : -1;
+    },
+    findNextSelectedOptionIndex: function findNextSelectedOptionIndex(index) {
+      var _this19 = this;
+      var matchedOptionIndex = this.hasSelectedOption && index < this.visibleOptions.length - 1 ? this.visibleOptions.slice(index + 1).findIndex(function (option) {
+        return _this19.isValidSelectedOption(option);
+      }) : -1;
+      return matchedOptionIndex > -1 ? matchedOptionIndex + index + 1 : -1;
+    },
+    findPrevSelectedOptionIndex: function findPrevSelectedOptionIndex(index) {
+      var _this20 = this;
+      var matchedOptionIndex = this.hasSelectedOption && index > 0 ? primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.findLastIndex(this.visibleOptions.slice(0, index), function (option) {
+        return _this20.isValidSelectedOption(option);
+      }) : -1;
+      return matchedOptionIndex > -1 ? matchedOptionIndex : -1;
+    },
+    findNearestSelectedOptionIndex: function findNearestSelectedOptionIndex(index) {
+      var firstCheckUp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var matchedOptionIndex = -1;
+      if (this.hasSelectedOption) {
+        if (firstCheckUp) {
+          matchedOptionIndex = this.findPrevSelectedOptionIndex(index);
+          matchedOptionIndex = matchedOptionIndex === -1 ? this.findNextSelectedOptionIndex(index) : matchedOptionIndex;
+        } else {
+          matchedOptionIndex = this.findNextSelectedOptionIndex(index);
+          matchedOptionIndex = matchedOptionIndex === -1 ? this.findPrevSelectedOptionIndex(index) : matchedOptionIndex;
+        }
+      }
+      return matchedOptionIndex > -1 ? matchedOptionIndex : index;
+    },
+    findFirstFocusedOptionIndex: function findFirstFocusedOptionIndex() {
+      var selectedIndex = this.findFirstSelectedOptionIndex();
+      return selectedIndex < 0 ? this.findFirstOptionIndex() : selectedIndex;
+    },
+    findLastFocusedOptionIndex: function findLastFocusedOptionIndex() {
+      var selectedIndex = this.findLastSelectedOptionIndex();
+      return selectedIndex < 0 ? this.findLastOptionIndex() : selectedIndex;
+    },
+    searchOptions: function searchOptions(event) {
+      var _this21 = this;
+      this.searchValue = (this.searchValue || '') + event.key;
+      var optionIndex = -1;
+      if (this.focusedOptionIndex !== -1) {
+        optionIndex = this.visibleOptions.slice(this.focusedOptionIndex).findIndex(function (option) {
+          return _this21.isOptionMatched(option);
+        });
+        optionIndex = optionIndex === -1 ? this.visibleOptions.slice(0, this.focusedOptionIndex).findIndex(function (option) {
+          return _this21.isOptionMatched(option);
+        }) : optionIndex + this.focusedOptionIndex;
+      } else {
+        optionIndex = this.visibleOptions.findIndex(function (option) {
+          return _this21.isOptionMatched(option);
+        });
+      }
+      if (optionIndex === -1 && this.focusedOptionIndex === -1) {
+        optionIndex = this.findFirstFocusedOptionIndex();
+      }
+      if (optionIndex !== -1) {
+        this.changeFocusedOptionIndex(event, optionIndex);
+      }
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+      this.searchTimeout = setTimeout(function () {
+        _this21.searchValue = '';
+        _this21.searchTimeout = null;
+      }, 500);
+    },
+    changeFocusedOptionIndex: function changeFocusedOptionIndex(event, index) {
+      if (this.focusedOptionIndex !== index) {
+        this.focusedOptionIndex = index;
+        this.scrollInView();
+      }
+    },
+    scrollInView: function scrollInView() {
+      var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : -1;
+      var id = index !== -1 ? "".concat(this.id, "_").concat(index) : this.focusedOptionId;
+      var element = primevue_utils__WEBPACK_IMPORTED_MODULE_10__.DomHandler.findSingle(this.list, "li[id=\"".concat(id, "\"]"));
+      if (element) {
+        element.scrollIntoView && element.scrollIntoView({
+          block: 'nearest',
+          inline: 'nearest'
+        });
+      } else if (!this.virtualScrollerDisabled) {
+        this.virtualScroller && this.virtualScroller.scrollToIndex(index !== -1 ? index : this.focusedOptionIndex);
+      }
+    },
+    autoUpdateModel: function autoUpdateModel() {
+      if (this.selectOnFocus && this.autoOptionFocus && !this.hasSelectedOption) {
+        this.focusedOptionIndex = this.findFirstFocusedOptionIndex();
+        var value = this.getOptionValue(this.visibleOptions[this.focusedOptionIndex]);
+        this.updateModel(null, [value]);
+      }
+    },
+    updateModel: function updateModel(event, value) {
+      this.$emit('update:modelValue', value);
+      this.$emit('change', {
+        originalEvent: event,
+        value: value
+      });
+    },
+    flatOptions: function flatOptions(options) {
+      var _this22 = this;
+      return (options || []).reduce(function (result, option, index) {
+        result.push({
+          optionGroup: option,
+          group: true,
+          index: index
+        });
+        var optionGroupChildren = _this22.getOptionGroupChildren(option);
+        optionGroupChildren && optionGroupChildren.forEach(function (o) {
+          return result.push(o);
+        });
+        return result;
+      }, []);
+    },
+    overlayRef: function overlayRef(el) {
+      this.overlay = el;
+    },
+    listRef: function listRef(el, contentRef) {
+      this.list = el;
+      contentRef && contentRef(el); // For VirtualScroller
+    },
+    virtualScrollerRef: function virtualScrollerRef(el) {
+      this.virtualScroller = el;
+    }
+  },
+  computed: {
+    visibleOptions: function visibleOptions() {
+      var _this23 = this;
+      var options = this.optionGroupLabel ? this.flatOptions(this.options) : this.options || [];
+      if (this.filterValue) {
+        var filteredOptions = primevue_api__WEBPACK_IMPORTED_MODULE_0__.FilterService.filter(options, this.searchFields, this.filterValue, this.filterMatchMode, this.filterLocale);
+        if (this.optionGroupLabel) {
+          var optionGroups = this.options || [];
+          var filtered = [];
+          optionGroups.forEach(function (group) {
+            var groupChildren = _this23.getOptionGroupChildren(group);
+            var filteredItems = groupChildren.filter(function (item) {
+              return filteredOptions.includes(item);
+            });
+            if (filteredItems.length > 0) filtered.push(_objectSpread$1(_objectSpread$1({}, group), {}, _defineProperty$1({}, typeof _this23.optionGroupChildren === 'string' ? _this23.optionGroupChildren : 'items', _toConsumableArray(filteredItems))));
+          });
+          return this.flatOptions(filtered);
+        }
+        return filteredOptions;
+      }
+      return options;
+    },
+    label: function label() {
+      // TODO: Refactor
+      var label;
+      if (this.modelValue && this.modelValue.length) {
+        if (primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isNotEmpty(this.maxSelectedLabels) && this.modelValue.length > this.maxSelectedLabels) {
+          return this.getSelectedItemsLabel();
+        } else {
+          label = '';
+          for (var i = 0; i < this.modelValue.length; i++) {
+            if (i !== 0) {
+              label += ', ';
+            }
+            label += this.getLabelByValue(this.modelValue[i]);
+          }
+        }
+      } else {
+        label = this.placeholder;
+      }
+      return label;
+    },
+    chipSelectedItems: function chipSelectedItems() {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isNotEmpty(this.maxSelectedLabels) && this.modelValue && this.modelValue.length > this.maxSelectedLabels ? this.modelValue.slice(0, this.maxSelectedLabels) : this.modelValue;
+    },
+    allSelected: function allSelected() {
+      var _this24 = this;
+      return this.selectAll !== null ? this.selectAll : primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isNotEmpty(this.visibleOptions) && this.visibleOptions.every(function (option) {
+        return _this24.isOptionGroup(option) || _this24.isOptionDisabled(option) || _this24.isSelected(option);
+      });
+    },
+    hasSelectedOption: function hasSelectedOption() {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isNotEmpty(this.modelValue);
+    },
+    equalityKey: function equalityKey() {
+      return this.optionValue ? null : this.dataKey;
+    },
+    searchFields: function searchFields() {
+      return this.filterFields || [this.optionLabel];
+    },
+    maxSelectionLimitReached: function maxSelectionLimitReached() {
+      return this.selectionLimit && this.modelValue && this.modelValue.length === this.selectionLimit;
+    },
+    filterResultMessageText: function filterResultMessageText() {
+      return primevue_utils__WEBPACK_IMPORTED_MODULE_10__.ObjectUtils.isNotEmpty(this.visibleOptions) ? this.filterMessageText.replaceAll('{0}', this.visibleOptions.length) : this.emptyFilterMessageText;
+    },
+    filterMessageText: function filterMessageText() {
+      return this.filterMessage || this.$primevue.config.locale.searchMessage || '';
+    },
+    emptyFilterMessageText: function emptyFilterMessageText() {
+      return this.emptyFilterMessage || this.$primevue.config.locale.emptySearchMessage || this.$primevue.config.locale.emptyFilterMessage || '';
+    },
+    emptyMessageText: function emptyMessageText() {
+      return this.emptyMessage || this.$primevue.config.locale.emptyMessage || '';
+    },
+    selectionMessageText: function selectionMessageText() {
+      return this.selectionMessage || this.$primevue.config.locale.selectionMessage || '';
+    },
+    emptySelectionMessageText: function emptySelectionMessageText() {
+      return this.emptySelectionMessage || this.$primevue.config.locale.emptySelectionMessage || '';
+    },
+    selectedMessageText: function selectedMessageText() {
+      return this.hasSelectedOption ? this.selectionMessageText.replaceAll('{0}', this.modelValue.length) : this.emptySelectionMessageText;
+    },
+    focusedOptionId: function focusedOptionId() {
+      return this.focusedOptionIndex !== -1 ? "".concat(this.id, "_").concat(this.focusedOptionIndex) : null;
+    },
+    ariaSetSize: function ariaSetSize() {
+      var _this25 = this;
+      return this.visibleOptions.filter(function (option) {
+        return !_this25.isOptionGroup(option);
+      }).length;
+    },
+    toggleAllAriaLabel: function toggleAllAriaLabel() {
+      return this.$primevue.config.locale.aria ? this.$primevue.config.locale.aria[this.allSelected ? 'selectAll' : 'unselectAll'] : undefined;
+    },
+    closeAriaLabel: function closeAriaLabel() {
+      return this.$primevue.config.locale.aria ? this.$primevue.config.locale.aria.close : undefined;
+    },
+    virtualScrollerDisabled: function virtualScrollerDisabled() {
+      return !this.virtualScrollerOptions;
+    }
+  },
+  directives: {
+    ripple: primevue_ripple__WEBPACK_IMPORTED_MODULE_9__["default"]
+  },
+  components: {
+    VirtualScroller: primevue_virtualscroller__WEBPACK_IMPORTED_MODULE_11__["default"],
+    Portal: primevue_portal__WEBPACK_IMPORTED_MODULE_8__["default"],
+    TimesIcon: primevue_icons_times__WEBPACK_IMPORTED_MODULE_5__["default"],
+    SearchIcon: primevue_icons_search__WEBPACK_IMPORTED_MODULE_3__["default"],
+    TimesCircleIcon: primevue_icons_timescircle__WEBPACK_IMPORTED_MODULE_6__["default"],
+    ChevronDownIcon: primevue_icons_chevrondown__WEBPACK_IMPORTED_MODULE_2__["default"],
+    SpinnerIcon: primevue_icons_spinner__WEBPACK_IMPORTED_MODULE_4__["default"],
+    CheckIcon: primevue_icons_check__WEBPACK_IMPORTED_MODULE_1__["default"]
+  }
+};
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var _hoisted_1 = ["id", "disabled", "placeholder", "tabindex", "aria-label", "aria-labelledby", "aria-expanded", "aria-controls", "aria-activedescendant"];
+var _hoisted_2 = ["onClick"];
+var _hoisted_3 = ["checked", "aria-label"];
+var _hoisted_4 = ["value", "placeholder", "aria-owns", "aria-activedescendant"];
+var _hoisted_5 = ["aria-label"];
+var _hoisted_6 = ["id"];
+var _hoisted_7 = ["id"];
+var _hoisted_8 = ["id", "aria-label", "aria-selected", "aria-disabled", "aria-setsize", "aria-posinset", "onClick", "onMousemove", "data-p-highlight", "data-p-focused", "data-p-disabled"];
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_TimesCircleIcon = (0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveComponent)("TimesCircleIcon");
+  var _component_SpinnerIcon = (0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveComponent)("SpinnerIcon");
+  var _component_VirtualScroller = (0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveComponent)("VirtualScroller");
+  var _component_Portal = (0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveComponent)("Portal");
+  var _directive_ripple = (0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveDirective)("ripple");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+    ref: "container",
+    "class": _ctx.cx('root'),
+    onClick: _cache[15] || (_cache[15] = function () {
+      return $options.onContainerClick && $options.onContainerClick.apply($options, arguments);
+    })
+  }, _ctx.ptm('root'), {
+    "data-pc-name": "multiselect"
+  }), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+    "class": "p-hidden-accessible"
+  }, _ctx.ptm('hiddenInputWrapper'), {
+    "data-p-hidden-accessible": true
+  }), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("input", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+    ref: "focusInput",
+    id: _ctx.inputId,
+    type: "text",
+    readonly: "",
+    disabled: _ctx.disabled,
+    placeholder: _ctx.placeholder,
+    tabindex: !_ctx.disabled ? _ctx.tabindex : -1,
+    role: "combobox",
+    "aria-label": _ctx.ariaLabel,
+    "aria-labelledby": _ctx.ariaLabelledby,
+    "aria-haspopup": "listbox",
+    "aria-expanded": $data.overlayVisible,
+    "aria-controls": $data.id + '_list',
+    "aria-activedescendant": $data.focused ? $options.focusedOptionId : undefined,
+    onFocus: _cache[0] || (_cache[0] = function () {
+      return $options.onFocus && $options.onFocus.apply($options, arguments);
+    }),
+    onBlur: _cache[1] || (_cache[1] = function () {
+      return $options.onBlur && $options.onBlur.apply($options, arguments);
+    }),
+    onKeydown: _cache[2] || (_cache[2] = function () {
+      return $options.onKeyDown && $options.onKeyDown.apply($options, arguments);
+    })
+  }, _objectSpread(_objectSpread({}, _ctx.inputProps), _ctx.ptm('hiddenInput'))), null, 16, _hoisted_1)], 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+    "class": _ctx.cx('labelContainer')
+  }, _ctx.ptm('labelContainer')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+    "class": _ctx.cx('label')
+  }, _ctx.ptm('label')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "value", {
+    value: _ctx.modelValue,
+    placeholder: _ctx.placeholder
+  }, function () {
+    return [_ctx.display === 'comma' ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
+      key: 0
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.label || 'empty'), 1)], 64)) : _ctx.display === 'chip' ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
+      key: 1
+    }, [((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_14__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderList)($options.chipSelectedItems, function (item) {
+      return (0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+        key: $options.getLabelByValue(item),
+        "class": _ctx.cx('token')
+      }, _ctx.ptm('token')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "chip", {
+        value: item
+      }, function () {
+        return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+          "class": _ctx.cx('tokenLabel')
+        }, _ctx.ptm('tokenLabel')), (0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.getLabelByValue(item)), 17)];
+      }), !_ctx.disabled ? (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "removetokenicon", {
+        key: 0,
+        "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('removeTokenIcon')),
+        item: item,
+        onClick: function onClick(event) {
+          return $options.removeOption(event, item);
+        },
+        removeCallback: function removeCallback(event) {
+          return $options.removeOption(event, item);
+        }
+      }, function () {
+        return [_ctx.removeTokenIcon ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+          key: 0,
+          "class": [_ctx.cx('removeTokenIcon'), _ctx.removeTokenIcon],
+          onClick: (0,vue__WEBPACK_IMPORTED_MODULE_14__.withModifiers)(function ($event) {
+            return $options.removeOption($event, item);
+          }, ["stop"])
+        }, _ctx.ptm('removeTokenIcon')), null, 16, _hoisted_2)) : ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)(_component_TimesCircleIcon, (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+          key: 1,
+          "class": _ctx.cx('removeTokenIcon'),
+          onClick: (0,vue__WEBPACK_IMPORTED_MODULE_14__.withModifiers)(function ($event) {
+            return $options.removeOption($event, item);
+          }, ["stop"])
+        }, _ctx.ptm('removeTokenIcon')), null, 16, ["class", "onClick"]))];
+      }) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true)], 16);
+    }), 128)), !_ctx.modelValue || _ctx.modelValue.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
+      key: 0
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)(_ctx.placeholder || 'empty'), 1)], 64)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true)], 64)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true)];
+  })], 16)], 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+    "class": _ctx.cx('trigger')
+  }, _ctx.ptm('trigger')), [_ctx.loading ? (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "loadingicon", {
+    key: 0,
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('loadingIcon'))
+  }, function () {
+    return [_ctx.loadingIcon ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+      key: 0,
+      "class": [_ctx.cx('loadingIcon'), 'pi-spin', _ctx.loadingIcon],
+      "aria-hidden": "true"
+    }, _ctx.ptm('loadingIcon')), null, 16)) : ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)(_component_SpinnerIcon, (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+      key: 1,
+      "class": _ctx.cx('loadingIcon'),
+      spin: "",
+      "aria-hidden": "true"
+    }, _ctx.ptm('loadingIcon')), null, 16, ["class"]))];
+  }) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "dropdownicon", {
+    key: 1,
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('dropdownIcon'))
+  }, function () {
+    return [((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveDynamicComponent)(_ctx.dropdownIcon ? 'span' : 'ChevronDownIcon'), (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+      "class": [_ctx.cx('dropdownIcon'), _ctx.dropdownIcon],
+      "aria-hidden": "true"
+    }, _ctx.ptm('dropdownIcon')), null, 16, ["class"]))];
+  })], 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createVNode)(_component_Portal, {
+    appendTo: _ctx.appendTo
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_14__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_14__.Transition, (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+        name: "p-connected-overlay",
+        onEnter: $options.onOverlayEnter,
+        onAfterEnter: $options.onOverlayAfterEnter,
+        onLeave: $options.onOverlayLeave,
+        onAfterLeave: $options.onOverlayAfterLeave
+      }, _ctx.ptm('transition')), {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_14__.withCtx)(function () {
+          return [$data.overlayVisible ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            key: 0,
+            ref: $options.overlayRef,
+            style: _ctx.panelStyle,
+            "class": [_ctx.cx('panel'), _ctx.panelClass],
+            onClick: _cache[13] || (_cache[13] = function () {
+              return $options.onOverlayClick && $options.onOverlayClick.apply($options, arguments);
+            }),
+            onKeydown: _cache[14] || (_cache[14] = function () {
+              return $options.onOverlayKeyDown && $options.onOverlayKeyDown.apply($options, arguments);
+            })
+          }, _objectSpread(_objectSpread({}, _ctx.panelProps), _ctx.ptm('panel'))), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            ref: "firstHiddenFocusableElementOnOverlay",
+            role: "presentation",
+            "aria-hidden": "true",
+            "class": "p-hidden-accessible p-hidden-focusable",
+            tabindex: 0,
+            onFocus: _cache[3] || (_cache[3] = function () {
+              return $options.onFirstHiddenFocus && $options.onFirstHiddenFocus.apply($options, arguments);
+            })
+          }, _ctx.ptm('hiddenFirstFocusableEl'), {
+            "data-p-hidden-accessible": true,
+            "data-p-hidden-focusable": true
+          }), null, 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "header", {
+            value: _ctx.modelValue,
+            options: $options.visibleOptions
+          }), _ctx.showToggleAll && _ctx.selectionLimit == null || _ctx.filter ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            key: 0,
+            "class": _ctx.cx('header')
+          }, _ctx.ptm('header')), [_ctx.showToggleAll && _ctx.selectionLimit == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            key: 0,
+            "class": _ctx.cx('headerCheckboxContainer'),
+            onClick: _cache[6] || (_cache[6] = function () {
+              return $options.onToggleAll && $options.onToggleAll.apply($options, arguments);
+            })
+          }, _ctx.ptm('headerCheckboxContainer')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            "class": "p-hidden-accessible"
+          }, _ctx.ptm('hiddenInputWrapper'), {
+            "data-p-hidden-accessible": true
+          }), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("input", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            type: "checkbox",
+            readonly: "",
+            checked: $options.allSelected,
+            "aria-label": $options.toggleAllAriaLabel,
+            onFocus: _cache[4] || (_cache[4] = function () {
+              return $options.onHeaderCheckboxFocus && $options.onHeaderCheckboxFocus.apply($options, arguments);
+            }),
+            onBlur: _cache[5] || (_cache[5] = function () {
+              return $options.onHeaderCheckboxBlur && $options.onHeaderCheckboxBlur.apply($options, arguments);
+            })
+          }, _ctx.ptm('headerCheckbox')), null, 16, _hoisted_3)], 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            "class": _ctx.cx('headerCheckbox')
+          }, $options.getHeaderCheckboxPTOptions('headerCheckbox')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "headercheckboxicon", {
+            allSelected: $options.allSelected,
+            "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('headerCheckboxIcon'))
+          }, function () {
+            return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveDynamicComponent)(_ctx.checkboxIcon ? 'span' : 'CheckIcon'), (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+              "class": [_ctx.cx('headerCheckboxIcon'), _defineProperty({}, _ctx.checkboxIcon, $options.allSelected)]
+            }, $options.getHeaderCheckboxPTOptions('headerCheckboxIcon')), null, 16, ["class"])), [[vue__WEBPACK_IMPORTED_MODULE_14__.vShow, $options.allSelected]])];
+          })], 16)], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true), _ctx.filter ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            key: 1,
+            "class": _ctx.cx('filterContainer')
+          }, _ctx.ptm('filterContainer')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("input", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            ref: "filterInput",
+            type: "text",
+            value: $data.filterValue,
+            onVnodeMounted: _cache[7] || (_cache[7] = function () {
+              return $options.onFilterUpdated && $options.onFilterUpdated.apply($options, arguments);
+            }),
+            "class": _ctx.cx('filterInput'),
+            placeholder: _ctx.filterPlaceholder,
+            role: "searchbox",
+            autocomplete: "off",
+            "aria-owns": $data.id + '_list',
+            "aria-activedescendant": $options.focusedOptionId,
+            onKeydown: _cache[8] || (_cache[8] = function () {
+              return $options.onFilterKeyDown && $options.onFilterKeyDown.apply($options, arguments);
+            }),
+            onBlur: _cache[9] || (_cache[9] = function () {
+              return $options.onFilterBlur && $options.onFilterBlur.apply($options, arguments);
+            }),
+            onInput: _cache[10] || (_cache[10] = function () {
+              return $options.onFilterChange && $options.onFilterChange.apply($options, arguments);
+            })
+          }, _objectSpread(_objectSpread({}, _ctx.filterInputProps), _ctx.ptm('filterInput'))), null, 16, _hoisted_4), (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "filtericon", {
+            "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('filterIcon'))
+          }, function () {
+            return [((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveDynamicComponent)(_ctx.filterIcon ? 'span' : 'SearchIcon'), (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+              "class": [_ctx.cx('filterIcon'), _ctx.filterIcon]
+            }, _ctx.ptm('filterIcon')), null, 16, ["class"]))];
+          })], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true), _ctx.filter ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            key: 2,
+            role: "status",
+            "aria-live": "polite",
+            "class": "p-hidden-accessible"
+          }, _ctx.ptm('hiddenFilterResult'), {
+            "data-p-hidden-accessible": true
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.filterResultMessageText), 17)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true), (0,vue__WEBPACK_IMPORTED_MODULE_14__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("button", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            "class": _ctx.cx('closeButton'),
+            "aria-label": $options.closeAriaLabel,
+            onClick: _cache[11] || (_cache[11] = function () {
+              return $options.onCloseClick && $options.onCloseClick.apply($options, arguments);
+            }),
+            type: "button"
+          }, _objectSpread(_objectSpread({}, _ctx.closeButtonProps), _ctx.ptm('closeButton'))), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "closeicon", {
+            "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('closeIcon'))
+          }, function () {
+            return [((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveDynamicComponent)(_ctx.closeIcon ? 'span' : 'TimesIcon'), (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+              "class": [_ctx.cx('closeIcon'), _ctx.closeIcon]
+            }, _ctx.ptm('closeIcon')), null, 16, ["class"]))];
+          })], 16, _hoisted_5)), [[_directive_ripple]])], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            "class": _ctx.cx('wrapper'),
+            style: {
+              'max-height': $options.virtualScrollerDisabled ? _ctx.scrollHeight : ''
+            }
+          }, _ctx.ptm('wrapper')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createVNode)(_component_VirtualScroller, (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            ref: $options.virtualScrollerRef
+          }, _ctx.virtualScrollerOptions, {
+            items: $options.visibleOptions,
+            style: {
+              height: _ctx.scrollHeight
+            },
+            tabindex: -1,
+            disabled: $options.virtualScrollerDisabled,
+            pt: _ctx.ptm('virtualScroller')
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createSlots)({
+            content: (0,vue__WEBPACK_IMPORTED_MODULE_14__.withCtx)(function (_ref2) {
+              var styleClass = _ref2.styleClass,
+                contentRef = _ref2.contentRef,
+                items = _ref2.items,
+                getItemOptions = _ref2.getItemOptions,
+                contentStyle = _ref2.contentStyle,
+                itemSize = _ref2.itemSize;
+              return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("ul", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                ref: function ref(el) {
+                  return $options.listRef(el, contentRef);
+                },
+                id: $data.id + '_list',
+                "class": [_ctx.cx('list'), styleClass],
+                style: contentStyle,
+                role: "listbox",
+                "aria-multiselectable": "true"
+              }, _ctx.ptm('list')), [((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_14__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderList)(items, function (option, i) {
+                return (0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
+                  key: $options.getOptionRenderKey(option, $options.getOptionIndex(i, getItemOptions))
+                }, [$options.isOptionGroup(option) ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                  key: 0,
+                  id: $data.id + '_' + $options.getOptionIndex(i, getItemOptions),
+                  style: {
+                    height: itemSize ? itemSize + 'px' : undefined
+                  },
+                  "class": _ctx.cx('itemGroup'),
+                  role: "option"
+                }, _ctx.ptm('itemGroup')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "optiongroup", {
+                  option: option.optionGroup,
+                  index: $options.getOptionIndex(i, getItemOptions)
+                }, function () {
+                  return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.getOptionGroupLabel(option.optionGroup)), 1)];
+                })], 16, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                  key: 1,
+                  id: $data.id + '_' + $options.getOptionIndex(i, getItemOptions),
+                  style: {
+                    height: itemSize ? itemSize + 'px' : undefined
+                  },
+                  "class": _ctx.cx('item', {
+                    option: option,
+                    index: i,
+                    getItemOptions: getItemOptions
+                  }),
+                  role: "option",
+                  "aria-label": $options.getOptionLabel(option),
+                  "aria-selected": $options.isSelected(option),
+                  "aria-disabled": $options.isOptionDisabled(option),
+                  "aria-setsize": $options.ariaSetSize,
+                  "aria-posinset": $options.getAriaPosInset($options.getOptionIndex(i, getItemOptions)),
+                  onClick: function onClick($event) {
+                    return $options.onOptionSelect($event, option, $options.getOptionIndex(i, getItemOptions), true);
+                  },
+                  onMousemove: function onMousemove($event) {
+                    return $options.onOptionMouseMove($event, $options.getOptionIndex(i, getItemOptions));
+                  }
+                }, $options.getCheckboxPTOptions(option, getItemOptions, i, 'item'), {
+                  "data-p-highlight": $options.isSelected(option),
+                  "data-p-focused": $data.focusedOptionIndex === $options.getOptionIndex(i, getItemOptions),
+                  "data-p-disabled": $options.isOptionDisabled(option)
+                }), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                  "class": _ctx.cx('checkboxContainer')
+                }, _ctx.ptm('checkboxContainer')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("div", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                  "class": _ctx.cx('checkbox', {
+                    option: option
+                  })
+                }, $options.getCheckboxPTOptions(option, getItemOptions, i, 'checkbox')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "itemcheckboxicon", {
+                  selected: $options.isSelected(option),
+                  "class": (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeClass)(_ctx.cx('checkboxIcon'))
+                }, function () {
+                  return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_14__.resolveDynamicComponent)(_ctx.checkboxIcon ? 'span' : 'CheckIcon'), (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                    "class": [_ctx.cx('checkboxIcon'), _defineProperty({}, _ctx.checkboxIcon, $options.isSelected(option))]
+                  }, $options.getCheckboxPTOptions(option, getItemOptions, i, 'checkboxIcon')), null, 16, ["class"])), [[vue__WEBPACK_IMPORTED_MODULE_14__.vShow, $options.isSelected(option)]])];
+                })], 16)], 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "option", {
+                  option: option,
+                  index: $options.getOptionIndex(i, getItemOptions)
+                }, function () {
+                  return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.normalizeProps)((0,vue__WEBPACK_IMPORTED_MODULE_14__.guardReactiveProps)(_ctx.ptm('option'))), (0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.getOptionLabel(option)), 17)];
+                })], 16, _hoisted_8)), [[_directive_ripple]])], 64);
+              }), 128)), $data.filterValue && (!items || items && items.length === 0) ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                key: 0,
+                "class": _ctx.cx('emptyMessage'),
+                role: "option"
+              }, _ctx.ptm('emptyMessage')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "emptyfilter", {}, function () {
+                return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.emptyFilterMessageText), 1)];
+              })], 16)) : !_ctx.options || _ctx.options && _ctx.options.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("li", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+                key: 1,
+                "class": _ctx.cx('emptyMessage'),
+                role: "option"
+              }, _ctx.ptm('emptyMessage')), [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "empty", {}, function () {
+                return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.emptyMessageText), 1)];
+              })], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true)], 16, _hoisted_6)];
+            }),
+            _: 2
+          }, [_ctx.$slots.loader ? {
+            name: "loader",
+            fn: (0,vue__WEBPACK_IMPORTED_MODULE_14__.withCtx)(function (_ref4) {
+              var options = _ref4.options;
+              return [(0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "loader", {
+                options: options
+              })];
+            }),
+            key: "0"
+          } : undefined]), 1040, ["items", "style", "disabled", "pt"])], 16), (0,vue__WEBPACK_IMPORTED_MODULE_14__.renderSlot)(_ctx.$slots, "footer", {
+            value: _ctx.modelValue,
+            options: $options.visibleOptions
+          }), !_ctx.options || _ctx.options && _ctx.options.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_14__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            key: 1,
+            role: "status",
+            "aria-live": "polite",
+            "class": "p-hidden-accessible"
+          }, _ctx.ptm('hiddenEmptyMessage'), {
+            "data-p-hidden-accessible": true
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.emptyMessageText), 17)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            role: "status",
+            "aria-live": "polite",
+            "class": "p-hidden-accessible"
+          }, _ctx.ptm('hiddenSelectedMessage'), {
+            "data-p-hidden-accessible": true
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_14__.toDisplayString)($options.selectedMessageText), 17), (0,vue__WEBPACK_IMPORTED_MODULE_14__.createElementVNode)("span", (0,vue__WEBPACK_IMPORTED_MODULE_14__.mergeProps)({
+            ref: "lastHiddenFocusableElementOnOverlay",
+            role: "presentation",
+            "aria-hidden": "true",
+            "class": "p-hidden-accessible p-hidden-focusable",
+            tabindex: 0,
+            onFocus: _cache[12] || (_cache[12] = function () {
+              return $options.onLastHiddenFocus && $options.onLastHiddenFocus.apply($options, arguments);
+            })
+          }, _ctx.ptm('hiddenLastFocusableEl'), {
+            "data-p-hidden-accessible": true,
+            "data-p-hidden-focusable": true
+          }), null, 16)], 16)) : (0,vue__WEBPACK_IMPORTED_MODULE_14__.createCommentVNode)("", true)];
+        }),
+        _: 3
+      }, 16, ["onEnter", "onAfterEnter", "onLeave", "onAfterLeave"])];
+    }),
+    _: 3
+  }, 8, ["appendTo"])], 16);
+}
+
+script.render = render;
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/primevue/multiselect/style/multiselectstyle.esm.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/primevue/multiselect/style/multiselectstyle.esm.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ MultiSelectStyle)
+/* harmony export */ });
+/* harmony import */ var primevue_base_style__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primevue/base/style */ "./node_modules/primevue/base/style/basestyle.esm.js");
+
+
+var css = "\n@layer primevue {\n    .p-multiselect {\n        display: inline-flex;\n        cursor: pointer;\n        user-select: none;\n    }\n\n    .p-multiselect-trigger {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n    }\n\n    .p-multiselect-label-container {\n        overflow: hidden;\n        flex: 1 1 auto;\n        cursor: pointer;\n    }\n\n    .p-multiselect-label {\n        display: block;\n        white-space: nowrap;\n        cursor: pointer;\n        overflow: hidden;\n        text-overflow: ellipsis;\n    }\n\n    .p-multiselect-label-empty {\n        overflow: hidden;\n        visibility: hidden;\n    }\n\n    .p-multiselect-token {\n        cursor: default;\n        display: inline-flex;\n        align-items: center;\n        flex: 0 0 auto;\n    }\n\n    .p-multiselect-token-icon {\n        cursor: pointer;\n    }\n\n    .p-multiselect .p-multiselect-panel {\n        min-width: 100%;\n    }\n\n    .p-multiselect-items-wrapper {\n        overflow: auto;\n    }\n\n    .p-multiselect-items {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n\n    .p-multiselect-item {\n        cursor: pointer;\n        display: flex;\n        align-items: center;\n        font-weight: normal;\n        white-space: nowrap;\n        position: relative;\n        overflow: hidden;\n    }\n\n    .p-multiselect-item-group {\n        cursor: auto;\n    }\n\n    .p-multiselect-header {\n        display: flex;\n        align-items: center;\n        justify-content: space-between;\n    }\n\n    .p-multiselect-filter-container {\n        position: relative;\n        flex: 1 1 auto;\n    }\n\n    .p-multiselect-filter-icon {\n        position: absolute;\n        top: 50%;\n        margin-top: -0.5rem;\n    }\n\n    .p-multiselect-filter-container .p-inputtext {\n        width: 100%;\n    }\n\n    .p-multiselect-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        overflow: hidden;\n        position: relative;\n        margin-left: auto;\n    }\n\n    .p-fluid .p-multiselect {\n        display: flex;\n    }\n}\n";
+var inlineStyles = {
+  root: function root(_ref) {
+    var props = _ref.props;
+    return {
+      position: props.appendTo === 'self' ? 'relative' : undefined
+    };
+  }
+};
+var classes = {
+  root: function root(_ref2) {
+    var instance = _ref2.instance,
+      props = _ref2.props;
+    return ['p-multiselect p-component p-inputwrapper', {
+      'p-multiselect-chip': props.display === 'chip',
+      'p-disabled': props.disabled,
+      'p-focus': instance.focused,
+      'p-inputwrapper-filled': props.modelValue && props.modelValue.length,
+      'p-inputwrapper-focus': instance.focused || instance.overlayVisible,
+      'p-overlay-open': instance.overlayVisible
+    }];
+  },
+  labelContainer: 'p-multiselect-label-container',
+  label: function label(_ref3) {
+    var instance = _ref3.instance,
+      props = _ref3.props;
+    return ['p-multiselect-label', {
+      'p-placeholder': instance.label === props.placeholder,
+      'p-multiselect-label-empty': !props.placeholder && (!props.modelValue || props.modelValue.length === 0)
+    }];
+  },
+  token: 'p-multiselect-token',
+  tokenLabel: 'p-multiselect-token-label',
+  removeTokenIcon: 'p-multiselect-token-icon',
+  trigger: 'p-multiselect-trigger',
+  loadingIcon: 'p-multiselect-trigger-icon',
+  dropdownIcon: 'p-multiselect-trigger-icon',
+  panel: function panel(_ref4) {
+    var instance = _ref4.instance;
+    return ['p-multiselect-panel p-component', {
+      'p-input-filled': instance.$primevue.config.inputStyle === 'filled',
+      'p-ripple-disabled': instance.$primevue.config.ripple === false
+    }];
+  },
+  header: 'p-multiselect-header',
+  headerCheckboxContainer: function headerCheckboxContainer(_ref5) {
+    var instance = _ref5.instance;
+    return ['p-checkbox p-component', {
+      'p-checkbox-checked': instance.allSelected,
+      'p-checkbox-focused': instance.headerCheckboxFocused
+    }];
+  },
+  headerCheckbox: function headerCheckbox(_ref6) {
+    var instance = _ref6.instance;
+    return ['p-checkbox-box', {
+      'p-highlight': instance.allSelected,
+      'p-focus': instance.headerCheckboxFocused
+    }];
+  },
+  headerCheckboxIcon: 'p-checkbox-icon',
+  filterContainer: 'p-multiselect-filter-container',
+  filterInput: 'p-multiselect-filter p-inputtext p-component',
+  filterIcon: 'p-multiselect-filter-icon',
+  closeButton: 'p-multiselect-close p-link',
+  closeIcon: 'p-multiselect-close-icon',
+  wrapper: 'p-multiselect-items-wrapper',
+  list: 'p-multiselect-items p-component',
+  itemGroup: 'p-multiselect-item-group',
+  item: function item(_ref7) {
+    var instance = _ref7.instance,
+      option = _ref7.option,
+      index = _ref7.index,
+      getItemOptions = _ref7.getItemOptions;
+    return ['p-multiselect-item', {
+      'p-highlight': instance.isSelected(option),
+      'p-focus': instance.focusedOptionIndex === instance.getOptionIndex(index, getItemOptions),
+      'p-disabled': instance.isOptionDisabled(option)
+    }];
+  },
+  checkboxContainer: 'p-checkbox p-component',
+  checkbox: function checkbox(_ref8) {
+    var instance = _ref8.instance,
+      option = _ref8.option;
+    return ['p-checkbox-box', {
+      'p-highlight': instance.isSelected(option)
+    }];
+  },
+  checkboxIcon: 'p-checkbox-icon',
+  emptyMessage: 'p-multiselect-empty-message'
+};
+var MultiSelectStyle = primevue_base_style__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
+  name: 'multiselect',
   css: css,
   classes: classes,
   inlineStyles: inlineStyles
@@ -43903,7 +44467,7 @@ function useRoute() {
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"/wpdebuglog-admin": 0,
+/******/ 			"/wpdebuglog-adminx": 0,
 /******/ 			"wpdebuglog-admin-css": 0
 /******/ 		};
 /******/ 		

@@ -8,7 +8,7 @@
             <div class=" flex justify-content-center dlct-form-item">
                 <div class="message" severity="info"><i class="pi pi-fw pi-info-circle"></i> This will
                     deactivate/activate all selected plugins when turned on. After turning off previous active plugins
-                    will be restored.
+                    will be restored. Please note that it is in beta version currently.
                 </div>
             </div>
 
@@ -19,13 +19,15 @@
             </div>
 
             <div v-if="state.isSafeMode == true" class=" flex justify-content-center dlct-form-item">
-                <div><label>Select Plugins that will remain active during safe mode </label></div>
+                <div>
+                    <label>Select Plugins that will remain active during safe mode </label>
+                    <br>
+                    <Button outlined raised="false" severity="secondary"  size="small" @click="resetSelection" label="Reset"/>
+                    &nbsp;<Button outlined raised="false" severity="info" size="small" @click="selectAll"  label="Select All"/>
+                </div>
 
-                <MultiSelect v-model="selectedPlugins" :options="pluginList" optionLabel="label"
-                             optionGroupLabel="label" optionGroupChildren="items" display="chip"
-                             placeholder="Select Plugins" class="w-full md:w-20rem">
+                <Listbox listStyle="max-height:350px" filter option-vale="value" v-model="selectedCity" multiple :options="cities" optionLabel="name" class="w-full md:w-14rem" />
 
-                </MultiSelect>
             </div>
 
             <div v-if="state.isSafeMode == true" class="flex justify-content-center dlct-form-item">
@@ -48,14 +50,26 @@
     import {useToast} from "primevue/usetoast";
 
     const toast = useToast()
-    const selectedPlugins = ref([
+    const selectedPlugins = reactive([
         {
-            "label": "Debug Log Viewer & Control",
-            "value": "debug-log-config-tool/plugin.php"
+            label: "Debug Log Viewer & Control",
+            value: "debug-log-config-tool/plugin.php"
         }
     ]);
     const pluginList = ref([]);
 
+    const selectedCity = ref();
+    const cities = ref([
+        { name: "Debug Log Viewer & Control", value: 'debug-log-config-tool/plugin.php' },
+        { name: 'Paris', value: 'PRS' }
+    ]);
+
+    function resetSelection(){
+        selectedCity.value = [];
+    }
+    function selectAll(){
+        selectedCity.value = cities.value;
+    }
 
     const state = reactive({
         error: null,
@@ -79,11 +93,13 @@
             const args = {
                 route: 'update_safe_mode',
                 safe_mode: this.state.isSafeMode,
-                selected_plugins: JSON.stringify(selectedPlugins.value.map(item => item.value))
+                selected_plugins: JSON.stringify(selectedCity.value)
             };
             const {data, error: fetchError} = await $post(args);
-            console.log(data)
             if (data) {
+                setTimeout(function() {
+                    // window.location.reload();
+                }, 1000);
                 showTopLeft(data.value.data.message, data.value.data.success)
             } else if (fetchError) {
                 state.error = fetchError;
@@ -103,14 +119,22 @@
             };
             const {data, error: fetchError} = await $get(args);
             if (data) {
-                pluginList.value = data.value.data.all_plugins;
+                console.log(selectedPlugins.value)
+                console.log(data.value.data.selected_active_plugins_list)
+                selectedCity.value = data.value.data.selected_active_plugins_list;
+                cities.value = data.value.data.all_plugins;
                 state.isSafeMode = data.value.data.safe_mode_status;
             } else if (fetchError) {
+                console.log('fetchError',fetchError);
                 state.error = fetchError;
             }
         } catch (err) {
+            console.log('err',fetchError);
+
             state.error = err;
         } finally {
+            console.log('finally');
+
             state.isLoading = false;
         }
     }

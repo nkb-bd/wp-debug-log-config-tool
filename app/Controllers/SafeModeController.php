@@ -9,56 +9,81 @@ class SafeModeController
     
     public function get()
     {
+        Helper::verifyRequest();
         $allPlugins = $this->getPluginListGroup();
+        $selectedPlugins = json_decode(get_option('dlct_selected_active_plugins_list'), true);
+        
         $res = [
             'all_plugins'                    => $allPlugins,
             'safe_mode_status'               => get_option('safe_mode_status') == 'on',
-            'selected_active_plugins_list'   => get_option('selected_active_plugins_list'),
+            'selected_active_plugins_list'   => $this->selectedPluginsFormatted($selectedPlugins),
         ];
         wp_send_json_success($res);
     }
     
+    public function selectedPluginsFormatted($selected_active_plugins_list) {
+        $items = [];
+        foreach ($selected_active_plugins_list as $plugin) {
+            $plugin_data = [
+                "name" => $plugin['name'], // Extracting plugin name from file path
+                "value" => $plugin['value']
+            ];
+            $items[] = $plugin_data;
+        }
+    
+        return $items;
+    }
+    
     public function update()
     {
-        $safeMode = $_POST['safe_mode'] === 'true' || $_POST['safe_mode'] === true;
-        
+        Helper::verifyRequest();
+        $safeMode = sanitize_text_field($_POST['safe_mode']) === 'true' || rest_sanitize_boolean($_POST['safe_mode']) === true;
         
         $selectedPlugins = stripslashes($_POST['selected_plugins']);
-        update_option('selected_active_plugins_list', $selectedPlugins);
-        
-        
-        if ($safeMode === true) {
-            $this->activateSafeMode();
-        } else {
-            $this->deActivateSafeMode();
+        update_option('dlct_selected_active_plugins_list', $selectedPlugins);
+    
+        try {
+            if ($safeMode === true) {
+                $this->activateSafeMode();
+            } else {
+                $this->deActivateSafeMode();
+            }
+        } catch (\Exception $e){
+            wp_send_json_error([
+                'message' => $e->getMessage(),
+                'success' => true
+            ]);
         }
+       
     }
     
     public function activateSafeMode()
     {
         if (get_option('safe_mode_status') == 'on') {
-            wp_send_json_success([
-                'message' => 'SafeMode is already activated',
-                'success' => true
-            ]);
+            $message = 'SafeMode is already activated';
+          
         } else {
+            $message = 'SafeMode is activated';
+    
             update_option('safe_mode_status', 'on');
         }
         
         $activePlugins = get_option('active_plugins');
         update_option('before_safe_mode_active_plugins_list', $activePlugins);
         
-        $selectedPlugins = get_option('selected_active_plugins_list');
+        $selectedPlugins = get_option('dlct_selected_active_plugins_list');
         
         $selectedPlugins = json_decode($selectedPlugins, true);
         if (!is_array($selectedPlugins)) {
             $selectedPlugins = [];
         }
+        $selectedPlugins = array_column($selectedPlugins,'value');
         
         $allPlugins = get_plugins();
         
         // Perform the activation/deactivation based on the operation type and selected plugins
         foreach ($allPlugins as $plugin => $pluginDetails) {
+        
             if (in_array($plugin, $selectedPlugins)) {
                 if (in_array($plugin, $activePlugins)) {
                     continue;
@@ -69,7 +94,7 @@ class SafeModeController
             }
         }
         wp_send_json_success([
-            'message' => 'SafeMode Activated',
+            'message' => $message,
             'success' => true
         ]);
     }
@@ -119,40 +144,15 @@ class SafeModeController
     
     private function getPluginListGroup()
     {
-        $active_plugins = get_option('active_plugins');
         $all_plugins = get_plugins();
-        
-        $formatted_active_plugins = [];
-        foreach ($active_plugins as $plugin_file) {
-            if (isset($all_plugins[$plugin_file])) {
-                $formatted_active_plugins[] = [
-                    'label' => $all_plugins[$plugin_file]['Name'],
-                    'value' => $plugin_file,
-                ];
-            }
+        $formatted_plugins = [];
+        foreach ($all_plugins as $key => $plugin_file) {
+            $formatted_plugins[] = [
+                'name' => $plugin_file['Name'],
+                'value' => $key,
+            ];
         }
         
-        $inactive_plugins = array_diff($all_plugins, $active_plugins);
-        
-        $formatted_inactive_plugins = [];
-        foreach ($inactive_plugins as $key => $plugin_file) {
-            if (isset($all_plugins[$key])) {
-                $formatted_inactive_plugins[] = [
-                    'label' => $plugin_file['Name'],
-                    'value' => $key,
-                ];
-            }
-        }
-        
-        return [
-            [
-                'label' => 'Active',
-                'items' => $formatted_active_plugins,
-            ],
-            [
-                'label' => 'Inactive',
-                'items' => $formatted_inactive_plugins,
-            ],
-        ];
+        return $formatted_plugins;
     }
 }

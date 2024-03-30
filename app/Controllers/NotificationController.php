@@ -64,6 +64,7 @@ class NotificationController
     
     public function getNotificationEmail()
     {
+        Helper::verifyRequest();
         $notification_email = get_option($this->notificationEmail);
         if (!$notification_email) {
             $notification_email = get_option('admin_email');
@@ -77,6 +78,7 @@ class NotificationController
     
     public function updateNotificationEmail()
     {
+        Helper::verifyRequest();
         $notification_email = sanitize_text_field($_REQUEST['email']);
         $notification_status = sanitize_text_field($_REQUEST['status']) == 'true' ? 'yes' : 'no';
         if (!$notification_email) {

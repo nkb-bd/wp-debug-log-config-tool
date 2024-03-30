@@ -18,6 +18,7 @@ class LogController
     
     public function get()
     {
+        Helper::verifyRequest();
         try {
             if (!file_exists($this->logFilePath)) {
                 wp_send_json_error(['message' => 'Debug file not found']);
@@ -26,6 +27,7 @@ class LogController
             $logData = $this->loadLogs();
     
             wp_send_json_success([
+                'success' => true,
                 'log_path'    => $this->logFilePath,
                 'logs'        => $logData['logs'] ?? '',
                 'error_types' => $logData['unique_error_types'] ?? '',
@@ -167,6 +169,8 @@ class LogController
     
     public function clear()
     {
+        Helper::verifyRequest();
+    
         if (file_exists($this->logFilePath)) {
             $open = fopen($this->logFilePath, "r+");
             

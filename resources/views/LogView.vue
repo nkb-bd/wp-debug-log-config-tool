@@ -34,10 +34,10 @@
                 <template  v-tooltip="'Enter your username'"  v-if="state.log_path" #footer><small>Log Path: {{state.log_path}}. Path randomized for security reasons. </small></template>
             </DataTable>
             <div v-if="filteredEntries && filteredEntries.length === 0" >
-                <p style="margin: 20px auto;padding-bottom:20px;text-align: center">  No result found !</p>
+                <p style="margin: 20px auto;padding-bottom:20px;text-align: center">  No Log found !</p>
             </div>
         </div>
-        <p>{{ state.error }}</p>
+        <div v-if="state.error" class="dlct-error-msg">{{ state.error }}</div>
     </div>
 </template>
 
@@ -86,11 +86,17 @@
         return new Promise(async (resolve) => {
             try {
                 state.isLoading = true;
+                state.error = false;
                 const args = {
                     route: 'get_log'
                 };
                 const {data, error: fetchError} = await $get(args);
                 if (data && data.value) {
+                    if (!data.value.data.success){
+                        state.error =data.value.data.message;
+                        return;
+                    }
+
                     state.log_path = data.value.data.log_path;
                     state.logs = data.value.data.logs;
                     state.error_types = data.value.data.error_types;
@@ -108,6 +114,8 @@
      async function deleteLogs(){
         try {
             state.isLoading = true;
+            state.error = false;
+
             const args = {
                 route: 'clear_logs'
             };

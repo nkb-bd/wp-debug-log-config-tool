@@ -1107,7 +1107,7 @@
 }
 .dlct-wrapper .p-button.p-button-sm {
   padding: 0.4rem 0.5rem;
-  height: 2.7em;
+  height: 2.1em;
 }
 .dlct-wrapper .p-component {
   font-size: 0.9rem;
@@ -1211,4 +1211,15 @@
 
 .notice-success {
   margin-left: 0px;
+}
+
+.dlct-error-msg span {
+  background: rgba(254, 242, 242, 0.95);
+  border-width: 1px;
+  padding: 5px;
+  color: #dc2626;
+}
+
+.p-listbox {
+  min-width: 350px;
 }

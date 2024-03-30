@@ -1,7 +1,7 @@
-=== WP Debug Log - Configuration Tool ===
+===  Debug Log - Manger Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug ,wp config, debug log, developer, tools, support
+Tags: debug ,wp config, debug log, developer, tools
 Requires at least: 5.6
 Tested up to: 6.4.2
 Stable tag: 1.4.5
@@ -13,8 +13,8 @@ The "Debug Log Config Tool" simplifies debug log management. Enable/disable logg
 
 == Description ==
 
-A simple debug helper plugin. Check **Debug Log** from the dashboard. Admin Email notification can also be set. It will trigger an **email notification** using wp-cron job if there is any data in the log file. By default, it is turned off.
-Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show whether inside HTML pages or not. By default,it is turned off so users will not see any debug or error information.
+A simple debug helper plugin. Check **Debug Log** from the dashboard.Email notification can also be set. It will trigger an **email notification** using wp-cron if there is any data in the log file.
+Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show or not. By default,it is off so users will not see any debug info.
 
 
 * Enable or disable debug constants with a single click.
@@ -75,6 +75,9 @@ Currently, you can use the filter  apply_filters('dlct_constants', $constants);
  - Removed database dependency
 = 1.4.5
  - Fixed refresh
+= 1.4.6
+ - Fixed Vulnerability of debug log file. Generating random file for debug.
+ - Added a new safe mode which will turn of all all plugins excluding selected ones.
 
 
 

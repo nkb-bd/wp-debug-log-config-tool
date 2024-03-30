@@ -8,8 +8,8 @@ class SettingsController
     
     public function get()
     {
+        Helper::verifyRequest();
         $configs = $this->getConstants();
-
         $formattedSettings = [];
         foreach ($configs as $setting) {
             $configFileValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting['name']);
@@ -45,6 +45,7 @@ class SettingsController
     
     public function update()
     {
+        Helper::verifyRequest();
         $updateValue = filter_var($_REQUEST['setting_value'], FILTER_VALIDATE_BOOLEAN);
         $updateKey = sanitize_text_field($_REQUEST['setting_key']);
         $settings = $this->getConstants();

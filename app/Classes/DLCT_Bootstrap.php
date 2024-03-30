@@ -92,7 +92,7 @@ final class DLCT_Bootstrap
 
     public function enqueue_admin_script()
     {
-        if (isset($_GET['page']) && $_GET['page'] == '' . self::DLCT_LOG . '') {
+        if (isset($_GET['page']) && sanitize_text_field( $_GET['page']) == '' . self::DLCT_LOG . '') {
             wp_enqueue_style('dlct_style', DLCT_PLUGIN_URL . 'dist/wpdebuglog-admin-css.css', array(), DLCT_PLUGIN_VERSION);
             wp_enqueue_script(
                 'dlct_main_js',
@@ -115,6 +115,12 @@ final class DLCT_Bootstrap
                 ]
             );
         }
+    
+        add_filter( 'admin_footer_text', function (){
+            $message = 'Thanks for using it! If you like this plugin a nice review will be appreciated';
+            $reviewBtn = '<a class="" target="_blank" href="https://wordpress.org/plugins/debug-log-config-tool"> Give Review </a>';
+           return "<span ><p>{$message} {$reviewBtn}</p></span>";
+        } );
     }
 
     public function adminMenu()

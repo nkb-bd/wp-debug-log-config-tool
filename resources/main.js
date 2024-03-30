@@ -28,7 +28,7 @@ import Toast from 'primevue/toast';
 import InputSwitch from 'primevue/inputswitch';
 import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';
-import MultiSelect from 'primevue/multiselect';
+import Listbox from 'primevue/listbox';
 import SelectButton from 'primevue/selectbutton';
 
 
@@ -48,7 +48,7 @@ window.onload = function () {
         application.component('Toast', Toast);
         application.component('InputSwitch', InputSwitch);
         application.component('InputText', InputText);
-        application.component('MultiSelect', MultiSelect);
+        application.component('Listbox', Listbox);
         application.component('SelectButton', SelectButton);
 
         application.use(ToastService);

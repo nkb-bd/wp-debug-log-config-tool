@@ -2,15 +2,15 @@
 
 /**
  *
- * Plugin Name:       Debug Log Viewer & Control
+ * Plugin Name:       Debug Log Helper
  * Plugin URI:        #
- * Description:       Debug log View and Debug Toggle Tool
+ * Description:       Debug log View and Manger tools
  * Version:           1.4.5
  * Author:            Lukman Nakib
  * Author URI:        https://nkb-bd.github.io/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       DebugLogConfigTool
+ * Text Domain:       debug-log-config-tool
  */
 
 
