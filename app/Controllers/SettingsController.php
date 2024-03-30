@@ -20,10 +20,11 @@ class SettingsController
                 $configFileValue = $setting['value'];
                 (new \DebugLogConfigTool\Controllers\ConfigController())->update($setting['name'], $setting['value']);
             }
-            if ($setting['name'] !== 'WP_DEBUG_LOG') {
-                $value = $configFileValue === true || $configFileValue === 'true';
-            } else {
+            if ($setting['name'] == 'WP_DEBUG_LOG') {
                 $value = $configFileValue;
+            } else {
+                $value = $configFileValue === true || $configFileValue === 'true';
+    
             }
             $formattedSettings[] = [
                 'name'  => $setting['name'],
@@ -67,7 +68,10 @@ class SettingsController
     
     public function getConstants()
     {
-    
+        $WP_DEBUG_LOG = true;
+        if(get_option('dlct_debug_file_path')){
+            $WP_DEBUG_LOG = "'".get_option('dlct_debug_file_path')."'";
+        }
         $constants = [
             'WP_DEBUG'         => [
                 'name'  => 'WP_DEBUG',
@@ -76,9 +80,8 @@ class SettingsController
             ],
             'WP_DEBUG_LOG'     => [
                 'name'  => 'WP_DEBUG_LOG',
-                'value' => true,
+                'value' => $WP_DEBUG_LOG,
                 'info'  => 'Enable Debug logging to the /wp-content/debug.log file',
-            
             ],
             'SCRIPT_DEBUG'     => [
                 'name'  => 'SCRIPT_DEBUG',

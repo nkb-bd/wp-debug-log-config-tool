@@ -8,7 +8,7 @@
             <div class=" flex justify-content-center dlct-form-item">
                 <div class="message" severity="info"><i class="pi pi-fw pi-info-circle"></i> This will
                     deactivate/activate all selected plugins when turned on. After turning off previous active plugins
-                    will be restored as it was before.
+                    will be restored.
                 </div>
             </div>
 
@@ -28,7 +28,7 @@
                 </MultiSelect>
             </div>
 
-            <div class="flex justify-content-center dlct-form-item">
+            <div v-if="state.isSafeMode == true" class="flex justify-content-center dlct-form-item">
                 <div></div>
                 <div><small>Other plugins will remain deactivated</small>
                 </div>
