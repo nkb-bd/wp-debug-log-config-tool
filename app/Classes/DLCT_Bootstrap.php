@@ -76,10 +76,10 @@ final class DLCT_Bootstrap
         add_action('admin_init', [$this, 'msgDismissed']);
 
         add_action('wp_dashboard_setup', [$this, 'dashboardWidget']);
+        $this->setRandomLogPath();
         (new NotificationController())->boot();
         (new NotificationController())->scheduleCron();
         (new AjaxHandler())->boot();
-        $this->setRandomLogPath();
     }
 
     public function loadTextDomain()

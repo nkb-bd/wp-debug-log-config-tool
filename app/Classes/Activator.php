@@ -10,8 +10,13 @@ class Activator
 {
     public function run()
     {
-        $this->saveInitialConstants();
-        $this->updateDebugConstants();
+        try {
+            $this->saveInitialConstants();
+            $this->updateDebugConstants();
+        } catch (\Exception $e){
+        
+        }
+       
     }
     
     private function saveInitialConstants()
@@ -43,15 +48,5 @@ class Activator
             ];
         }
         (new SettingsController())->store($updatedConstants);
-        
-        if (is_array($updatedConstants)) {
-            add_action('admin_notices', function () {
-                $class = 'notice notice-success is-dismissible';
-                $message = 'Debug Constants is automatically enabled, you can disable/enable these from here ';
-                $link = '<a href="' . site_url('wp-admin/tools.php?page=wpdd_log') . '"> Plugin settings . </a>';
-                
-                printf('<div class="%1$s"><p>%2$s , %3$s</p></div>', esc_attr($class), $message, $link);
-            });
-        }
     }
 }

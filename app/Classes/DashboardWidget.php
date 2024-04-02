@@ -6,32 +6,37 @@ use DebugLogConfigTool\Controllers\LogController;
 
 class DashboardWidget
 {
-
     public function init()
     {
+        ob_start(); // Start output buffering
+        
         $logs = (new LogController)->loadLogs(5);
-        if (!$logs) {
+        if (!$logs || !empty($logs)) {
             echo 'You can see your submission stats here';
-            return;
+        } else {
+            $this->printStats($logs['logs']);
         }
-
-        $this->printStats($logs['logs']);
-        return;
+        
+        $output = ob_get_clean();
+        
+        echo $output;
     }
-
+    
     private function printStats($stats)
     {
-?>
+        ?>
         <div class="">
-            <table class=" wp-list-table widefat fixed striped">
+            <table class="wp-list-table widefat fixed striped">
                 <thead>
                 <tr>
-                    <th  style="width: 50px;" ><?php _e('Count'); ?></th>
-                    <th ><?php _e('Details'); ?></th>
+                    <th style="width: 50px;"><?php _e('Count'); ?></th>
+                    <th><?php _e('Details'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php  $i = 1; foreach ($stats as $stat): ?>
+                <?php
+                $i = 1;
+                foreach ($stats as $stat): ?>
                     <tr>
                         <td><?php echo $i++; ?></td>
                         <td><?php echo $stat['details']; ?></td>
@@ -40,6 +45,6 @@ class DashboardWidget
                 </tbody>
             </table>
         </div>
-<?php
+        <?php
     }
 }

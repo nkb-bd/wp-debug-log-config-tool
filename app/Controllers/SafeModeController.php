@@ -23,6 +23,9 @@ class SafeModeController
     
     public function selectedPluginsFormatted($selected_active_plugins_list) {
         $items = [];
+        if(empty($selected_active_plugins_list)){
+            return $items;
+        }
         foreach ($selected_active_plugins_list as $plugin) {
             $plugin_data = [
                 "name" => $plugin['name'], // Extracting plugin name from file path
@@ -51,7 +54,7 @@ class SafeModeController
         } catch (\Exception $e){
             wp_send_json_error([
                 'message' => $e->getMessage(),
-                'success' => true
+                'success' => false
             ]);
         }
        
@@ -63,8 +66,7 @@ class SafeModeController
             $message = 'SafeMode is already activated';
           
         } else {
-            $message = 'SafeMode is activated';
-    
+            $message = 'SafeMode is activated! Reload to see the result.';
             update_option('safe_mode_status', 'on');
         }
         
@@ -81,21 +83,27 @@ class SafeModeController
         
         $allPlugins = get_plugins();
         
-        // Perform the activation/deactivation based on the operation type and selected plugins
+        $pluginsActivated = [];
+        $pluginsDeActivated = [];
+        
         foreach ($allPlugins as $plugin => $pluginDetails) {
         
             if (in_array($plugin, $selectedPlugins)) {
                 if (in_array($plugin, $activePlugins)) {
                     continue;
                 }
+                $pluginsActivated[$plugin] = $pluginDetails;
                 activate_plugins($plugin);
             } else {
                 deactivate_plugins($plugin);
+                $pluginsDeActivated[$plugin] = $pluginDetails;
             }
         }
         wp_send_json_success([
-            'message' => $message,
-            'success' => true
+            'message'             => $message,
+            'activated_plugins'   => $pluginsActivated,
+            'deactivated_plugins' => $pluginsDeActivated,
+            'success'             => true
         ]);
     }
     
@@ -137,7 +145,7 @@ class SafeModeController
             }
         }
         wp_send_json_success([
-            'message' => 'SafeMode Deactivated',
+            'message' => 'SafeMode Deactivated!Reload to see the result.',
             'success' => true
         ]);
     }

@@ -31,8 +31,6 @@ add_action('init', function () {
     $dlct_bootstrap->init();
 }, 10, 1);
 register_activation_hook(DLCT_PLUGIN_MAIN_FILE, function () {
-    $dlct_bootstrap = DLCT_Bootstrap::getInstance();
-    $dlct_bootstrap->setRandomLogPath();
     DLCT_Bootstrap::activate();
 });
 

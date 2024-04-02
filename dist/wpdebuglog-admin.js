@@ -17803,20 +17803,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       label: "Debug Log Viewer & Control",
       value: "debug-log-config-tool/plugin.php"
     }]);
-    var pluginList = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
-    var selectedCity = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)();
-    var cities = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([{
-      name: "Debug Log Viewer & Control",
+    var isLoadingPage = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('false');
+    var modifiedActivatedplugins = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+    var modifiedDeActivatedplugins = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+    var selectedPlugin = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([{
+      name: "Debug Log Helper",
       value: 'debug-log-config-tool/plugin.php'
-    }, {
-      name: 'Paris',
-      value: 'PRS'
     }]);
+    var pluginsList = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
     function resetSelection() {
-      selectedCity.value = [];
+      selectedPlugin.value = [];
     }
     function selectAll() {
-      selectedCity.value = cities.value;
+      selectedPlugin.value = pluginsList.value;
     }
     var state = (0,vue__WEBPACK_IMPORTED_MODULE_0__.reactive)({
       error: null,
@@ -17845,7 +17844,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               args = {
                 route: 'update_safe_mode',
                 safe_mode: this.state.isSafeMode,
-                selected_plugins: JSON.stringify(selectedCity.value)
+                selected_plugins: JSON.stringify(selectedPlugin.value)
               };
               _context.next = 5;
               return (0,_request__WEBPACK_IMPORTED_MODULE_1__.$post)(args);
@@ -17887,42 +17886,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 0:
               _context2.prev = 0;
               state.isLoading = true;
+              isLoadingPage.value = true;
               args = {
                 route: 'get_safe_mode'
               };
-              _context2.next = 5;
+              _context2.next = 6;
               return (0,_request__WEBPACK_IMPORTED_MODULE_1__.$get)(args);
-            case 5:
+            case 6:
               _yield$$get = _context2.sent;
               data = _yield$$get.data;
               _fetchError2 = _yield$$get.error;
               if (data) {
-                console.log(selectedPlugins.value);
-                console.log(data.value.data.selected_active_plugins_list);
-                selectedCity.value = data.value.data.selected_active_plugins_list;
-                cities.value = data.value.data.all_plugins;
+                if (data.value.data.selected_active_plugins_list.length) {
+                  selectedPlugin.value = data.value.data.selected_active_plugins_list;
+                }
+                pluginsList.value = data.value.data.all_plugins;
                 state.isSafeMode = data.value.data.safe_mode_status;
               } else if (_fetchError2) {
                 console.log('fetchError', _fetchError2);
                 state.error = _fetchError2;
               }
-              _context2.next = 15;
+              _context2.next = 16;
               break;
-            case 11:
-              _context2.prev = 11;
+            case 12:
+              _context2.prev = 12;
               _context2.t0 = _context2["catch"](0);
               console.log('err', fetchError);
               state.error = _context2.t0;
-            case 15:
-              _context2.prev = 15;
-              console.log('finally');
+            case 16:
+              _context2.prev = 16;
               state.isLoading = false;
-              return _context2.finish(15);
-            case 19:
+              isLoadingPage.value = false;
+              return _context2.finish(16);
+            case 20:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[0, 11, 15, 19]]);
+        }, _callee2, null, [[0, 12, 16, 20]]);
       }));
       return _fetchSettings.apply(this, arguments);
     }
@@ -17941,9 +17941,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var __returned__ = {
       toast: toast,
       selectedPlugins: selectedPlugins,
-      pluginList: pluginList,
-      selectedCity: selectedCity,
-      cities: cities,
+      isLoadingPage: isLoadingPage,
+      modifiedActivatedplugins: modifiedActivatedplugins,
+      modifiedDeActivatedplugins: modifiedDeActivatedplugins,
+      selectedPlugin: selectedPlugin,
+      pluginsList: pluginsList,
       resetSelection: resetSelection,
       selectAll: selectAll,
       state: state,
@@ -18484,40 +18486,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
+  key: 0,
+  "class": "flex text-center justify-content-center"
+};
+var _hoisted_2 = {
+  key: 1,
   "class": "flex flex-column gap-2 dlct-form"
 };
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "flex justify-content-center dlct-form-item"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "message",
   severity: "info"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
   "class": "pi pi-fw pi-info-circle"
-}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" This will deactivate/activate all selected plugins when turned on. After turning off previous active plugins will be restored. Please note that it is in beta version currently. ")])], -1 /* HOISTED */);
-var _hoisted_3 = {
+}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" This will deactivate/activate all selected plugins when turned on. After turning off previous active plugins will be restored. Please note that it is in beta version currently. Also keep "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("b", null, "Debug Log helper"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" this plugin active to manage this page. ")])], -1 /* HOISTED */);
+var _hoisted_4 = {
   "class": "flex justify-content-center dlct-form-item"
 };
-var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "for": "switch1"
 }, "Enable SafeMode")], -1 /* HOISTED */);
-var _hoisted_5 = {
+var _hoisted_6 = {
   key: 0,
   "class": "flex justify-content-center dlct-form-item"
 };
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Select Plugins that will remain active during safe mode ", -1 /* HOISTED */);
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1 /* HOISTED */);
-var _hoisted_8 = {
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Plugins that will remain active during safe mode", -1 /* HOISTED */);
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1 /* HOISTED */);
+var _hoisted_9 = {
   key: 1,
   "class": "flex justify-content-center dlct-form-item"
 };
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, null, -1 /* HOISTED */);
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", null, "Other plugins will remain deactivated")], -1 /* HOISTED */);
-var _hoisted_11 = [_hoisted_9, _hoisted_10];
-var _hoisted_12 = {
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, null, -1 /* HOISTED */);
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", null, "Other plugins will remain deactivated")], -1 /* HOISTED */);
+var _hoisted_12 = [_hoisted_10, _hoisted_11];
+var _hoisted_13 = {
   "class": "flex justify-content-center dlct-form-item"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Toast = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Toast");
+  var _component_ProgressSpinner = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ProgressSpinner");
   var _component_InputSwitch = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("InputSwitch");
   var _component_Button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Button");
   var _component_Listbox = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Listbox");
@@ -18528,13 +18536,24 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     label: "Sticky",
     position: "bottom-right",
     group: "br"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputSwitch, {
+  }), $setup.isLoadingPage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ProgressSpinner, {
+    style: {
+      "max-width": "100%",
+      "text-align": "center",
+      "display": "block",
+      "width": "50px",
+      "height": "50px"
+    },
+    strokeWidth: "5",
+    fill: "var(--surface-ground)",
+    "aria-label": "Loading"
+  })])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputSwitch, {
     inputId: "switch1",
     modelValue: $setup.state.isSafeMode,
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $setup.state.isSafeMode = $event;
     })
-  }, null, 8 /* PROPS */, ["modelValue"])]), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_6, _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+  }, null, 8 /* PROPS */, ["modelValue"])]), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_7, _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
     outlined: "",
     raised: "false",
     severity: "secondary",
@@ -18552,22 +18571,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     listStyle: "max-height:350px",
     filter: "",
     "option-vale": "value",
-    modelValue: $setup.selectedCity,
+    modelValue: $setup.selectedPlugin,
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-      return $setup.selectedCity = $event;
+      return $setup.selectedPlugin = $event;
     }),
     multiple: "",
-    options: $setup.cities,
+    options: $setup.pluginsList,
     optionLabel: "name",
     "class": "w-full md:w-14rem"
-  }, null, 8 /* PROPS */, ["modelValue", "options"])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [].concat(_hoisted_11))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
+  }, null, 8 /* PROPS */, ["modelValue", "options"])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.state.isSafeMode == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [].concat(_hoisted_12))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Button, {
     loading: $setup.update.isLoading,
     size: "medium",
     onClick: _cache[2] || (_cache[2] = function ($event) {
       return $setup.updateSetting();
     }),
     label: "Update"
-  }, null, 8 /* PROPS */, ["loading"])])])]);
+  }, null, 8 /* PROPS */, ["loading"])])]))]);
 }
 
 /***/ }),
