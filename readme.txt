@@ -4,7 +4,7 @@ Donate link:
 Tags: debug ,wp config, debug log, developer, tools
 Requires at least: 5.6
 Tested up to: 6.4.3
-Stable tag: 1.5
+Stable tag: 1.5.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,7 +77,7 @@ Currently, you can use the filter  apply_filters('dlct_constants', $constants);
  - Fixed refresh
 = 1.5
  - Fixed Vulnerability of debug log file. Generating random file for debug.
- - Added a new safe mode which will turn of all all plugins excluding selected ones.
+ - Added a new safe mode which will turn off all plugins excluding selected ones.
 
 
 
