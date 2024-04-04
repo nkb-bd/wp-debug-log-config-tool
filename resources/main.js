@@ -31,7 +31,10 @@ import InputText from 'primevue/inputtext';
 import Listbox from 'primevue/listbox';
 import SelectButton from 'primevue/selectbutton';
 import MultiSelect from "primevue/multiselect";
-
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 
 window.onload = function () {
     const appEl = document.querySelector('#main-app');
@@ -52,6 +55,11 @@ window.onload = function () {
         application.component('Listbox', Listbox);
         application.component('SelectButton', SelectButton);
         application.component('MultiSelect', MultiSelect);
+        application.component('Accordion', Accordion);
+        application.component('AccordionTab', AccordionTab);
+        application.component('TabView', TabView);
+        application.component('TabPanel', TabPanel);
+
 
         application.use(ToastService);
         application.use(router).mount(appEl);

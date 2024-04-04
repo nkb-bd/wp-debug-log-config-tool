@@ -21,17 +21,20 @@ class LogController
         Helper::verifyRequest();
         try {
             if (!file_exists($this->logFilePath)) {
-                wp_send_json_error(['message' => 'Debug file not found']);
+                wp_send_json_error(['message' => 'Debug log file not found']);
             }
             
             $logData = $this->loadLogs();
-    
+            $isSaveQueryOn = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue('SAVEQUERIES');
+            
             wp_send_json_success([
                 'success' => true,
                 'log_path'    => $this->logFilePath,
                 'logs'        => $logData['logs'] ?? '',
                 'error_types' => $logData['unique_error_types'] ?? '',
                 'file_size'   => $this->getFilesize(),
+                'query_logs'    => $this->getQueryLogs($isSaveQueryOn),
+                'is_save_query_on' => $isSaveQueryOn === true || $isSaveQueryOn == 'true'
             ]);
         } catch (\Exception $e) {
             wp_send_json_success([
@@ -230,5 +233,38 @@ class LogController
         
             update_option('dlct_log_file_copied', true);
         }
+    }
+    
+    public function getQueryLogs($isSaveQueryOn)
+    {
+        if(!$isSaveQueryOn){
+            return  [];
+        }
+        global $wpdb;
+        $queries = isset($wpdb->queries) ? $wpdb->queries : [];
+        $queryLogs = [];
+        foreach ($queries as $query) {
+            $callers = [];
+            if (isset($query[0], $query[1], $query[2])) {
+                $sql = $query[0];
+                $executionTime = $query[1];
+                $stack = $query[2];
+            } else {
+                continue;
+            }
+            $callers = array_reverse(explode(',', $stack));
+            $callers = array_map('trim', $callers);
+            $caller = reset($callers);
+            $sql = trim($sql);
+            
+            $row = [
+                'caller' => $caller,
+                'sql' => $sql,
+                'execution_time' => $executionTime,
+                'stack' => $callers,
+            ];
+            $queryLogs[] = $row; // Store the row in the $rows array
+        }
+        return $queryLogs;
     }
 }

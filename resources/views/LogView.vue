@@ -7,35 +7,62 @@
                              aria-label="Loading"/>
         </div>
         <div v-else>
+            <TabView>
+                    <TabPanel header="Debug Log">
+                        <DataTable class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]"  :value="filteredEntries"  >
+                            <template #header>
+                                <div class="table-header">
 
-            <DataTable class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]"  :value="filteredEntries"  >
-                <template #header>
-                    <div class="table-header">
-
-                        <MultiSelect @change="filteredEntries" v-if="state.logs && Object.entries(state.logs).length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
-                                     :maxSelectedLabels="3" class="w-full md:w-20rem" />
-                        <span class="p-input-icon-left">
+                                    <MultiSelect @change="filteredEntries" v-if="state.logs && Object.entries(state.logs).length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
+                                                 :maxSelectedLabels="3" class="w-full md:w-20rem" />
+                                    <span class="p-input-icon-left">
                           <i class="pi pi-search" />
                           <InputText  v-if="state.logs && Object.entries(state.logs).length" @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
                         </span>
-                        <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs()" size="small"
-                                icon="pi pi-trash" severity="danger"/>
-                        <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="Refresh" severity="info"/>
-                    </div>
-                </template>
-                <Column field="details" header="Log">
-                    <template #body="slotProps">
-                        <div v-html="slotProps.data.details"></div>
-                    </template>
-                </Column>
-                <Column sortable field="time" header="Time"></Column>
-                <Column sortable field="plugin_name" header="Plugin Name"></Column>
-                <Column sortable field="date" header="Date"></Column>
-                <template  v-tooltip="'Enter your username'"  v-if="state.log_path" #footer><small>Log Path: {{state.log_path}}. Path randomized for security reasons. </small></template>
-            </DataTable>
-            <div v-if="filteredEntries && filteredEntries.length === 0" >
-                <p style="margin: 20px auto;padding-bottom:20px;text-align: center">  No Log found !</p>
-            </div>
+                                    <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs()" size="small"
+                                              icon="pi pi-trash" severity="danger"/>
+                                    <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="Refresh" severity="info"/>
+                                </div>
+                            </template>
+                            <Column field="details" header="Log">
+                                <template #body="slotProps">
+                                    <div v-html="slotProps.data.details"></div>
+                                </template>
+                            </Column>
+                            <Column sortable field="time" header="Time"></Column>
+                            <Column sortable field="plugin_name" header="Plugin Name"></Column>
+                            <Column sortable field="date" header="Date"></Column>
+                            <template  v-tooltip="'Enter your username'"  v-if="state.log_path" #footer><small>Log Path: {{state.log_path}}. Path randomized for security reasons. </small></template>
+                        </DataTable>
+                        <div v-if="filteredEntries && filteredEntries.length === 0" >
+                            <p style="margin: 20px auto;padding-bottom:20px;text-align: center">  No Log found !</p>
+                        </div>
+                    </TabPanel>
+                    <TabPanel header="Query Log">
+                        <Accordion :activeIndex="0"  v-if="state.is_save_query_on">
+                            <AccordionTab v-for="query in state.query_logs " :header="query.sql">
+                                <div class="query-log-list">
+                                    <div> <b>Caller</b> {{ query.caller }}</div>
+                                    <div><b>Execution Time</b> {{ query.execution_time }}</div>
+                                    <!-- Add other properties as needed -->
+                                    <div> <b>Stack Trace</b>
+                                        <ul class="query-trace">
+                                            <li v-for="(caller, i) in query.stack" :key="i">
+                                                {{ caller }}
+                                            </li>
+                                        </ul>
+                                    </div>
+
+
+                                </div>
+                            </AccordionTab>
+
+                        </Accordion>
+                        <div v-else>
+                            <p class="message">Enable <b>SAVEQUERIES</b> from settings page to view database query logs. Please note it will store all queries so always turn it off after debugging in production mode or it will effect performance.</p>
+                        </div>
+                    </TabPanel>
+        </TabView>
         </div>
         <div v-if="state.error" class="dlct-error-msg">{{ state.error }}</div>
     </div>
@@ -71,11 +98,13 @@
     const state = reactive({
         response: null,
         logs: null,
+        query_logs: null,
         error: null,
         log_path: null,
         isLoading: false,
         search: '',
-        error_types: {}
+        error_types: {},
+        is_save_query_on : false
     });
 
     function isNotEmptyLog(){
@@ -83,6 +112,7 @@
     }
     const isNotEmpty = computed(isNotEmptyLog);
     function fetchLogs() {
+
         return new Promise(async (resolve) => {
             try {
                 state.isLoading = true;
@@ -97,8 +127,10 @@
                         return;
                     }
 
+                    state.is_save_query_on = data.value.data.is_save_query_on;
                     state.log_path = data.value.data.log_path;
                     state.logs = data.value.data.logs;
+                    state.query_logs = data.value.data.query_logs;
                     state.error_types = data.value.data.error_types;
                 } else if (fetchError) {
                     state.error = fetchError;
@@ -111,7 +143,7 @@
             }
         });
     }
-     async function deleteLogs(){
+    async function deleteLogs(){
         try {
             state.isLoading = true;
             state.error = false;

@@ -1107,7 +1107,7 @@
 }
 .dlct-wrapper .p-button.p-button-sm {
   padding: 0.4rem 0.5rem;
-  height: 2.1em;
+  height: 2.7em;
 }
 .dlct-wrapper .p-component {
   font-size: 0.9rem;
@@ -1222,4 +1222,27 @@
 
 .p-listbox {
   min-width: 350px;
+}
+
+.query-log-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.query-trace li {
+  border: 1px solid #e5e7eb;
+  padding: 5px;
+  margin-bottom: 0;
+}
+
+.p-tabview-nav-link, .p-accordion-header-action {
+  border-radius: 0px;
+}
+
+.p-tabview-panels {
+  padding: 0px;
+}
+
+li.p-tabview-header {
+  margin-bottom: 0px;
 }
