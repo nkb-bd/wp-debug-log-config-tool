@@ -30,6 +30,7 @@ import ToastService from 'primevue/toastservice';
 import InputText from 'primevue/inputtext';
 import Listbox from 'primevue/listbox';
 import SelectButton from 'primevue/selectbutton';
+import MultiSelect from "primevue/multiselect";
 
 
 window.onload = function () {
@@ -50,6 +51,7 @@ window.onload = function () {
         application.component('InputText', InputText);
         application.component('Listbox', Listbox);
         application.component('SelectButton', SelectButton);
+        application.component('MultiSelect', MultiSelect);
 
         application.use(ToastService);
         application.use(router).mount(appEl);

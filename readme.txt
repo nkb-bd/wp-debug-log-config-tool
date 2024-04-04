@@ -1,10 +1,10 @@
 ===  Debug Log - Manger Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug ,wp config, debug log, developer, tools
+Tags: debug, debug log, developer, tools
 Requires at least: 5.6
 Tested up to: 6.4.3
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,7 +24,7 @@ Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to 
 >  **apply_filters('wp_debuglog_log_file_path', $file);**
 * Accessible from the dashboard's WordPress admin top nav bar.
 * Simplifies the debugging process by managing to log debug without modifying the wp-config.php file directly.
-
+* Use safe mode to quickly deactivate all plugins except selected ones, and undo the proccess with just a click.
 
 Constants Available
 
@@ -46,14 +46,16 @@ Please note: Constant values will be restored on plugin deactivation as it was b
 
 == Frequently Asked Questions ==
 
-= Do I need to edit wp-config.php fie ? =
+= Do I need file manager/ftp or modify wp-config.php fie  ? =
 
-No activate the plugin and turn off/on debug constants from dashboard
+No, just activate the plugin and turn off/on debug mode from plugin settings
 
-= Can I add more debug constants ?  =
+= Can I see full debug in dashboard?  =
 
-Currently, you can use the filter  apply_filters('dlct_constants', $constants);
+Yes you can see a simple log in dashboard widget and nicely formatted view in the plugin
 
+= What does safe mode do?  =
+Safe mode will deactivate all the plugin except the selected one. When you turn safe mode off it will restore all the previous activated plugin.
 
 == Screenshots ==
 1. ** Plugin Settings **

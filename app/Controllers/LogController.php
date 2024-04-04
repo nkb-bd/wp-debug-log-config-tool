@@ -214,7 +214,7 @@ class LogController
         return $debugPath;
     }
     
-    public static function maybeCopyLogFromDefaultLogFile()
+    public function maybeCopyLogFromDefaultLogFile()
     {
         if (get_option('dlct_debug_file_path_generated') !== 'yes') {
             return; // If the debug file path is not generated, exit the function

@@ -76,10 +76,10 @@ final class DLCT_Bootstrap
         add_action('admin_init', [$this, 'msgDismissed']);
 
         add_action('wp_dashboard_setup', [$this, 'dashboardWidget']);
-        $this->setRandomLogPath();
         (new NotificationController())->boot();
         (new NotificationController())->scheduleCron();
         (new AjaxHandler())->boot();
+        $this->setRandomLogPath();
     }
 
     public function loadTextDomain()
@@ -206,8 +206,8 @@ final class DLCT_Bootstrap
             update_option('dlct_debug_file_path', $debugPath, false);
             update_option('dlct_debug_file_path_generated', 'yes', false);
             (new \DebugLogConfigTool\Controllers\ConfigController())->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
-            
-            \DebugLogConfigTool\Controllers\LogController::maybeCopyLogFromDefaultLogFile();
+    
+            (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();
         }
         return $debugPath;
     }
