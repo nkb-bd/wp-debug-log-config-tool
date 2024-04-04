@@ -2,7 +2,8 @@
 
 /** @var \DebugLogConfigTool\Router $router */
 $router->get('get_log', 'LogController@get');
-$router->post('clear_logs', 'LogController@clear');
+$router->post('clear_debug_logs', 'LogController@clearDebugLog');
+$router->post('clear_query_logs', 'LogController@clearQueryLog');
 $router->get('get_settings', 'SettingsController@get');
 $router->post('update_settings', 'SettingsController@update');
 $router->get('get_notification_email', 'NotificationController@getNotificationEmail');

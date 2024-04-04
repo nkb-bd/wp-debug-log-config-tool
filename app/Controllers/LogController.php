@@ -11,14 +11,17 @@ class LogController
     
     public function __construct()
     {
-        $dlct_bootstrap = DLCT_Bootstrap::getInstance();
-        $debugPath = $dlct_bootstrap->setRandomLogPath();
+        $debugPath =  $this->setRandomLogPath();
         $this->logFilePath = apply_filters('wp_dlct_log_file_path', $debugPath);
     }
     
     public function get()
     {
         Helper::verifyRequest();
+        
+        if(empty( $this->logFilePath )){
+            $this->logFilePath = $this->setRandomLogPath();
+        }
         try {
             if (!file_exists($this->logFilePath)) {
                 wp_send_json_error(['message' => 'Debug log file not found']);
@@ -170,7 +173,7 @@ class LogController
         return $pluginName;
     }
     
-    public function clear()
+    public function clearDebugLog()
     {
         Helper::verifyRequest();
     
@@ -187,6 +190,18 @@ class LogController
             $msg = 'No log file yet available!';
         }
         
+        wp_send_json_success($msg);
+    }
+    
+    public function clearQueryLog()
+    {
+        Helper::verifyRequest();
+    
+        update_option('dlct_db_query_log', '',false);
+    
+        $msg = 'clear query log';
+    
+    
         wp_send_json_success($msg);
     }
     
@@ -241,9 +256,12 @@ class LogController
             return  [];
         }
         global $wpdb;
-        $queries = isset($wpdb->queries) ? $wpdb->queries : [];
+        $allQueries = get_option('dlct_db_query_log');
+        if(!is_array($allQueries) || empty($allQueries)){
+            return [];
+        }
         $queryLogs = [];
-        foreach ($queries as $query) {
+        foreach ($allQueries as $query) {
             $callers = [];
             if (isset($query[0], $query[1], $query[2])) {
                 $sql = $query[0];
@@ -256,15 +274,61 @@ class LogController
             $callers = array_map('trim', $callers);
             $caller = reset($callers);
             $sql = trim($sql);
-            
+    
             $row = [
-                'caller' => $caller,
-                'sql' => $sql,
+                'caller'         => $caller,
+                'sql'            => $sql,
                 'execution_time' => $executionTime,
-                'stack' => $callers,
+                'stack'          => $callers,
             ];
             $queryLogs[] = $row; // Store the row in the $rows array
         }
-        return $queryLogs;
+        return array_reverse($queryLogs);
+    }
+    
+    
+    
+    public static function maybeCacheQueries()
+    {
+        try{
+            global $wpdb;
+         
+            $currentQueries = $wpdb->queries ?? [];
+            if(empty($currentQueries)){
+                return;
+            }
+            $allQueries = get_option('dlct_db_query_log', array());
+            if(!is_array($allQueries)){
+                $allQueries = array();
+                update_option('dlct_db_query_log', array());
+            }
+            $allQueries = array_merge($allQueries, $currentQueries,[]);
+        
+            $allQueries = array_slice($allQueries, -50);
+        
+            update_option('dlct_db_query_log', $allQueries);
+        } catch (\Exception $e){
+        
+        }
+    
+    
+    }
+    
+    public function setRandomLogPath()
+    {
+        $debugPath = '';
+        $generatedDebugPath = get_option('dlct_debug_file_path');
+        if (get_option('dlct_debug_file_path_generated') === 'yes' && file_exists($generatedDebugPath)) {
+            $debugPath = get_option('dlct_debug_file_path');
+        } else {
+            $randomString = uniqid();
+            $debugPath = apply_filters('dlct_debug_file_path', ABSPATH . "wp-content/debug-" . $randomString . ".log");
+            update_option('dlct_debug_file_path', $debugPath, false);
+            update_option('dlct_debug_file_path_generated', 'yes', false);
+            (new \DebugLogConfigTool\Controllers\ConfigController())->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
+            
+            (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();
+        }
+        return $debugPath;
     }
 }

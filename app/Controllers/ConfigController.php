@@ -96,12 +96,17 @@ class ConfigController
     
     public function update($key, $value)
     {
-        //By default, when attempting to update a config that doesn't exist, one will be added.
-        $option = self::$configArgs;
-        if (is_bool($value)) {
-            $value = $value ? 'true' : 'false';
+        try{
+            //By default, when attempting to update a config that doesn't exist, one will be added.
+            $option = self::$configArgs;
+            if (is_bool($value)) {
+                $value = $value ? 'true' : 'false';
+            }
+            return $this->config_file_manager->update('constant', strtoupper($key), $value, $option);
+        } catch (\Exception $e){
+        
         }
-        return $this->config_file_manager->update('constant', strtoupper($key), $value, $option);
+       
     }
     
     public function getConfigFilePath()

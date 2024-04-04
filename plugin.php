@@ -39,3 +39,8 @@ register_deactivation_hook(DLCT_PLUGIN_MAIN_FILE, function () {
 });
 
 
+add_action('shutdown', function (){
+    \DebugLogConfigTool\Controllers\LogController::maybeCacheQueries();
+});
+
+

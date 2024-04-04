@@ -13,7 +13,7 @@ The "Debug Log Config Tool" simplifies debug log management. Enable/disable logg
 
 == Description ==
 
-A simple debug helper plugin. Check **Debug Log** from the dashboard.Email notification can also be set. It will trigger an **email notification** using wp-cron if there is any data in the log file.
+A simple debug helper plugin. Check **Debug Log** from the dashboard. With Query Log & Email notification . It will trigger an **email notification** using wp-cron if there is any data in the log file.
 Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show or not. By default,it is off so users will not see any debug info.
 
 
@@ -25,8 +25,9 @@ Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to 
 * Accessible from the dashboard's WordPress admin top nav bar.
 * Simplifies the debugging process by managing to log debug without modifying the wp-config.php file directly.
 * Use safe mode to quickly deactivate all plugins except selected ones, and undo the proccess with just a click.
+* Use Query Logs to check all queries from **$wpdb->queries**, just toggle `SAVEQUERIES` from settings.
 
-Constants Available
+Debug Options Available
 
 1. **WP_DEBUG** :: Default Value : true
 2. **WP_DEBUG_LOG**:: Default Value : true
@@ -80,6 +81,7 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 = 1.5
  - Fixed Vulnerability of debug log file. Generating random file for debug.
  - Added a new safe mode which will turn off all plugins excluding selected ones.
-
+= 1.5.2
+ - Added query logs
 
 

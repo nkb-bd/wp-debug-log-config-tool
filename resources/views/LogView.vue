@@ -1,15 +1,17 @@
 <template>
     <div>
         <Toast style="margin-top: 20px;" position="bottom-right" group="tr" />
-        <div v-if="state.isLoading" class=" flex text-center justify-content-center">
-            <ProgressSpinner style="max-width:100%;text-align: center;
-                                    display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
-                             aria-label="Loading"/>
-        </div>
-        <div v-else>
-            <TabView>
+
+        <div>
+            <TabView v-model:activeIndex="state.activeIndex">
                     <TabPanel header="Debug Log">
-                        <DataTable class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]"  :value="filteredEntries"  >
+                        <div v-if="state.isLoading" class=" flex text-center justify-content-center">
+                            <ProgressSpinner style="max-width:100%;text-align: center;
+                                    display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
+                                             aria-label="Loading"/>
+                        </div>
+
+                        <DataTable v-else class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]"  :value="filteredEntries"  >
                             <template #header>
                                 <div class="table-header">
 
@@ -19,7 +21,7 @@
                           <i class="pi pi-search" />
                           <InputText  v-if="state.logs && Object.entries(state.logs).length" @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
                         </span>
-                                    <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs()" size="small"
+                                    <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs('debug')" size="small"
                                               icon="pi pi-trash" severity="danger"/>
                                     <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="Refresh" severity="info"/>
                                 </div>
@@ -39,8 +41,30 @@
                         </div>
                     </TabPanel>
                     <TabPanel header="Query Log">
-                        <Accordion :activeIndex="0"  v-if="state.is_save_query_on">
-                            <AccordionTab v-for="query in state.query_logs " :header="query.sql">
+                        <div class="query-table">
+                            <div class=" table-header ">
+                                <div></div>
+                                <button disabled>Last 50 query</button>
+                                <Button v-if="state.query_logs && Object.entries(state.query_logs).length"
+                                            @click="deleteLogs('query')" size="small"   icon="pi pi-trash" severity="danger">
+                                </Button>
+                                <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="Refresh" severity="info"/>
+                            </div>
+                        </div>
+                        <div v-if="state.isLoading" class=" flex text-center justify-content-center">
+                            <ProgressSpinner style="max-width:100%;text-align: center;
+                                    display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
+                                             aria-label="Loading"/>
+                        </div>
+                        <Accordion :activeIndex="0"  v-else-if="state.is_save_query_on">
+
+                            <AccordionTab v-for="(query,index) in state.query_logs ">
+                                <template #header>
+                                    <div class="query-log-list">
+                                        <div>{{query.sql}}</div>
+                                        <div class="index-number">{{index+1}}</div>
+                                    </div>
+                                                </template>
                                 <div class="query-log-list">
                                     <div> <b>Caller</b> {{ query.caller }}</div>
                                     <div><b>Execution Time</b> {{ query.execution_time }}</div>
@@ -104,7 +128,8 @@
         isLoading: false,
         search: '',
         error_types: {},
-        is_save_query_on : false
+        is_save_query_on : false,
+        activeIndex : 0
     });
 
     function isNotEmptyLog(){
@@ -143,17 +168,30 @@
             }
         });
     }
-    async function deleteLogs(){
+    async function deleteLogs(type='debug'){
         try {
             state.isLoading = true;
             state.error = false;
-
+            let route = '';
+            if (type == 'debug'){
+                route  =   'clear_debug_logs'
+            }else{
+                route  =   'clear_query_logs'
+            }
             const args = {
-                route: 'clear_logs'
+                route: route
             };
             const {data, error: fetchError} = await $post(args);
             if (data) {
-                state.logs = data.value.data.logs;
+                if (type == 'debug'){
+                    state.logs = null;
+                    state.activeIndex = 0;
+                }else{
+                    state.query_logs = null;
+                    state.activeIndex = 1;
+
+                }
+
             } else if (fetchError) {
                 state.error = fetchError;
             }
@@ -161,7 +199,6 @@
             state.error = err;
         } finally {
             state.isLoading = false;
-            showTopLeft()
         }
 
     }

@@ -136,6 +136,9 @@
       border: 1px solid #e5e7eb;
     }
   }
+  .query-table{
+    padding: 10px;
+  }
 
   .p-datatable > .p-datatable-wrapper,
   .dlct-form,
@@ -164,6 +167,7 @@
 .query-log-list {
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 .query-trace li{
   border: 1px solid #e5e7eb;
@@ -178,4 +182,8 @@
 }
 li.p-tabview-header{
   margin-bottom: 0px;
+}
+.index-number{
+  color: #a8aaad;
+  font-weight: lighter;
 }

@@ -79,7 +79,6 @@ final class DLCT_Bootstrap
         (new NotificationController())->boot();
         (new NotificationController())->scheduleCron();
         (new AjaxHandler())->boot();
-        $this->setRandomLogPath();
     }
 
     public function loadTextDomain()
@@ -193,22 +192,5 @@ final class DLCT_Bootstrap
     {
         return apply_filters('DLCT_LOG_admin_access_role', 'manage_options');
     }
-    
-    public function setRandomLogPath()
-    {
-        $debugPath = '';
-        $generatedDebugPath = get_option('dlct_debug_file_path');
-        if (get_option('dlct_debug_file_path_generated') === 'yes' && file_exists($generatedDebugPath)) {
-            $debugPath = get_option('dlct_debug_file_path');
-        } else {
-            $randomString = uniqid();
-            $debugPath = apply_filters('dlct_debug_file_path', ABSPATH . "wp-content/debug-" . $randomString . ".log");
-            update_option('dlct_debug_file_path', $debugPath, false);
-            update_option('dlct_debug_file_path_generated', 'yes', false);
-            (new \DebugLogConfigTool\Controllers\ConfigController())->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
-    
-            (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();
-        }
-        return $debugPath;
-    }
+ 
 }
