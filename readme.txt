@@ -9,13 +9,16 @@ Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The "Debug Log Config Tool" simplifies debug log management. Enable/disable logging, view levels, clear logs, and set admin notifications from the dashboard
+The "Debug Log Config Tool" simplifies debug log management. Enable/disable logging,queries , view levels, clear logs, and set admin notifications from the dashboard
 
 == Description ==
 
 A simple debug helper plugin. Check **Debug Log** from the dashboard. With Query Log & Email notification . It will trigger an **email notification** using wp-cron if there is any data in the log file.
 Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show or not. By default,it is off so users will not see any debug info.
 
+Use SAVEQUERIES to toggle saving database queries and view database queries from logs
+
+[youtube https://youtu.be/moJPyyVfm3A]
 
 * Enable or disable debug constants with a single click.
 

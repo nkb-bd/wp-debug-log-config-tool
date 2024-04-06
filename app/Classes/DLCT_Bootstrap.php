@@ -79,6 +79,7 @@ final class DLCT_Bootstrap
         (new NotificationController())->boot();
         (new NotificationController())->scheduleCron();
         (new AjaxHandler())->boot();
+        $this->pluginActionMenu();
     }
 
     public function loadTextDomain()
@@ -192,5 +193,17 @@ final class DLCT_Bootstrap
     {
         return apply_filters('DLCT_LOG_admin_access_role', 'manage_options');
     }
- 
+    
+    public function pluginActionMenu()
+    {
+        $plugin = 'debug-log-config-tool/plugin.php';
+        add_filter("plugin_action_links_{$plugin}", function ($links) {
+            $slug = 'dlct_logs';
+        
+            $settings_link = sprintf("<a href=\"%s\">%s</a>", admin_url('tools.php?page=' . $slug), esc_html__('View Log'));
+            array_unshift($links, $settings_link);
+            return $links;
+        });
+    }
+    
 }
