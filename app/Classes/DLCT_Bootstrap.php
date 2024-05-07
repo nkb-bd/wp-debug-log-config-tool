@@ -140,13 +140,9 @@ final class DLCT_Bootstrap
         global $wp_admin_bar;
         $wp_admin_bar->add_menu(array(
             'id'     => self::DLCT_LOG . '_id',
-            // an unique id (required)
             'parent' => false,
-            // false for a top level menu
             'title'  => 'Debug Logs',
-            // title/menu text to display
             'href'   => site_url('wp-admin/tools.php?page=') . self::DLCT_LOG . '#/',
-            // target url of this menu item
 
         ));
     }

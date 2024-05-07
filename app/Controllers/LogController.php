@@ -234,7 +234,7 @@ class LogController
     
     public function maybeCopyLogFromDefaultLogFile()
     {
-        if (get_option('dlct_debug_file_path_generated') !== 'yes') {
+        if (get_option('dlct_debug_file_path_generated') != 'yes') {
             return; // If the debug file path is not generated, exit the function
         }
     
@@ -325,8 +325,11 @@ class LogController
             $debugPath = apply_filters('dlct_debug_file_path', ABSPATH . "wp-content/debug-" . $randomString . ".log");
             update_option('dlct_debug_file_path', $debugPath, false);
             update_option('dlct_debug_file_path_generated', 'yes', false);
+            update_option('dlct_log_file_copied',false,false);
+            if (!is_file($debugPath)) {
+                file_put_contents($debugPath, ''); 
+            }
             (new \DebugLogConfigTool\Controllers\ConfigController())->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
-            
             (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();
         }
         return $debugPath;

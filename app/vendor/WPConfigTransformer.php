@@ -75,7 +75,8 @@ class WPConfigTransformer {
 		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
-			throw new \Exception( "Config type '{$type}' does not exist." );
+			//throw new \Exception( "Config type '{$type}' does not exist." );
+            return false;
 		}
 
 		return isset( $this->wp_configs[ $type ][ $name ] );
@@ -103,7 +104,8 @@ class WPConfigTransformer {
 		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
-			throw new \Exception( "Config type '{$type}' does not exist." );
+//			throw new \Exception( "Config type '{$type}' does not exist." );
+            return null;
 		}
 
 		return $this->wp_configs[ $type ][ $name ]['value'];
