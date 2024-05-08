@@ -327,7 +327,7 @@ class LogController
             update_option('dlct_debug_file_path_generated', 'yes', false);
             update_option('dlct_log_file_copied',false,false);
             if (!is_file($debugPath)) {
-                file_put_contents($debugPath, ''); 
+                file_put_contents($debugPath, '');
             }
             (new \DebugLogConfigTool\Controllers\ConfigController())->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
             (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();

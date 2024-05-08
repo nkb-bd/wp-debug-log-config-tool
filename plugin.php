@@ -4,7 +4,7 @@
  *
  * Plugin Name:       Debug Log Helper
  * Plugin URI:        #
- * Description:       Debug log View and Manger tools
+ * Description:       Debug & Query log Helper tool
  * Version:           1.5.2
  * Author:            Lukman Nakib
  * Author URI:        https://nkb-bd.github.io/

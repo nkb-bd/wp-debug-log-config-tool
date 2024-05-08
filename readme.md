@@ -1,5 +1,5 @@
 
-A simple debug log plugin. See debug log file in your dashboard. Enable WP_DEBUG & WP_DEBUG_LOG from dashboard. Debug mode will be automatically turned on after activating the plugin. Remote debugging will be lot easier using this plugin.
+A simple debug log plugin. See debug log file in dashboard. Toggle WP_DEBUG & WP_DEBUG_LOG. Debug mode will be automatically turned on after activating the plugin. Remote debugging will be lot easier using this plugin.
 [Plugin Download Link]([https://link-url-here.org](https://wordpress.org/plugins/debug-log-config-tool/))
 
 == Installation ==

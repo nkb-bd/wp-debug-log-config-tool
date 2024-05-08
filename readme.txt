@@ -9,7 +9,7 @@ Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The "Debug Log Config Tool" simplifies debug log management. Enable/disable logging,queries , view levels, clear logs, and set admin notifications from the dashboard
+The "Debug Log Config Tool" simplifies debugging. Toggle logging,queries , view levels, clear logs from dashboard.
 
 == Description ==
 
