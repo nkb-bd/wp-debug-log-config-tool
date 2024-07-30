@@ -3,8 +3,8 @@ Contributors: pyrobd
 Donate link:
 Tags: debug, debug log, developer, tools
 Requires at least: 5.6
-Tested up to: 6.5.2
-Stable tag: 1.5.2
+Tested up to: 6.6.1
+Stable tag: 1.5.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -66,25 +66,33 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 1. ** Debug Log **
 
 == Changelog ==
-= 1.0.0
- -Initial Version
+= 1.0.0 =
+- Initial Version
 
-= 1.4.4
+= 1.4.4 =
 - Fixed Refresh Log
 - Added dashboard widget
-= 1.4
- - Clean UI
- - Refresh Log
- - Email Notification
-= 1.4.2
- - New Constants
- - Removed database dependency
-= 1.4.5
- - Fixed refresh
-= 1.5
- - Fixed Vulnerability of debug log file. Generating random file for debug.
- - Added a new safe mode which will turn off all plugins excluding selected ones.
-= 1.5.2
- - Added query logs
+
+= 1.4 =
+- Clean UI
+- Refresh Log
+- Email Notification
+
+= 1.4.2 =
+- New Constants
+- Removed database dependency
+
+= 1.4.5 =
+- Fixed refresh
+
+= 1.5 =
+- Fixed Vulnerability of debug log file. Generating random file for debug.
+- Added a new safe mode which will turn off all plugins excluding selected ones.
+
+= 1.5.2 =
+- Added query logs
+
+= 1.5.3 =
+- Fix footer text on all page
 
 
