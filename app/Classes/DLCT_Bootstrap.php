@@ -114,13 +114,14 @@ final class DLCT_Bootstrap
                     'current_color' => get_user_option('admin_color', get_current_user_id())
                 ]
             );
+            add_filter( 'admin_footer_text', function (){
+                $message = 'Thanks for using it! If you like this plugin a nice review will be appreciated';
+                $reviewBtn = '<a class="" target="_blank" href="https://wordpress.org/plugins/debug-log-config-tool"> Give Review </a>';
+                return "<span ><p>{$message} {$reviewBtn}</p></span>";
+            } );
         }
     
-        add_filter( 'admin_footer_text', function (){
-            $message = 'Thanks for using it! If you like this plugin a nice review will be appreciated';
-            $reviewBtn = '<a class="" target="_blank" href="https://wordpress.org/plugins/debug-log-config-tool"> Give Review </a>';
-           return "<span ><p>{$message} {$reviewBtn}</p></span>";
-        } );
+       
     }
 
     public function adminMenu()
