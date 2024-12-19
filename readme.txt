@@ -1,9 +1,9 @@
 ===  Debug Log - Manger Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug, debug log, developer, tools
+Tags: debug, log, developer, tools,remote debug
 Requires at least: 5.6
-Tested up to: 6.6.1
+Tested up to: 6.7.1
 Stable tag: 1.5.3
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -14,7 +14,7 @@ The "Debug Log Config Tool" simplifies debugging. Toggle logging,queries , view 
 == Description ==
 
 A simple debug helper plugin. Check **Debug Log** from the dashboard. With Query Log & Email notification . It will trigger an **email notification** using wp-cron if there is any data in the log file.
-Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show or not. By default,it is off so users will not see any debug info.
+Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to show or not. By default,it is off so users will not see any debug info. It helps to debug sites without FTP or remote access.
 
 Use SAVEQUERIES to toggle saving database queries and view database queries from logs
 
