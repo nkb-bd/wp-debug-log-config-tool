@@ -18,6 +18,8 @@ Using WP_DEBUG_DISPLAY along with WP_DEBUG, debug messages can be controlled to 
 
 Use SAVEQUERIES to toggle saving database queries and view database queries from logs
 
+** Added auto Github deploy on adding a tag
+
 [youtube https://youtu.be/moJPyyVfm3A]
 
 * Enable or disable debug constants with a single click.
