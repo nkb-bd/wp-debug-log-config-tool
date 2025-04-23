@@ -1,52 +1,157 @@
 <template>
-    <div>
+    <div class="safe-mode-page">
+        <Toast position="bottom-right" group="br"/>
 
-        <Toast style="margin-top: 20px;" label="Sticky" position="bottom-right" group="br"/>
-        <div v-if="isLoadingPage" class=" flex text-center justify-content-center">
-            <ProgressSpinner style="max-width:100%;text-align: center;
-                                    display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
-                             aria-label="Loading"/>
-        </div>
-        <div v-else class="flex flex-column gap-2 dlct-form">
-
-
-            <div class=" flex justify-content-center dlct-form-item">
-                <div class="message" severity="info"><i class="pi pi-fw pi-info-circle"></i> This will
-                    deactivate/activate all selected plugins when turned on. After turning off previous active plugins
-                    will be restored. Please note that it is in beta version currently. Also keep <b>Debug Log helper</b> this plugin active to manage this page.
-                </div>
-            </div>
-
-
-            <div class="flex justify-content-center dlct-form-item">
-                <div><label for="switch1">Enable SafeMode</label></div>
-                <InputSwitch inputId="switch1" v-model="state.isSafeMode"/>
-            </div>
-
-            <div v-if="state.isSafeMode == true" class=" flex justify-content-center dlct-form-item">
-                <div>
-                    <label>Plugins that will remain active during safe mode</label>
-                    <br>
-                    <Button outlined raised="false" severity="secondary"  size="small" @click="resetSelection" label="Reset"/>
-                    &nbsp;<Button outlined raised="false" severity="info" size="small" @click="selectAll"  label="Select All"/>
-                </div>
-
-                <Listbox listStyle="max-height:350px" filter option-vale="value" v-model="selectedPlugin" multiple :options="pluginsList" optionLabel="name" class="w-full md:w-14rem" />
-
-            </div>
-
-            <div v-if="state.isSafeMode == true" class="flex justify-content-center dlct-form-item">
-                <div></div>
-                <div><small>Other plugins will remain deactivated</small>
-                </div>
-
-            </div>
-
-            <div class=" flex justify-content-center dlct-form-item">
-                <Button :loading="update.isLoading" size="medium" @click="updateSetting()" label="Update"/>
-            </div>
+        <div v-if="isLoadingPage" class="loading-container">
+            <ProgressSpinner strokeWidth="5" aria-label="Loading"/>
         </div>
 
+        <div v-else>
+            <Card>
+                <template #title>
+                    <div class="card-title">
+                        <i class="pi pi-shield" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                        WordPress Safe Mode
+                    </div>
+                </template>
+
+                <template #subtitle>
+                    Troubleshoot your site by selectively disabling plugins
+                </template>
+
+                <template #content>
+                    <div class="safe-mode-content">
+                        <!-- Visual explanation -->
+                        <div class="safe-mode-explainer">
+                            <div class="explainer-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Select Plugins</h3>
+                                    <p>Choose which plugins should remain active during Safe Mode</p>
+                                    <div class="step-visual">
+                                        <div class="plugin-icons">
+                                            <i class="pi pi-check-circle active-plugin"></i>
+                                            <i class="pi pi-check-circle active-plugin"></i>
+                                            <i class="pi pi-times-circle inactive-plugin"></i>
+                                            <i class="pi pi-times-circle inactive-plugin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="explainer-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Enable Safe Mode</h3>
+                                    <p>Activate Safe Mode to temporarily disable unselected plugins</p>
+                                    <div class="step-visual">
+                                        <div class="toggle-visual">
+                                            <div class="toggle-track" :class="{'active': state.isSafeMode}">
+                                                <div class="toggle-thumb"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="explainer-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Troubleshoot</h3>
+                                    <p>Debug your site with only essential plugins active</p>
+                                    <div class="step-visual">
+                                        <i class="pi pi-search troubleshoot-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="explainer-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h3>Disable Safe Mode</h3>
+                                    <p>Turn off Safe Mode to restore all previously active plugins</p>
+                                    <div class="step-visual">
+                                        <div class="plugin-icons">
+                                            <i class="pi pi-check-circle active-plugin"></i>
+                                            <i class="pi pi-check-circle active-plugin"></i>
+                                            <i class="pi pi-check-circle active-plugin"></i>
+                                            <i class="pi pi-check-circle active-plugin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Safe Mode Controls -->
+                        <div class="safe-mode-controls">
+                            <Message severity="info">
+                                <span>
+                                    Safe Mode temporarily disables selected plugins to help identify conflicts.
+                                    Your original plugin configuration will be restored when Safe Mode is turned off.
+                                </span>
+                            </Message>
+
+                            <div class="safe-mode-toggle">
+                                <div class="toggle-label">
+                                    <label for="safe-mode-switch">Enable Safe Mode</label>
+                                    <small v-if="state.isSafeMode" class="status-text active">Active</small>
+                                    <small v-else class="status-text">Inactive</small>
+                                </div>
+                                <InputSwitch inputId="safe-mode-switch" v-model="state.isSafeMode" class="safe-mode-switch"/>
+                            </div>
+
+                            <div v-if="state.isSafeMode" class="plugin-selection">
+                                <div class="selection-header">
+                                    <h3>Active Plugins in Safe Mode</h3>
+                                    <div class="selection-actions">
+                                        <Button icon="pi pi-times" label="None" severity="secondary" text @click="resetSelection" />
+                                        <Button icon="pi pi-check" label="All" severity="secondary" text @click="selectAll" />
+                                    </div>
+                                </div>
+
+                                <div class="plugin-list-container">
+                                    <Listbox
+                                        filter
+                                        v-model="selectedPlugin"
+                                        multiple
+                                        :options="pluginsList"
+                                        optionLabel="name"
+                                        class="plugin-listbox"
+                                        listStyle="max-height:350px"
+                                    />
+
+                                    <div class="plugin-count">
+                                        <Badge :value="selectedPlugin.length" severity="info"></Badge>
+                                        <span>{{ selectedPlugin.length }} plugin{{ selectedPlugin.length !== 1 ? 's' : '' }} selected</span>
+                                    </div>
+                                </div>
+
+                                <div class="plugin-status">
+                                    <div class="status-item">
+                                        <i class="pi pi-check-circle active-plugin"></i>
+                                        <span>{{ selectedPlugin.length }} plugins will remain active</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <i class="pi pi-times-circle inactive-plugin"></i>
+                                        <span>{{ pluginsList.length - selectedPlugin.length }} plugins will be deactivated</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <Button
+                                    :loading="update.isLoading"
+                                    :label="state.isSafeMode ? 'Apply Safe Mode Settings' : 'Update Settings'"
+                                    :severity="state.isSafeMode ? 'warning' : 'primary'"
+                                    icon="pi pi-shield"
+                                    @click="updateSetting()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Card>
+        </div>
     </div>
 </template>
 
@@ -158,3 +263,268 @@
 
 
 </script>
+
+<style scoped>
+.safe-mode-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+}
+
+/* Explainer section */
+.safe-mode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.safe-mode-explainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.explainer-step {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #1e293b;
+}
+
+.step-content p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.step-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.plugin-icons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.active-plugin {
+    color: #22c55e;
+    font-size: 1.2rem;
+}
+
+.inactive-plugin {
+    color: #ef4444;
+    font-size: 1.2rem;
+}
+
+.troubleshoot-icon {
+    color: #3b82f6;
+    font-size: 1.5rem;
+}
+
+.toggle-visual {
+    position: relative;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-track {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #e2e8f0;
+    border-radius: 12px;
+    transition: background-color 0.3s;
+}
+
+.toggle-track.active {
+    background-color: #3b82f6;
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-track.active .toggle-thumb {
+    transform: translateX(26px);
+}
+
+/* Controls section */
+.safe-mode-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.safe-mode-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.toggle-label {
+    display: flex;
+    flex-direction: column;
+}
+
+.toggle-label label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.status-text {
+    color: #64748b;
+}
+
+.status-text.active {
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+.plugin-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.selection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selection-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1e293b;
+}
+
+.selection-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.plugin-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.plugin-listbox {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+
+.plugin-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.plugin-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .safe-mode-explainer {
+        grid-template-columns: 1fr;
+    }
+
+    .safe-mode-toggle {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .selection-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .action-buttons {
+        justify-content: center;
+    }
+}
+</style>

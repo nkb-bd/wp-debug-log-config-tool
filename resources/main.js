@@ -35,6 +35,12 @@ import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import Dropdown from 'primevue/dropdown';
+import Dialog from 'primevue/dialog';
+import Badge from 'primevue/badge';
+import Tooltip from 'primevue/tooltip';
+import Card from 'primevue/card';
+import Message from 'primevue/message';
 
 window.onload = function () {
     const appEl = document.querySelector('#main-app');
@@ -59,6 +65,14 @@ window.onload = function () {
         application.component('AccordionTab', AccordionTab);
         application.component('TabView', TabView);
         application.component('TabPanel', TabPanel);
+        application.component('Dropdown', Dropdown);
+        application.component('Dialog', Dialog);
+        application.component('Badge', Badge);
+        application.component('Card', Card);
+        application.component('Message', Message);
+
+        // Directives
+        application.directive('tooltip', Tooltip);
 
 
         application.use(ToastService);

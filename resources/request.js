@@ -35,6 +35,7 @@ export async function $post(args, url = '') {
     const requestData = new FormData();
     requestData.append('action', 'dlct_logs_admin');
     requestData.append('nonce', window.dlct_wpdebuglog.nonce);
+    requestData.append('_wpnonce', window.dlct_wpdebuglog.nonce); // Add WordPress nonce for verification
     Object.keys(args).forEach(function (key) {
         requestData.append(key, args[key]);
     });

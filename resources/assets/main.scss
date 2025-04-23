@@ -124,6 +124,90 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    align-items: center;
+
+    .log-stats {
+      display: flex;
+      gap: 10px;
+      margin-right: auto;
+
+      .log-count {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 8px;
+        background-color: #f0f9ff;
+        border-radius: 4px;
+        border: 1px solid #bae6fd;
+
+        .log-count-text {
+          font-size: 0.85rem;
+          color: #0369a1;
+          font-weight: 500;
+        }
+      }
+
+      .file-size {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        background-color: #f0fdf4;
+        border-radius: 4px;
+        border: 1px solid #86efac;
+
+        i {
+          color: #16a34a;
+          font-size: 0.9rem;
+        }
+
+        .file-size-text {
+          font-size: 0.85rem;
+          color: #16a34a;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .error-type-filter {
+      max-width: 200px !important;
+      min-width: 150px !important;
+
+      .p-multiselect-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .p-multiselect-token {
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .auto-refresh-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 10px;
+      padding: 4px 8px;
+      background-color: #f9fafb;
+      border-radius: 4px;
+      border: 1px solid #e5e7eb;
+
+      .auto-refresh-label {
+        font-size: 0.8rem;
+        color: #4b5563;
+        white-space: nowrap;
+      }
+
+      .refresh-interval-dropdown {
+        width: 120px;
+        height: 2rem;
+        margin-left: 5px;
+      }
+    }
   }
 
   .p-column-title {
@@ -189,4 +273,57 @@ li.p-tabview-header{
 }
 .query-log-list{
  color: #4a4e56!important;
+}
+
+/* Stack Trace Dialog Styles */
+.error-details {
+  padding: 1rem;
+
+  .error-message, .error-location {
+    margin-bottom: 1.5rem;
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+  }
+
+  .error-message {
+    padding: 1rem;
+    background-color: #fef2f2;
+    border-radius: 4px;
+    border-left: 4px solid #ef4444;
+  }
+
+  .error-location {
+    padding: 1rem;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.log-entry-header {
+  display: flex;
+  align-items: flex-start;
+
+  .log-count-badge {
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+}
+
+.time-with-tooltip {
+  cursor: pointer;
+  border-bottom: 1px dotted #ccc;
+
+  &:hover {
+    color: #2563eb;
+  }
 }

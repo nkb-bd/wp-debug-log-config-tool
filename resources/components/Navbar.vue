@@ -51,6 +51,16 @@
             label: 'Support',
             to: "/support"
         },
+        {
+            label: 'Terminal',
+            icon: 'pi pi-fw pi-terminal',
+            to: "/terminal"
+        },
+        {
+            label: 'Terminal Settings',
+            icon: 'pi pi-fw pi-cog',
+            to: "/terminal-settings"
+        },
 
     ]);
 </script>
