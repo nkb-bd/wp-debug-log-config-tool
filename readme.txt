@@ -3,7 +3,7 @@ Contributors: pyrobd
 Donate link:
 Tags: debug, log, developer, tools,remote debug
 Requires at least: 5.6
-Tested up to: 6.7.1
+Tested up to: 6.8
 Stable tag: 2.0.0
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -50,32 +50,6 @@ A comprehensive debugging toolkit for WordPress developers and site administrato
 
 Please note: Constant values will be restored on plugin deactivation as it was before activating the plugin.
 
-= Roadmap - Upcoming Features =
-
-We're constantly working to improve the Debug Log Config Tool. Here are some features we're planning to add in future releases:
-
-**Developer Tools**
-* Code Snippets Runner: Securely run PHP code snippets for testing (admin only)
-* Theme Template Debugger: See which template files are being used on each page
-* Shortcode Analyzer: Debug shortcodes and their rendered output
-* Cron Job Manager: View, add, edit, and delete WordPress cron jobs
-* Transients Manager: View and clean up transients in the database
-
-**Performance Tools**
-* Memory Usage Profiling: Track memory usage across different parts of your site
-* Page Load Time Analysis: Measure and optimize page load performance
-* Asset Loading Monitor: See which scripts and styles are loaded on each page
-
-**Enhanced Debugging**
-* REST API Debugger: Monitor and log REST API requests and responses
-* AJAX Request Logger: Track AJAX requests for easier debugging
-* Conditional Debugging: Enable debug logging only for specific pages or conditions
-
-**UI Improvements**
-* Dark Mode: Dark theme for the debugging interface
-* Customizable Dashboard: Personalize which debug widgets appear
-* Export/Import Settings: Save and load your debug configurations
-
 
 == Installation ==
 
@@ -102,34 +76,6 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 1. ** Debug Log **
 
 == Changelog ==
-= 1.0.0 =
-- Initial Version
-
-= 1.4.4 =
-- Fixed Refresh Log
-- Added dashboard widget
-
-= 1.4 =
-- Clean UI
-- Refresh Log
-- Email Notification
-
-= 1.4.2 =
-- New Constants
-- Removed database dependency
-
-= 1.4.5 =
-- Fixed refresh
-
-= 1.5 =
-- Fixed Vulnerability of debug log file. Generating random file for debug.
-- Added a new safe mode which will turn off all plugins excluding selected ones.
-
-= 1.5.2 =
-- Added query logs
-
-= 1.5.3 =
-- Fix footer text on all page
 
 = 2.0.0 =
 - Added WP-CLI style command structure in terminal (e.g., `wp core version` instead of `wp-version`)
@@ -146,4 +92,30 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 - Enhanced security for terminal commands (preventing SQL injection, restricting destructive commands)
 - Quick Debug Toggle from admin bar (WP_DEBUG)
 
+= 1.5.3 =
+- Fix footer text on all page
 
+
+= 1.5.2 =
+- Added query logs
+
+= 1.5 =
+- Fixed Vulnerability of debug log file. Generating random file for debug.
+- Added a new safe mode which will turn off all plugins excluding selected ones.
+
+= 1.4.5 =
+- Fixed refresh
+
+= 1.4.2 =
+- New Constants
+- Removed database dependency
+
+= 1.4.4 =
+- Fixed Refresh Log
+- Added dashboard widget
+- Clean UI
+- Refresh Log
+- Email Notification
+
+= 1.0.0 =
+- Initial Version
