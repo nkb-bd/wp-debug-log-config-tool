@@ -12,7 +12,5 @@ $router->get('get_notification_email', 'NotificationController@getNotificationEm
 $router->post('update_notification_email', 'NotificationController@updateNotificationEmail');
 $router->post('update_safe_mode', 'SafeModeController@update');
 $router->get('get_safe_mode', 'SafeModeController@get');
-$router->get('get_terminal_settings', 'TerminalSettingsController@get');
-$router->post('update_terminal_settings', 'TerminalSettingsController@update');
 
 

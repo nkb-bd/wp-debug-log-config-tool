@@ -39,7 +39,7 @@
                                     <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs('debug')" size="small"
                                               icon="pi pi-trash" severity="danger"/>
                                     <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="" severity="info"/>
-                                    <Button @click="generateTestLogs()" size="small" icon="pi pi-bolt" label="Generate Test Logs" severity="secondary"/>
+                                    <Button v-if="!isProductionEnv" @click="generateTestLogs()" size="small" icon="pi pi-bolt" label="Generate Test Logs" severity="secondary"/>
                                 </div>
                             </template>
                             <Column field="details" header="Log">
@@ -155,6 +155,14 @@
     const toast = useToast()
     const props = defineProps(['trigger'])
     const searchString = ref(['Fatal error', 'Warning','Deprecated','Notice','Parse']);
+
+    // Check if we're in production environment to hide test features
+    let isProductionEnv = process.env.NODE_ENV === 'production';
+
+    // For local development, you can override this with a URL parameter
+    if (typeof window !== 'undefined' && window.location.search.includes('force_production=true')) {
+        isProductionEnv = true;
+    }
     const trigger = computed(() => props)
 
     const selectedErrorTypes = ref([]);
@@ -591,7 +599,8 @@
         }
     }
 
-    // Function to generate test logs for demonstration
+    // Function to generate test logs for development and demonstration only
+    // This is hidden in production environments
     async function generateTestLogs() {
         try {
             state.isLoading = true;

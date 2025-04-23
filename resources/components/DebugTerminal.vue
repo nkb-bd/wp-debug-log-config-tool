@@ -43,7 +43,7 @@
     const terminalWindow = ref(null);
     const commandInput = ref(null);
     const terminalOutput = ref([
-        { content: 'WordPress Debug Terminal v1.2.0', type: 'info' },
+        { content: 'WordPress Debug Terminal v2.0.0', type: 'info' },
         { content: 'Type <strong>help</strong> to see available commands', type: 'info' },
         { content: 'Type <strong>wp</strong> to see WP-CLI style commands', type: 'info' },
         { content: '', type: 'info' }

@@ -74,20 +74,17 @@ class LogController
 
     public function loadLogs($limit = false, $lastModified = 0)
     {
-        // Debug information
-        error_log('Debug Log Config Tool: Loading logs from ' . $this->logFilePath);
-        error_log('Debug Log Config Tool: File exists: ' . (file_exists($this->logFilePath) ? 'Yes' : 'No'));
+        // Check if log file exists
 
         if (!file_exists($this->logFilePath)) {
-            error_log('Debug Log Config Tool: Log file does not exist');
+            // Log file doesn't exist, return empty array
             return [];
         }
 
         $fileSize = filesize($this->logFilePath);
-        error_log('Debug Log Config Tool: Log file size: ' . $fileSize . ' bytes');
 
         if ($fileSize === 0) {
-            error_log('Debug Log Config Tool: Log file is empty');
+            // Log file is empty
             return [
                 'logs' => [],
                 'unique_error_types' => [],
@@ -99,7 +96,7 @@ class LogController
         $fh = fopen($this->logFilePath, 'r');
 
         if (!$fh) {
-            error_log('Debug Log Config Tool: Failed to open log file');
+            // Failed to open log file
             return '';
         }
 
@@ -107,11 +104,10 @@ class LogController
         $errorTypes = []; // Initialize error types array
         $i = 0;
         $fileModTime = filemtime($this->logFilePath);
-        error_log('Debug Log Config Tool: File modification time: ' . date('Y-m-d H:i:s', $fileModTime));
 
         // If we're only looking for new logs and file hasn't been modified, return empty
         if ($lastModified > 0 && $fileModTime <= $lastModified) {
-            error_log('Debug Log Config Tool: File not modified since last check');
+            // File not modified since last check
             fclose($fh);
             return [
                 'logs' => [],
@@ -144,9 +140,7 @@ class LogController
             }
 
             // Debug first few lines
-            if ($lineCount <= 5) {
-                error_log('Debug Log Config Tool: Line ' . $lineCount . ': ' . substr($line, 0, 100));
-            }
+            // Debug line processing removed
 
             $logEntry = $this->parseLogLine($line);
 
@@ -177,9 +171,7 @@ class LogController
                 $failedCount++;
 
                 // Debug first few failed lines
-                if ($failedCount <= 5) {
-                    error_log('Debug Log Config Tool: Failed to parse line ' . $lineCount . ': ' . substr($line, 0, 100));
-                }
+                // Debug failed parsing removed
             }
         }
 
@@ -371,21 +363,21 @@ class LogController
 
         // If the log is from the future (server time issues), show it as 'just now'
         if ($time_diff < 0) {
-            return 'just now';
+            return 'Just Now';
         }
 
         // Use WordPress's human_time_diff function but with some improvements
         if ($time_diff < 60) {
-            return 'just now';
+            return 'Just Now';
         } elseif ($time_diff < 3600) {
             $mins = round($time_diff / 60);
-            return $mins . ' ' . _n('minute', 'minutes', $mins) . ' ago';
+            return $mins . ' ' . _n('minute', 'minutes', $mins, 'debug-log-config-tool') . ' ago';
         } elseif ($time_diff < 86400) {
             $hours = round($time_diff / 3600);
-            return $hours . ' ' . _n('hour', 'hours', $hours) . ' ago';
+            return $hours . ' ' . _n('hour', 'hours', $hours, 'debug-log-config-tool') . ' ago';
         } elseif ($time_diff < 604800) {
             $days = round($time_diff / 86400);
-            return $days . ' ' . _n('day', 'days', $days) . ' ago';
+            return $days . ' ' . _n('day', 'days', $days, 'debug-log-config-tool') . ' ago';
         } else {
             // For older logs, show the actual date and time
             return date('M j, Y g:i a', $timestamp);

@@ -10,7 +10,7 @@ class TerminalController
     public function executeCommand()
     {
         // Verify nonce for security - check both possible nonce field names
-        $nonce = isset($_POST['nonce']) ? $_POST['nonce'] : (isset($_POST['_wpnonce']) ? $_POST['_wpnonce'] : '');
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : (isset($_POST['_wpnonce']) ? sanitize_text_field($_POST['_wpnonce']) : '');
         if (empty($nonce) || !wp_verify_nonce($nonce, 'dlct-nonce')) {
             wp_send_json_error([
                 'message' => 'Security verification failed',

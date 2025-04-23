@@ -40,7 +40,7 @@ const toast = useToast();
 const terminalWindow = ref(null);
 const commandInput = ref(null);
 const outputLines = ref([
-  { text: 'WordPress Debug Terminal v1.2.0', type: 'info' },
+  { text: 'WordPress Debug Terminal v2.0.0', type: 'info' },
   { text: 'Type <strong>help</strong> to see available commands', type: 'info' },
   { text: 'Type <strong>wp</strong> to see WP-CLI style commands', type: 'info' },
   { text: '', type: 'info' }
