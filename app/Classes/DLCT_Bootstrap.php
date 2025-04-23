@@ -195,72 +195,92 @@ final class DLCT_Bootstrap
     private function getDebugToggleScript()
     {
         return '
-        jQuery(document).ready(function($) {
-            $(".dlct-toggle-debug").on("click", function(e) {
-                e.preventDefault();
+    jQuery(document).ready(function($) {
+        $(".dlct-toggle-debug").on("click", function(e) {
+            e.preventDefault();
+            
+            var $toggleButton = $(this);
+            var originalHtml = $toggleButton.find(".ab-item").html() || $toggleButton.html();
+            
+            // Store position and parent info
+            var $parent = $toggleButton.parent();
+            var nextElements = $toggleButton.next().length ? $toggleButton.next() : null;
+            
+            // Add loading spinner without modifying structure
+            $toggleButton.find(".ab-item").addClass("dlct-loading")
+                         .append(\' <span class="dlct-spinner" style="display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:dlct-spin 1s linear infinite;"></span>\');
+            
+            // Add spin animation if needed
+            if (!$("#dlct-spinner-style").length) {
+                $("head").append(\'<style id="dlct-spinner-style">@keyframes dlct-spin{to{transform:rotate(360deg)}}</style>\');
+            }
 
-                var $toggleButton = $(this);
-                var originalText = $toggleButton.text().trim();
-
-                // Add loading state
-                $toggleButton.addClass("dlct-loading")
-                             .append(\' <span class="dlct-spinner" style="display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:dlct-spin 1s linear infinite;"></span>\');
-
-                // Add spin animation if needed
-                if (!$("#dlct-spinner-style").length) {
-                    $("head").append(\'<style id="dlct-spinner-style">@keyframes dlct-spin{to{transform:rotate(360deg)}}</style>\');
-                }
-
-                $.ajax({
-                    url: ajaxurl,
-                    type: "POST",
-                    data: {
-                        action: "dlct_toggle_debug",
-                        nonce: "' . wp_create_nonce('dlct_toggle_debug_nonce') . '"
-                    },
-                    success: function(response) {
-                        // Remove loading state and spinner
-                        $toggleButton.removeClass("dlct-loading")
-                                    .find(".dlct-spinner").remove();
-
-                        if (response.success) {
-                            // Update button text
-                            $toggleButton.text(response.data.toggle_text);
-
-                            // Update indicator class
-                            var $indicator = $("#wp-admin-bar-debug_log_config_tool_id .ab-item span:first-child");
-
-                            if (response.data.debug_enabled) {
-                                $indicator.removeClass("dlct-debug-disabled").addClass("dlct-debug-enabled");
-                            } else {
-                                $indicator.removeClass("dlct-debug-enabled").addClass("dlct-debug-disabled");
-                            }
-
-                            // Show success message
-                            if (typeof wp !== "undefined" && wp.notices) {
-                                wp.notices.success(response.data.message);
-                            } else {
-                                alert(response.data.message);
-                            }
+            $.ajax({
+                url: ajaxurl,
+                type: "POST",
+                data: {
+                    action: "dlct_toggle_debug",
+                    nonce: "' . wp_create_nonce('dlct_toggle_debug_nonce') . '"
+                },
+                success: function(response) {
+                    // Remove spinner
+                    $toggleButton.find(".dlct-spinner").remove();
+                    $toggleButton.find(".ab-item").removeClass("dlct-loading");
+                    
+                    if (response.success) {
+                        // Update only the text portion carefully
+                        $toggleButton.find(".ab-item").contents().filter(function() {
+                            return this.nodeType === 3; // Text nodes only
+                        }).first().replaceWith(response.data.toggle_text);
+                        
+                        // Update indicator class (the status indicator)
+                        var $indicator = $("#wp-admin-bar-dlct_logs_id > a span");
+                        console.log(response.data)
+                        if (response.data.debug_enabled == true) {
+                                console.log($indicator)
+                        
+                            $indicator.removeClass("dlct-debug-disabled").addClass("dlct-debug-enabled");
                         } else {
-                            // Restore original text
-                            $toggleButton.text(originalText);
-                            alert(response.data.message || "An error occurred");
+                            $indicator.removeClass("dlct-debug-enabled").addClass("dlct-debug-disabled");
                         }
-                    },
-                    error: function() {
-                        // Remove loading state, spinner and restore text
-                        $toggleButton.removeClass("dlct-loading")
-                                    .find(".dlct-spinner").remove()
-                                    .end()
-                                    .text(originalText);
-
-                        alert("An error occurred while toggling WP_DEBUG");
+                        $(document).trigger("dlct:debug_status_changed", {
+                            debug_enabled: response.data.debug_enabled,
+                        });
+                        
+                        // Show success message
+                        if (typeof wp !== "undefined" && wp.notices) {
+                            wp.notices.success(response.data.message);
+                        } else {
+                            alert(response.data.message);
+                        }
+                    } else {
+                        // Restore original content safely
+                        if ($toggleButton.find(".ab-item").length) {
+                            $toggleButton.find(".ab-item").html(originalHtml);
+                        } else {
+                            $toggleButton.html(originalHtml);
+                        }
+                        alert(response.data.message || "An error occurred");
                     }
-                });
+                },
+                error: function() {
+                    // Remove spinner
+                    $toggleButton.find(".dlct-spinner").remove();
+                    $toggleButton.find(".ab-item").removeClass("dlct-loading");
+                    
+                    // Restore original content safely
+                    if ($toggleButton.find(".ab-item").length) {
+                        $toggleButton.find(".ab-item").html(originalHtml);
+                    } else {
+                        $toggleButton.html(originalHtml);
+                    }
+                    
+                    alert("An error occurred while toggling WP_DEBUG");
+                }
             });
         });
-    ';
+    });
+';
     }
 
     /**

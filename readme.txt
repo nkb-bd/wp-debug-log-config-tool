@@ -144,5 +144,6 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 - Added support for colon syntax in commands (e.g., `wp:db:query` instead of `wp db query`)
 - Help command to show commands by category with organized sections
 - Enhanced security for terminal commands (preventing SQL injection, restricting destructive commands)
+- Quick Debug Toggle from admin bar (WP_DEBUG)
 
 

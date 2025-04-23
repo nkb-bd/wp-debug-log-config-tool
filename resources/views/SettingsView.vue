@@ -102,6 +102,9 @@
     };
     onMounted(() => {
         fetchSettings();
+        jQuery(document).on('dlct:debug_status_changed', (event, data) => {
+            fetchSettings();
+        });
     });
 
 
