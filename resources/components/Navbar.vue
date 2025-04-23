@@ -48,18 +48,19 @@
             to: "/notification"
         },
         {
-            label: 'Support',
-            to: "/support"
-        },
-        {
             label: 'Terminal',
-            icon: 'pi pi-fw pi-terminal',
+            icon: 'pi pi-fw pi-code',
             to: "/terminal"
         },
         {
             label: 'Terminal Settings',
             icon: 'pi pi-fw pi-cog',
             to: "/terminal-settings"
+        },
+        {
+            label: 'Support',
+            icon: 'pi pi-fw pi-info-circle',
+            to: "/support"
         },
 
     ]);

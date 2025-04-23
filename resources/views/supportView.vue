@@ -90,9 +90,7 @@
                     </Divider>
 
                     <div class="support-links">
-                        <Button icon="pi pi-github" label="GitHub" class="p-button-outlined p-button-rounded" @click="openLink('https://github.com/nkb-bd/debug-log-config-tool')" />
-                        <Button icon="pi pi-question-circle" label="Documentation" class="p-button-outlined p-button-rounded" @click="openLink('https://github.com/nkb-bd/debug-log-config-tool#readme')" />
-                        <Button icon="pi pi-exclamation-circle" label="Report Issue" class="p-button-outlined p-button-rounded" @click="openLink('https://github.com/nkb-bd/debug-log-config-tool/issues')" />
+                        <Button icon="pi pi-exclamation-circle" label="Report Issue" class="p-button-outlined p-button-rounded" @click="openLink('https://github.com/nkb-bd/wp-debug-log-config-tool/issues')" />
                         <Button icon="pi pi-user" label="Developer Profile" class="p-button-outlined p-button-rounded p-button-success" @click="openLink('https://github.com/nkb-bd')" />
                     </div>
 
@@ -106,7 +104,7 @@
                                 <i class="pi pi-user-plus"></i>
                             </div>
                             <div class="developer-details">
-                                <h3>Nazmul Hossain</h3>
+                                <h3>Lukman Nakib</h3>
                                 <p>WordPress Developer & Plugin Author</p>
                                 <div class="developer-social">
                                     <Button icon="pi pi-github" class="p-button-rounded p-button-text" @click="openLink('https://github.com/nkb-bd')" />

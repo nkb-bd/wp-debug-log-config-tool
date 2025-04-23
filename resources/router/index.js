@@ -31,11 +31,6 @@ const router = createRouter({
       component: NotificationView
     },
     {
-      path: '/support',
-      name: 'support',
-      component: SupportView
-    },
-    {
       path: '/terminal',
       name: 'terminal',
       component: TerminalView
@@ -44,7 +39,12 @@ const router = createRouter({
       path: '/terminal-settings',
       name: 'terminal-settings',
       component: TerminalSettingsView
-    }
+    },
+    {
+      path: '/support',
+      name: 'support',
+      component: SupportView
+    },
   ]
 })
 
