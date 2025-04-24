@@ -90,8 +90,8 @@
                     </Divider>
 
                     <div class="support-links">
-                        <Button icon="pi pi-exclamation-circle" label="Report Issue" class="p-button-outlined p-button-rounded" @click="openLink('https://github.com/nkb-bd/wp-debug-log-config-tool/issues')" />
-                        <Button icon="pi pi-user" label="Developer Profile" class="p-button-outlined p-button-rounded p-button-success" @click="openLink('https://github.com/nkb-bd')" />
+                        <Button icon="pi pi-exclamation-circle" label="Report Issue" class="p-button-outlined p-button-rounded p-button-sm" @click="openLink('https://github.com/nkb-bd/wp-debug-log-config-tool/issues')" />
+                        <Button icon="pi pi-user" label="Developer Profile" class="p-button-outlined p-button-rounded p-button-success p-button-sm" @click="openLink('https://github.com/nkb-bd')" />
                     </div>
 
                     <Divider align="center">

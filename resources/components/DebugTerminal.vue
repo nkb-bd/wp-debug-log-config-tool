@@ -3,8 +3,8 @@
         <div class="terminal-header">
             <h3>WordPress Debug Terminal</h3>
             <div class="terminal-actions">
-                <Button icon="pi pi-copy" @click="copyTerminalContent" v-tooltip.top="'Copy output'" />
-                <Button icon="pi pi-trash" @click="clearTerminal" v-tooltip.top="'Clear terminal'" />
+                <Button icon="pi pi-copy" class="p-button-sm" @click="copyTerminalContent" v-tooltip.top="'Copy output'" />
+                <Button icon="pi pi-trash" class="p-button-sm" @click="clearTerminal" v-tooltip.top="'Clear terminal'" />
             </div>
         </div>
 

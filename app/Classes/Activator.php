@@ -14,23 +14,23 @@ class Activator
             $this->saveInitialConstants();
             $this->updateDebugConstants();
         } catch (\Exception $e){
-        
+
         }
-       
+
     }
-    
+
     private function saveInitialConstants()
     {
-        (new ConfigController())->storeInitialValues();
+        ConfigController::getInstance()->storeInitialValues();
     }
-    
+
     /**
      * Add new if not existent constants
      * @return void
      */
     private function updateDebugConstants()
     {
-        $constantManager = new ConfigController();
+        $constantManager = ConfigController::getInstance();
         $updatedConstants = [];
         $debugConstants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
         foreach ($debugConstants as $constantKey=>$constant) {
@@ -40,7 +40,7 @@ class Activator
             if (!$success) {
                 $value = $constantManager->getValue($constantKey);
             }
-            
+
             $updatedConstants[] = [
                 'name'  => strtoupper($constantKey),
                 'value' => $value,

@@ -48,7 +48,7 @@ class LogController
 
             // Load logs, potentially only new ones
             $logData = $this->loadLogs(false, $lastModified);
-            $isSaveQueryOn = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue('SAVEQUERIES');
+            $isSaveQueryOn = \DebugLogConfigTool\Controllers\ConfigController::getInstance()->getValue('SAVEQUERIES');
 
             wp_send_json_success([
                 'success' => true,
@@ -178,11 +178,7 @@ class LogController
         fclose($fh);
         $uniqueErrorTypes = array_keys($errorTypes);
 
-        error_log('Debug Log Config Tool: Total lines read: ' . $lineCount);
-        error_log('Debug Log Config Tool: Successfully parsed: ' . $parsedCount);
-        error_log('Debug Log Config Tool: Failed to parse: ' . $failedCount);
-        error_log('Debug Log Config Tool: Logs collected: ' . count($logs));
-        error_log('Debug Log Config Tool: Error types found: ' . implode(', ', $uniqueErrorTypes));
+        // Removed error_log statements to reduce memory usage
 
         return [
             'logs'               => array_reverse($logs),
@@ -540,7 +536,7 @@ class LogController
             if (!is_file($debugPath)) {
                 file_put_contents($debugPath, '');
             }
-            (new \DebugLogConfigTool\Controllers\ConfigController())->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
+            ConfigController::getInstance()->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
             (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();
         }
         return $debugPath;
@@ -559,7 +555,7 @@ class LogController
 
         try {
             // Make sure debug logging is enabled
-            $configController = new \DebugLogConfigTool\Controllers\ConfigController();
+            $configController = \DebugLogConfigTool\Controllers\ConfigController::getInstance();
             $isDebugEnabled = $configController->getValue('WP_DEBUG');
             $isDebugLogEnabled = $configController->getValue('WP_DEBUG_LOG');
 
@@ -613,10 +609,7 @@ class LogController
             $backtraceExample = $this->generateBacktraceExample();
             $this->writeTestLog($timestamp, '[DEBUG] Custom backtrace example: Testing a function with detailed backtrace' . "\n" . $backtraceExample);
 
-            // Log the path to help with debugging
-            error_log('Debug Log Config Tool: Test logs written to ' . $this->logFilePath);
-            error_log('Debug Log Config Tool: File exists: ' . (file_exists($this->logFilePath) ? 'Yes' : 'No'));
-            error_log('Debug Log Config Tool: File size: ' . filesize($this->logFilePath) . ' bytes');
+            // Removed error_log statements to reduce memory usage
 
             wp_send_json_success([
                 'message' => 'Test logs generated successfully',
@@ -627,7 +620,7 @@ class LogController
             ]);
 
         } catch (\Exception $e) {
-            error_log('Debug Log Config Tool Error: ' . $e->getMessage());
+            // Removed error_log statement to reduce memory usage
             wp_send_json_error([
                 'message' => $e->getMessage(),
                 'success' => false

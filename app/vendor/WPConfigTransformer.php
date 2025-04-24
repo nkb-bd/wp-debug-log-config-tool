@@ -32,6 +32,13 @@ class WPConfigTransformer {
 	protected $wp_configs = array();
 
 	/**
+	 * Flag to track if the config file has been loaded and parsed
+	 *
+	 * @var bool
+	 */
+	protected $is_loaded = false;
+
+	/**
 	 * Instantiates the class with a valid wp-config.php.
 	 *
 	 * @throws Exception If the wp-config.php file is missing.
@@ -54,6 +61,29 @@ class WPConfigTransformer {
 	}
 
 	/**
+	 * Load and parse the wp-config.php file if not already loaded
+	 *
+	 * @throws Exception If the wp-config.php file is empty.
+	 */
+	protected function load_wp_config() {
+		// Only load and parse once per instance
+		if ( $this->is_loaded ) {
+			return;
+		}
+
+		$wp_config_src = file_get_contents( $this->wp_config_path );
+
+		if ( ! trim( $wp_config_src ) ) {
+			throw new \Exception( 'Config file is empty.' );
+		}
+
+		// Normalize the newline to prevent an issue coming from OSX.
+		$this->wp_config_src = str_replace( array( "\n\r", "\r" ), "\n", $wp_config_src );
+		$this->wp_configs = $this->parse_wp_config( $this->wp_config_src );
+		$this->is_loaded = true;
+	}
+
+	/**
 	 * Checks if a config exists in the wp-config.php file.
 	 *
 	 * @throws Exception If the wp-config.php file is empty.
@@ -65,18 +95,10 @@ class WPConfigTransformer {
 	 * @return bool
 	 */
 	public function exists( $type, $name ) {
-		$wp_config_src = file_get_contents( $this->wp_config_path );
-
-		if ( ! trim( $wp_config_src ) ) {
-			throw new \Exception( 'Config file is empty.' );
-		}
-		// Normalize the newline to prevent an issue coming from OSX.
-		$this->wp_config_src = str_replace( array( "\n\r", "\r" ), "\n", $wp_config_src );
-		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
+		$this->load_wp_config();
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
-			//throw new \Exception( "Config type '{$type}' does not exist." );
-            return false;
+			return false;
 		}
 
 		return isset( $this->wp_configs[ $type ][ $name ] );
@@ -91,21 +113,17 @@ class WPConfigTransformer {
 	 * @param string $type Config type (constant or variable).
 	 * @param string $name Config name.
 	 *
-	 * @return array
+	 * @return mixed The value or null if not found
 	 */
 	public function get_value( $type, $name ) {
-		$wp_config_src = file_get_contents( $this->wp_config_path );
-
-		if ( ! trim( $wp_config_src ) ) {
-			throw new \Exception( 'Config file is empty.' );
-		}
-
-		$this->wp_config_src = $wp_config_src;
-		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
+		$this->load_wp_config();
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
-//			throw new \Exception( "Config type '{$type}' does not exist." );
-            return null;
+			return null;
+		}
+
+		if ( ! isset( $this->wp_configs[ $type ][ $name ] ) ) {
+			return null;
 		}
 
 		return $this->wp_configs[ $type ][ $name ]['value'];
@@ -126,9 +144,11 @@ class WPConfigTransformer {
 	 */
 	public function add( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
-            return ;
-			//throw new \Exception( 'Config value must be a string.' );
+            return false;
 		}
+
+		// Make sure the config file is loaded
+		$this->load_wp_config();
 
 		if ( $this->exists( $type, $name ) ) {
 			return false;
@@ -160,7 +180,12 @@ class WPConfigTransformer {
 			$contents = str_replace( $anchor, $new_src, $this->wp_config_src );
 		}
 
-		return $this->save( $contents );
+		$result = $this->save( $contents );
+
+		// Reset loaded state to force reload on next operation
+		$this->is_loaded = false;
+
+		return $result;
 	}
 
 	/**
@@ -177,8 +202,11 @@ class WPConfigTransformer {
 	 */
 	public function update( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
-			throw new \Exception( 'Config value must be a string.' );
+			return false;
 		}
+
+		// Make sure the config file is loaded
+		$this->load_wp_config();
 
 		$defaults = array(
 			'add'       => true, // Add the config if missing.
@@ -214,7 +242,12 @@ class WPConfigTransformer {
 			$this->wp_config_src
 		);
 
-		return $this->save( $contents );
+		$result = $this->save( $contents );
+
+		// Reset loaded state to force reload on next operation
+		$this->is_loaded = false;
+
+		return $result;
 	}
 
 	/**
@@ -226,6 +259,9 @@ class WPConfigTransformer {
 	 * @return bool
 	 */
 	public function remove( $type, $name ) {
+		// Make sure the config file is loaded
+		$this->load_wp_config();
+
 		if ( ! $this->exists( $type, $name ) ) {
 			return false;
 		}
@@ -233,7 +269,12 @@ class WPConfigTransformer {
 		$pattern  = sprintf( '/(?<=^|;|<\?php\s|<\?\s)%s\s*(\S|$)/m', preg_quote( $this->wp_configs[ $type ][ $name ]['src'], '/' ) );
 		$contents = preg_replace( $pattern, '$1', $this->wp_config_src );
 
-		return $this->save( $contents );
+		$result = $this->save( $contents );
+
+		// Reset loaded state to force reload on next operation
+		$this->is_loaded = false;
+
+		return $result;
 	}
 
 	/**
@@ -289,12 +330,20 @@ class WPConfigTransformer {
 		$configs['constant'] = array();
 		$configs['variable'] = array();
 
-		// Strip comments.
-		foreach ( token_get_all( $src ) as $token ) {
-			if ( in_array( $token[0], array( T_COMMENT, T_DOC_COMMENT ), true ) ) {
-				$src = str_replace( $token[1], '', $src );
+		// Strip comments more efficiently
+		$tokens = token_get_all( $src );
+		$filtered_src = '';
+		foreach ( $tokens as $token ) {
+			if ( is_array( $token ) ) {
+				if ( !in_array( $token[0], array( T_COMMENT, T_DOC_COMMENT ), true ) ) {
+					$filtered_src .= $token[1];
+				}
+			} else {
+				$filtered_src .= $token;
 			}
 		}
+		$src = $filtered_src;
+		unset($filtered_src, $tokens); // Free memory
 
 		preg_match_all( '/(?<=^|;|<\?php\s|<\?\s)(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(\'\'|""|\'.*?[^\\\\]\'|".*?[^\\\\]"|.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
 		preg_match_all( '/(?<=^|;|<\?php\s|<\?\s)(\h*\$(\w+)\s*=)(\s*(\'\'|""|\'.*?[^\\\\]\'|".*?[^\\\\]"|.*?)\s*;)/ims', $src, $variables );
@@ -355,6 +404,9 @@ class WPConfigTransformer {
 		if ( false === $result ) {
 			throw new \Exception( 'Failed to update the config file.' );
 		}
+
+		// Update the source to the new content
+		$this->wp_config_src = $contents;
 
 		return true;
 	}

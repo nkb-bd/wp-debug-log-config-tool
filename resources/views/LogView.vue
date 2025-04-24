@@ -27,19 +27,19 @@
 
                                     <MultiSelect @change="filteredEntries" v-if="state.logs && Object.entries(state.logs).length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
                                                  :maxSelectedLabels="3" class="error-type-filter" />
-                                    <span class="p-input-icon-left">
-                          <i class="pi pi-search" />
-                          <InputText  v-if="state.logs && Object.entries(state.logs).length" @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
-                        </span>
+                                         <span  v-if="state.logs && Object.entries(state.logs).length" class="p-input-icon-left">
+                                              <i class="pi pi-search" />
+                                              <InputText  @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
+                                        </span>
                                     <div class="auto-refresh-controls">
                                         <span class="auto-refresh-label">Auto-refresh:</span>
                                         <InputSwitch v-model="autoRefreshEnabled" @change="toggleAutoRefresh" />
                                         <Dropdown v-if="autoRefreshEnabled" v-model="autoRefreshInterval" :options="refreshIntervals" optionLabel="label" optionValue="value" placeholder="Interval" class="refresh-interval-dropdown" />
                                     </div>
-                                    <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs('debug')" size="small"
+                                    <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs('debug')" class="p-button-sm"
                                               icon="pi pi-trash" severity="danger"/>
-                                    <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="" severity="info"/>
-                                    <Button v-if="!isProductionEnv" @click="generateTestLogs()" size="small" icon="pi pi-bolt" label="Generate Test Logs" severity="secondary"/>
+                                    <Button @click="fetchLogs()" class="p-button-sm" icon="pi pi-refresh" label="" severity="info"/>
+                                    <Button v-if="!isProductionEnv" @click="generateTestLogs()" class="p-button-sm" icon="pi pi-bolt" label="Generate Test Logs" severity="secondary"/>
                                 </div>
                             </template>
                             <Column field="details" header="Log">
@@ -50,10 +50,10 @@
                                             <Badge v-if="slotProps.data.occurrenceCount > 1" :value="slotProps.data.occurrenceCount" severity="warning" class="log-count-badge" />
                                         </div>
                                         <div>
-                                            <Button v-if="slotProps.data.error_type && (slotProps.data.error_type === 'Fatal error' || slotProps.data.error_type === 'Parse error' || slotProps.data.error_type === 'Parse')"
-                                                @click="showStackTrace(slotProps.data)" size="small" icon="pi pi-list" label="View Stack Trace" class="mt-2" severity="secondary"/>
+                                            <Button  v-if="slotProps.data.error_type && (slotProps.data.error_type === 'Fatal error' || slotProps.data.error_type === 'Parse error' || slotProps.data.error_type === 'Parse')"
+                                                @click="showStackTrace(slotProps.data)" class="p-button-sm mt-2" icon="pi pi-list" label="View Stack Trace" severity="secondary"/>
                                             <Button v-else-if="slotProps.data.details && slotProps.data.details.includes('backtrace')"
-                                                @click="showStackTrace(slotProps.data)" size="small" icon="pi pi-list" label="View Backtrace" class="mt-2" severity="info"/>
+                                                @click="showStackTrace(slotProps.data)" class="p-button-sm mt-2" icon="pi pi-list" label="View Backtrace" severity="info"/>
                                         </div>
                                     </div>
                                 </template>
@@ -81,9 +81,9 @@
                                     <InputSwitch v-model="autoRefreshEnabled" @change="toggleAutoRefresh" />
                                 </div>
                                 <Button v-if="state.query_logs && Object.entries(state.query_logs).length"
-                                            @click="deleteLogs('query')" size="small"   icon="pi pi-trash" severity="danger">
+                                            @click="deleteLogs('query')" class="p-button-sm"   icon="pi pi-trash" severity="danger">
                                 </Button>
-                                <Button @click="fetchLogs()" size="small" icon="pi pi-refresh" label="Refresh" severity="info"/>
+                                <Button @click="fetchLogs()" class="p-button-sm" icon="pi pi-refresh" label="Refresh" severity="info"/>
                             </div>
                         </div>
                         <div v-if="state.isLoading" class=" flex text-center justify-content-center">

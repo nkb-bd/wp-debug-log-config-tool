@@ -5,26 +5,26 @@ namespace DebugLogConfigTool\Controllers;
 class SettingsController
 {
     protected $optionKey = 'debuglogconfigtool_updated_constant';
-    
+
     public function get()
     {
         Helper::verifyRequest();
         $configs = $this->getConstants();
         $formattedSettings = [];
         foreach ($configs as $setting) {
-            $configFileValue = (new \DebugLogConfigTool\Controllers\ConfigController())->getValue($setting['name']);
+            $configFileValue = ConfigController::getInstance()->getValue($setting['name']);
             if ($configFileValue != null) {
                 # value exists in config so do nothing
             } else {
                 # value does not exist in config so update
                 $configFileValue = $setting['value'];
-                (new \DebugLogConfigTool\Controllers\ConfigController())->update($setting['name'], $setting['value']);
+                ConfigController::getInstance()->update($setting['name'], $setting['value']);
             }
             if ($setting['name'] == 'WP_DEBUG_LOG') {
                 $value = $configFileValue;
             } else {
                 $value = $configFileValue === true || $configFileValue === 'true';
-    
+
             }
             $formattedSettings[] = [
                 'name'  => $setting['name'],
@@ -37,12 +37,12 @@ class SettingsController
             'success'  => true
         ]);
     }
-    
+
     public function store($settings)
     {
         update_option($this->optionKey, json_encode($settings));
     }
-    
+
     public function update()
     {
         Helper::verifyRequest();
@@ -54,7 +54,7 @@ class SettingsController
             if ($setting['name'] == $updateKey) {
                 $setting['value'] = $updateValue;
                 #Write to wp-config.php file
-                (new \DebugLogConfigTool\Controllers\ConfigController())->update($updateKey, $updateValue);
+                ConfigController::getInstance()->update($updateKey, $updateValue);
             }
             $updatedSettings[] = $setting;
         }
@@ -66,7 +66,7 @@ class SettingsController
             'success'          => true
         ]);
     }
-    
+
     public function getConstants()
     {
         $WP_DEBUG_LOG = true;
@@ -101,12 +101,12 @@ class SettingsController
             ],
         ];
         $settings = apply_filters('dlct_constants', $constants);
-        
+
         if (empty($settings)) {
             return [];
         }
-        
+
         return $settings;
     }
-    
+
 }

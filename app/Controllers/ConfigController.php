@@ -8,7 +8,25 @@ class ConfigController
 {
     const WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE = 'dlct_data_initial';
     private static $configfilePath;
-    
+
+    /**
+     * @var ConfigController
+     */
+    protected static $instance;
+
+    /**
+     * Get singleton instance
+     *
+     * @return ConfigController
+     */
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
     protected $optionKey = 'debuglogconfigtool_updated_constant';
     public $debugConstants = ['WP_DEBUG', 'WP_DEBUG_LOG', 'SCRIPT_DEBUG'];
     protected $config_file_manager;
@@ -17,12 +35,12 @@ class ConfigController
         'raw'       => true,
         'add'       => true,
     ];
-    
+
     public function __construct()
     {
         $this->initialize();
     }
-    
+
     private function initialize()
     {
         self::$configfilePath = $this->getConfigFilePath();
@@ -33,7 +51,7 @@ class ConfigController
             self::$configArgs['anchor'] = $matches[0] ?? '';
             self::$configArgs['placement'] = 'after';
         }
-        
+
         if (!is_writable(self::$configfilePath)) {
             add_action('admin_notices', function () {
                 $class = 'notice notice-error is-dismissible';
@@ -42,18 +60,18 @@ class ConfigController
             });
             return;
         }
-        
+
         $this->config_file_manager = new WPConfigTransformer(self::$configfilePath);
     }
-    
-    
+
+
     public function store($constants)
     {
         try {
             $updatedConstants = [];
             $constants = json_decode($constants, true);
             $this->maybeRemoveDeletedConstants($constants);
-            
+
             foreach ($constants as $constant) {
 
                 $key = sanitize_title($constant['name']);
@@ -79,12 +97,12 @@ class ConfigController
             ]);
         }
     }
-    
+
     public function exists($constant)
     {
         return $this->config_file_manager->exists('constant', strtoupper($constant));
     }
-    
+
     public function getValue($constant)
     {
         if ($this->exists(strtoupper($constant))) {
@@ -92,8 +110,8 @@ class ConfigController
         }
         return null;
     }
-    
-    
+
+
     public function update($key, $value)
     {
         try{
@@ -104,11 +122,11 @@ class ConfigController
             }
             return $this->config_file_manager->update('constant', strtoupper($key), $value, $option);
         } catch (\Exception $e){
-        
+
         }
-       
+
     }
-    
+
     public function getConfigFilePath()
     {
         $file = ABSPATH . 'wp-config.php';
@@ -119,7 +137,7 @@ class ConfigController
         }
         return apply_filters('wp_dlct_config_file_manager_path', $file);
     }
-    
+
     /**
      * remove deleted constant from config
      * @param $constants
@@ -132,8 +150,8 @@ class ConfigController
             $this->config_file_manager->remove('constant', strtoupper($item));
         }
     }
-    
-    
+
+
     public function storeInitialValues()
     {
         if (!is_writable(self::$configfilePath)) {
@@ -141,7 +159,7 @@ class ConfigController
         }
         $predefinedConstants = [];
         $constants =  (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
-    
+
         foreach ($constants as $constantKey => $constantValue) {
             if ($this->exists(strtoupper($constantKey))) {
                 $value = $this->getValue(strtoupper($constantKey));
@@ -150,8 +168,8 @@ class ConfigController
         }
         update_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE, $predefinedConstants ,false);
     }
-    
-    
+
+
     public function restoreInitialState()
     {
         try {
@@ -159,7 +177,7 @@ class ConfigController
             if (!is_writable(self::$configfilePath)) {
                 return;
             }
-    
+
             $constants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
             //first turn off all
             foreach ($constants as $key => $constants) {
@@ -170,10 +188,10 @@ class ConfigController
                 (new ConfigController())->update($key, $value);
             }
         } catch (\Exception $e){
-        
+
         }
-       
+
     }
-    
-    
+
+
 }

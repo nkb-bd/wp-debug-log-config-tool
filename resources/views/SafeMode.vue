@@ -144,6 +144,7 @@
                                     :label="state.isSafeMode ? 'Apply Safe Mode Settings' : 'Update Settings'"
                                     :severity="state.isSafeMode ? 'warning' : 'primary'"
                                     icon="pi pi-shield"
+                                    class="p-button-sm"
                                     @click="updateSetting()"
                                 />
                             </div>
