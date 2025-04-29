@@ -168,10 +168,53 @@ class LogController
                     break;
                 }
             } else {
-                $failedCount++;
+                // Check if this is a continuation line (like a stack trace) that should be appended to the previous log entry
+                if (!empty($logs)) {
+                    $trimmedLine = trim($line);
+                    $lastIndex = count($logs) - 1;
+                    $isStackTraceLine = false;
 
-                // Debug first few failed lines
-                // Debug failed parsing removed
+                    // Check for standard stack trace lines
+                    if (preg_match('/^\s*#\d+\s+/', $line) || strpos($trimmedLine, 'thrown in') === 0) {
+                        $isStackTraceLine = true;
+                    }
+                    // Check for lines that might be part of a stack trace but don't match the standard pattern
+                    else if (strpos($trimmedLine, '{main}') !== false ||
+                             strpos($trimmedLine, '...') === 0 ||
+                             (strpos($trimmedLine, '->') !== false && strpos($trimmedLine, '.php') !== false) ||
+                             (strpos($trimmedLine, '::') !== false && strpos($trimmedLine, '.php') !== false)) {
+                        $isStackTraceLine = true;
+                    }
+                    // Check if this might be a continuation of a previous stack trace line
+                    else if (isset($logs[$lastIndex]['details']) &&
+                             (strpos($logs[$lastIndex]['details'], 'Stack trace:') !== false ||
+                              strpos($logs[$lastIndex]['details'], 'Backtrace:') !== false)) {
+                        // If the previous log entry contains a stack trace header, this might be part of it
+                        $isStackTraceLine = true;
+                    }
+
+                    if ($isStackTraceLine) {
+                        // This is likely a stack trace line, append it to the details of the last log entry
+                        $logs[$lastIndex]['details'] .= "\n" . $line;
+
+                        // If we have a stack trace array, add this line to it
+                        if (!isset($logs[$lastIndex]['stack_trace'])) {
+                            $logs[$lastIndex]['stack_trace'] = [];
+                        }
+                        $logs[$lastIndex]['stack_trace'][] = $trimmedLine;
+
+                        // Re-extract the stack trace from the updated details
+                        $logs[$lastIndex]['stack_trace'] = $this->extractStackTrace($logs[$lastIndex]['details']);
+                    } else {
+                        $failedCount++;
+                        // Debug first few failed lines
+                        // Debug failed parsing removed
+                    }
+                } else {
+                    $failedCount++;
+                    // Debug first few failed lines
+                    // Debug failed parsing removed
+                }
             }
         }
 
@@ -193,6 +236,13 @@ class LogController
         // Try to handle different log formats
         $sep = '$!$';
 
+        // Check if this is a continuation of a stack trace (starts with '#' followed by a number)
+        if (preg_match('/^\s*#\d+\s+/', $line) || strpos(trim($line), 'thrown in') === 0) {
+            // This is likely part of a stack trace, not a new log entry
+            // Return false so it can be appended to the previous log entry
+            return false;
+        }
+
         // Standard WordPress log format: [YYYY-MM-DD HH:MM:SS timezone] message
         $standardFormat = preg_replace("/^\[([0-9a-zA-Z-]+) ([0-9:]+) ([a-zA-Z_\/]+)\] (.*)$/i", "$1" . $sep . "$2" . $sep . "$3" . $sep . "$4", $line);
 
@@ -205,6 +255,8 @@ class LogController
             }
         }
 
+
+
         // Alternative format: [YYYY-MM-DD HH:MM:SS] message (no timezone)
         if (preg_match("/^\[([0-9-]+) ([0-9:]+)\] (.*)$/i", $line, $matches)) {
             $logTime = strtotime($matches[1] . ' ' . $matches[2]);
@@ -213,23 +265,48 @@ class LogController
                 $logTime = current_time('U');
             }
 
+            $details = $matches[3];
+
+            // Extract stack trace if available
+            $stackTrace = $this->extractStackTrace($details);
+
+            // Extract file location and line number
+            $fileLocation = '';
+            $lineNumber = '';
+            if (preg_match('/in\s+([^\s]+)\s+on\s+line\s+(\d+)/', $details, $matches)) {
+                $fileLocation = $matches[1];
+                $lineNumber = $matches[2];
+            }
+
             return [
                 'date' => date('d/m/y', $logTime),
                 'time' => $this->formatTimeAgo($logTime),
                 'raw_time' => $logTime,
                 'timezone' => '',
-                'details' => $matches[3],
-                'error_type' => $this->extractErrorType($matches[3]),
-                'plugin_name' => $this->extractPluginName($matches[3]),
-                'file_location' => '',
-                'line_number' => ''
+                'details' => $details,
+                'error_type' => $this->extractErrorType($details),
+                'plugin_name' => $this->extractPluginName($details),
+                'file_location' => $fileLocation,
+                'line_number' => $lineNumber,
+                'stack_trace' => $stackTrace
             ];
         }
 
         // Simple format: just the message without timestamp
         if (strpos($line, 'PHP ') === 0 && (strpos($line, 'Notice') !== false || strpos($line, 'Warning') !== false ||
-            strpos($line, 'Fatal error') !== false || strpos($line, 'Parse error') !== false)) {
+            strpos($line, 'Fatal error') !== false || strpos($line, 'Parse error') !== false || strpos($line, 'Deprecated') !== false)) {
             $currentTime = current_time('U');
+
+            // Extract stack trace if available
+            $stackTrace = $this->extractStackTrace($line);
+
+            // Extract file location and line number
+            $fileLocation = '';
+            $lineNumber = '';
+            if (preg_match('/in\s+([^\s]+)\s+on\s+line\s+(\d+)/', $line, $matches)) {
+                $fileLocation = $matches[1];
+                $lineNumber = $matches[2];
+            }
 
             return [
                 'date' => date('d/m/y', $currentTime),
@@ -239,8 +316,9 @@ class LogController
                 'details' => $line,
                 'error_type' => $this->extractErrorType($line),
                 'plugin_name' => $this->extractPluginName($line),
-                'file_location' => '',
-                'line_number' => ''
+                'file_location' => $fileLocation,
+                'line_number' => $lineNumber,
+                'stack_trace' => $stackTrace
             ];
         }
 
@@ -283,20 +361,7 @@ class LogController
             $lineNumber = isset($errorDetails[2]) ? $errorDetails[2] : '';
 
             // Extract stack trace if available
-            $stackTrace = [];
-            if (strpos($info, 'Stack trace:') !== false) {
-                preg_match('/Stack trace:[\s\S]*$/i', $info, $stackMatches);
-                if (!empty($stackMatches[0])) {
-                    $stackLines = explode("\n", $stackMatches[0]);
-                    foreach ($stackLines as $stackLine) {
-                        $trimmedLine = trim($stackLine);
-                        // Match both standard stack trace lines and the final 'thrown in' line
-                        if (preg_match('/^#\d+\s+/', $trimmedLine) || strpos($trimmedLine, 'thrown in') === 0) {
-                            $stackTrace[] = $trimmedLine;
-                        }
-                    }
-                }
-            }
+            $stackTrace = $this->extractStackTrace($info);
 
             // If no stack trace was found but the error message contains line numbers and file paths,
             // create a simple stack trace from the error message
@@ -344,6 +409,102 @@ class LogController
         }
 
         return $pluginName;
+    }
+
+    /**
+     * Extract stack trace from log message
+     *
+     * @param string $logContent The log content to extract stack trace from
+     * @return array Array of stack trace lines
+     */
+    private function extractStackTrace($logContent)
+    {
+        $stackTrace = [];
+
+        if (strpos($logContent, 'Stack trace:') !== false) {
+            // First try to extract the entire stack trace section
+            $stackTraceStart = strpos($logContent, 'Stack trace:');
+            $stackTraceText = substr($logContent, $stackTraceStart);
+
+            // Split by newlines and process each line
+            $stackLines = explode("\n", $stackTraceText);
+
+            // Add the "Stack trace:" header line
+            $stackTrace[] = trim($stackLines[0]);
+
+            // Process all lines after the header
+            $inStackTrace = true;
+            $lastFrameNumber = -1;
+
+            for ($i = 1; $i < count($stackLines); $i++) {
+                $trimmedLine = trim($stackLines[$i]);
+
+                // Skip empty lines
+                if (empty($trimmedLine)) {
+                    continue;
+                }
+
+                // Check if we've reached the end of the stack trace
+                if (strpos($trimmedLine, 'Variable dump:') === 0) {
+                    // We've reached the variable dump section
+                    $stackTrace[] = $trimmedLine;
+                    continue;
+                }
+
+                // Match standard stack trace lines (#0, #1, etc.)
+                if (preg_match('/^#(\d+)\s+/', $trimmedLine, $matches)) {
+                    $frameNumber = (int)$matches[1];
+                    $lastFrameNumber = $frameNumber;
+                    $stackTrace[] = $trimmedLine;
+                }
+                // Match the "thrown in" line that often appears at the end
+                else if (strpos($trimmedLine, 'thrown in') === 0) {
+                    $stackTrace[] = $trimmedLine;
+                }
+                // Match any line that looks like a stack frame but might not have the standard format
+                else if (preg_match('/^\d+\s+/', $trimmedLine) ||
+                         (strpos($trimmedLine, '.php') !== false && strpos($trimmedLine, '(') !== false)) {
+                    $stackTrace[] = $trimmedLine;
+                }
+                // If the line doesn't match any pattern but we're still in the stack trace section
+                // and it's not a known section header, it might be a continuation of the previous line
+                else if ($inStackTrace &&
+                         strpos($trimmedLine, 'Variable dump:') !== 0 &&
+                         strpos($trimmedLine, 'Backtrace:') !== 0) {
+                    // Check if this might be a continuation of the previous frame
+                    // or if it's a line with additional information
+                    if (!empty($stackTrace)) {
+                        // If the line contains PHP code-like content, it's likely part of the stack trace
+                        if (strpos($trimmedLine, '->') !== false ||
+                            strpos($trimmedLine, '::') !== false ||
+                            strpos($trimmedLine, '()') !== false ||
+                            strpos($trimmedLine, '{main}') !== false) {
+                            $stackTrace[] = $trimmedLine;
+                        }
+                        // If the line starts with a character that could indicate a continuation
+                        else if (strpos($trimmedLine, '...') === 0 ||
+                                 strpos($trimmedLine, '   ') === 0) {
+                            $stackTrace[] = $trimmedLine;
+                        }
+                    }
+                }
+            }
+
+            // If we couldn't extract any stack trace lines, try a more aggressive approach
+            if (count($stackTrace) <= 1) { // Only the header line
+                preg_match_all('/#\d+\s+[^#\n]+/', $stackTraceText, $matches);
+                if (!empty($matches[0])) {
+                    // Add the header line first
+                    $stackTrace = [trim($stackLines[0])];
+                    // Then add all matched frames
+                    foreach ($matches[0] as $match) {
+                        $stackTrace[] = trim($match);
+                    }
+                }
+            }
+        }
+
+        return $stackTrace;
     }
 
     /**
@@ -558,11 +719,17 @@ class LogController
             $configController = \DebugLogConfigTool\Controllers\ConfigController::getInstance();
             $isDebugEnabled = $configController->getValue('WP_DEBUG');
             $isDebugLogEnabled = $configController->getValue('WP_DEBUG_LOG');
+            $isDebugBacktraceEnabled = $configController->getValue('WP_DEBUG_BACKTRACE');
 
             if (!$isDebugEnabled || !$isDebugLogEnabled) {
                 // Temporarily enable debug logging
                 $configController->update('WP_DEBUG', 'true');
                 $configController->update('WP_DEBUG_LOG', 'true');
+            }
+
+            // Ensure backtrace is enabled for better test logs
+            if (!$isDebugBacktraceEnabled) {
+                $configController->update('WP_DEBUG_BACKTRACE', 'true');
             }
 
             // Generate different types of log entries
@@ -574,19 +741,44 @@ class LogController
             // Standard WordPress format test
             $this->writeTestLog($timestamp, '[' . date('Y-m-d H:i:s') . ' UTC] Simple WordPress format test log');
 
-            // Notice
-            $this->writeTestLog($timestamp, 'PHP Notice: Undefined variable: test_var in ' . ABSPATH . 'wp-content/plugins/test-plugin/test-file.php on line 42');
+            // Notice with stack trace
+            $noticeError = 'PHP Notice: Undefined variable: test_var in ' . ABSPATH . 'wp-content/plugins/test-plugin/test-file.php on line 42' . PHP_EOL;
+            $noticeError .= 'Stack trace:' . PHP_EOL;
+            $noticeError .= '#0 ' . ABSPATH . 'wp-content/plugins/test-plugin/includes/functions.php(25): test_plugin_process_data()' . PHP_EOL;
+            $noticeError .= '#1 ' . ABSPATH . 'wp-includes/class-wp-hook.php(324): test_plugin_init()' . PHP_EOL;
+            $noticeError .= '#2 ' . ABSPATH . 'wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)' . PHP_EOL;
+            $noticeError .= '#3 ' . ABSPATH . 'wp-includes/plugin.php(517): WP_Hook->do_action(Array)' . PHP_EOL;
+            $noticeError .= '#4 ' . ABSPATH . 'wp-settings.php(617): do_action(\'init\')' . PHP_EOL;
+            $this->writeTestLog($timestamp, $noticeError);
 
-            // Warning
-            $this->writeTestLog($timestamp, 'PHP Warning: Invalid argument supplied for foreach() in ' . ABSPATH . 'wp-content/plugins/test-plugin/test-file.php on line 53');
+            // Warning with stack trace
+            $warningError = 'PHP Warning: Invalid argument supplied for foreach() in ' . ABSPATH . 'wp-content/plugins/test-plugin/test-file.php on line 53' . PHP_EOL;
+            $warningError .= 'Stack trace:' . PHP_EOL;
+            $warningError .= '#0 ' . ABSPATH . 'wp-content/plugins/test-plugin/includes/class-data-processor.php(78): TestPlugin\\Core->process_items(NULL)' . PHP_EOL;
+            $warningError .= '#1 ' . ABSPATH . 'wp-content/plugins/test-plugin/test-plugin.php(156): TestPlugin\\DataProcessor->run()' . PHP_EOL;
+            $warningError .= '#2 ' . ABSPATH . 'wp-includes/class-wp-hook.php(324): test_plugin_process_request()' . PHP_EOL;
+            $warningError .= '#3 ' . ABSPATH . 'wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)' . PHP_EOL;
+            $warningError .= '#4 ' . ABSPATH . 'wp-includes/plugin.php(517): WP_Hook->do_action(Array)' . PHP_EOL;
+            $this->writeTestLog($timestamp, $warningError);
 
-            // Deprecated
-            $this->writeTestLog($timestamp, 'PHP Deprecated: Function create_function() is deprecated in ' . ABSPATH . 'wp-content/plugins/legacy-plugin/old-file.php on line 27');
+            // Deprecated with stack trace
+            $deprecatedError = 'PHP Deprecated: Function create_function() is deprecated in ' . ABSPATH . 'wp-content/plugins/legacy-plugin/old-file.php on line 27' . PHP_EOL;
+            $deprecatedError .= 'Stack trace:' . PHP_EOL;
+            $deprecatedError .= '#0 ' . ABSPATH . 'wp-content/plugins/legacy-plugin/includes/functions.php(45): legacy_create_callback()' . PHP_EOL;
+            $deprecatedError .= '#1 ' . ABSPATH . 'wp-content/plugins/legacy-plugin/legacy-plugin.php(89): legacy_init_hooks()' . PHP_EOL;
+            $deprecatedError .= '#2 ' . ABSPATH . 'wp-includes/class-wp-hook.php(324): LegacyPlugin->initialize()' . PHP_EOL;
+            $deprecatedError .= '#3 ' . ABSPATH . 'wp-includes/plugin.php(517): WP_Hook->do_action(Array)' . PHP_EOL;
+            $this->writeTestLog($timestamp, $deprecatedError);
 
-            // Parse error
-            $this->writeTestLog($timestamp, 'PHP Parse error: syntax error, unexpected \'}\'  in ' . ABSPATH . 'wp-content/plugins/broken-plugin/broken-file.php on line 65');
+            // Parse error with stack trace
+            $parseError = 'PHP Parse error: syntax error, unexpected \'}\'  in ' . ABSPATH . 'wp-content/plugins/broken-plugin/broken-file.php on line 65' . PHP_EOL;
+            $parseError .= 'Stack trace:' . PHP_EOL;
+            $parseError .= '#0 ' . ABSPATH . 'wp-content/plugins/broken-plugin/broken-plugin.php(25): include()' . PHP_EOL;
+            $parseError .= '#1 ' . ABSPATH . 'wp-includes/class-wp-hook.php(324): BrokenPlugin->initialize()' . PHP_EOL;
+            $parseError .= '#2 ' . ABSPATH . 'wp-includes/plugin.php(517): WP_Hook->do_action(Array)' . PHP_EOL;
+            $this->writeTestLog($timestamp, $parseError);
 
-            // Fatal error with stack trace
+            // Fatal error with detailed stack trace
             $fatalError = 'PHP Fatal error: Uncaught Error: Call to undefined function nonexistent_function() in ' . ABSPATH . 'wp-content/plugins/example-plugin/example.php:78' . PHP_EOL;
             $fatalError .= 'Stack trace:' . PHP_EOL;
             $fatalError .= '#0 ' . ABSPATH . 'wp-includes/class-wp-hook.php(324): example_plugin_function()' . PHP_EOL;
@@ -599,20 +791,40 @@ class LogController
             $fatalError .= '#7 ' . ABSPATH . 'index.php(17): require(\'' . ABSPATH . 'wp-blog-header.php\')' . PHP_EOL;
             $fatalError .= '#8 {main}' . PHP_EOL;
             $fatalError .= '  thrown in ' . ABSPATH . 'wp-content/plugins/example-plugin/example.php on line 78';
-
             $this->writeTestLog($timestamp, $fatalError);
 
-            // Database error
-            $this->writeTestLog($timestamp, 'WordPress database error Table \'wp_options\' doesn\'t exist for query SELECT option_name, option_value FROM wp_options made by require_once(\'wp-load.php\'), require_once(\'wp-config.php\'), require_once(\'wp-settings.php\'), include_once(\'wp-includes/option.php\'), get_option');
+            // Database error with backtrace
+            $dbError = 'WordPress database error Table \'wp_options\' doesn\'t exist for query SELECT option_name, option_value FROM wp_options' . PHP_EOL;
+            $dbError .= 'Stack trace:' . PHP_EOL;
+            $dbError .= '#0 ' . ABSPATH . 'wp-includes/wp-db.php(2187): wpdb->query()' . PHP_EOL;
+            $dbError .= '#1 ' . ABSPATH . 'wp-includes/option.php(118): wpdb->get_results()' . PHP_EOL;
+            $dbError .= '#2 ' . ABSPATH . 'wp-includes/option.php(54): get_alloptions()' . PHP_EOL;
+            $dbError .= '#3 ' . ABSPATH . 'wp-content/plugins/debug-log-config-tool/app/Controllers/ConfigController.php(156): get_option()' . PHP_EOL;
+            $this->writeTestLog($timestamp, $dbError);
 
-            // Custom backtrace example
+            // Custom backtrace example with variable dump
             $backtraceExample = $this->generateBacktraceExample();
             $this->writeTestLog($timestamp, '[DEBUG] Custom backtrace example: Testing a function with detailed backtrace' . "\n" . $backtraceExample);
 
-            // Removed error_log statements to reduce memory usage
+            // AJAX error example
+            $ajaxError = 'PHP Notice: Undefined index: action in ' . ABSPATH . 'wp-admin/admin-ajax.php on line 135' . PHP_EOL;
+            $ajaxError .= 'Stack trace:' . PHP_EOL;
+            $ajaxError .= '#0 ' . ABSPATH . 'wp-admin/admin-ajax.php(135): wp_ajax_nopriv_()' . PHP_EOL;
+            $ajaxError .= '#1 {main}' . PHP_EOL;
+            $this->writeTestLog($timestamp, $ajaxError);
+
+            // REST API error
+            $restError = 'PHP Warning: Cannot modify header information - headers already sent in ' . ABSPATH . 'wp-includes/rest-api.php on line 427' . PHP_EOL;
+            $restError .= 'Stack trace:' . PHP_EOL;
+            $restError .= '#0 ' . ABSPATH . 'wp-includes/rest-api/class-wp-rest-server.php(1241): header()' . PHP_EOL;
+            $restError .= '#1 ' . ABSPATH . 'wp-includes/rest-api/class-wp-rest-server.php(1241): WP_REST_Server->send_header()' . PHP_EOL;
+            $restError .= '#2 ' . ABSPATH . 'wp-includes/rest-api/class-wp-rest-server.php(3812): WP_REST_Server->serve_request()' . PHP_EOL;
+            $restError .= '#3 ' . ABSPATH . 'wp-includes/rest-api.php(427): rest_api_loaded()' . PHP_EOL;
+            $restError .= '#4 ' . ABSPATH . 'wp-includes/class-wp-hook.php(324): rest_api_init()' . PHP_EOL;
+            $this->writeTestLog($timestamp, $restError);
 
             wp_send_json_success([
-                'message' => 'Test logs generated successfully',
+                'message' => 'Test logs generated successfully with stack traces',
                 'success' => true,
                 'log_path' => $this->logFilePath,
                 'file_exists' => file_exists($this->logFilePath),
@@ -620,7 +832,6 @@ class LogController
             ]);
 
         } catch (\Exception $e) {
-            // Removed error_log statement to reduce memory usage
             wp_send_json_error([
                 'message' => $e->getMessage(),
                 'success' => false
@@ -648,22 +859,22 @@ class LogController
     private function generateBacktraceExample()
     {
         // Simulate a function call stack
-        $backtrace = "Backtrace:\n";
-        $backtrace .= "#0 wp-content/plugins/example-plugin/includes/class-example.php(123): ExamplePlugin\\Core\\API->process_request(Array)\n";
-        $backtrace .= "#1 wp-content/plugins/example-plugin/includes/class-api.php(45): ExamplePlugin\\Core->handle_endpoint('users/profile')\n";
-        $backtrace .= "#2 wp-includes/class-wp-hook.php(324): ExamplePlugin\\API->register_routes()\n";
-        $backtrace .= "#3 wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)\n";
-        $backtrace .= "#4 wp-includes/plugin.php(517): WP_Hook->do_action(Array)\n";
-        $backtrace .= "#5 wp-includes/rest-api.php(458): do_action('rest_api_init')\n";
-        $backtrace .= "#6 wp-includes/rest-api.php(368): rest_api_loaded()\n";
-        $backtrace .= "#7 wp-includes/class-wp-hook.php(324): rest_api_init('1')\n";
-        $backtrace .= "#8 wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)\n";
-        $backtrace .= "#9 wp-includes/plugin.php(517): WP_Hook->do_action(Array)\n";
-        $backtrace .= "#10 wp-includes/load.php(1165): do_action('init')\n";
-        $backtrace .= "#11 wp-settings.php(512): wp_loaded()\n";
-        $backtrace .= "#12 wp-config.php(96): require_once('/var/www/html/w...')\n";
-        $backtrace .= "#13 wp-load.php(50): require_once('/var/www/html/w...')\n";
-        $backtrace .= "#14 index.php(17): require('/var/www/html/w...')\n";
+        $backtrace = "Stack trace:\n";
+        $backtrace .= "#0 " . ABSPATH . "wp-content/plugins/example-plugin/includes/class-example.php(123): ExamplePlugin\\Core\\API->process_request(Array)\n";
+        $backtrace .= "#1 " . ABSPATH . "wp-content/plugins/example-plugin/includes/class-api.php(45): ExamplePlugin\\Core->handle_endpoint('users/profile')\n";
+        $backtrace .= "#2 " . ABSPATH . "wp-includes/class-wp-hook.php(324): ExamplePlugin\\API->register_routes()\n";
+        $backtrace .= "#3 " . ABSPATH . "wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)\n";
+        $backtrace .= "#4 " . ABSPATH . "wp-includes/plugin.php(517): WP_Hook->do_action(Array)\n";
+        $backtrace .= "#5 " . ABSPATH . "wp-includes/rest-api.php(458): do_action('rest_api_init')\n";
+        $backtrace .= "#6 " . ABSPATH . "wp-includes/rest-api.php(368): rest_api_loaded()\n";
+        $backtrace .= "#7 " . ABSPATH . "wp-includes/class-wp-hook.php(324): rest_api_init('1')\n";
+        $backtrace .= "#8 " . ABSPATH . "wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)\n";
+        $backtrace .= "#9 " . ABSPATH . "wp-includes/plugin.php(517): WP_Hook->do_action(Array)\n";
+        $backtrace .= "#10 " . ABSPATH . "wp-includes/load.php(1165): do_action('init')\n";
+        $backtrace .= "#11 " . ABSPATH . "wp-settings.php(512): wp_loaded()\n";
+        $backtrace .= "#12 " . ABSPATH . "wp-config.php(96): require_once('" . ABSPATH . "wp-settings.php')\n";
+        $backtrace .= "#13 " . ABSPATH . "wp-load.php(50): require_once('" . ABSPATH . "wp-config.php')\n";
+        $backtrace .= "#14 " . ABSPATH . "index.php(17): require('" . ABSPATH . "wp-load.php')\n";
         $backtrace .= "#15 {main}\n";
 
         // Add some variable dump information that might be useful in debugging

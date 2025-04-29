@@ -1,7 +1,9 @@
 <template>
     <div class="stack-trace-viewer">
         <div v-if="!stackTrace || stackTrace.length === 0" class="no-stack-trace">
-            No stack trace available
+            <div class="no-trace-icon"><i class="pi pi-exclamation-circle"></i></div>
+            <div class="no-trace-message">No stack trace available</div>
+            <div class="no-trace-help">Try enabling WP_DEBUG_BACKTRACE in your settings to get more detailed stack traces.</div>
         </div>
         <div v-else class="stack-trace-container">
             <div class="stack-trace-header">
@@ -72,9 +74,7 @@ const parsedStackTrace = computed(() => {
 
 // Parse a stack frame string into components
 function parseStackFrame(frameString) {
-    console.log('Parsing frame:', frameString);
-
-    // Default structure if parsing fails
+        // Default structure if parsing fails
     const defaultFrame = {
         file: 'Unknown',
         line: 0,
@@ -83,11 +83,38 @@ function parseStackFrame(frameString) {
         context: []
     };
 
+    // If the frame is a message from our custom fallback, handle it specially
+    if (frameString.startsWith('No stack trace information') ||
+        frameString.startsWith('-') ||
+        frameString === 'This may be because:' ||
+        frameString === 'Stack trace:') {
+        defaultFrame.file = 'Info';
+        defaultFrame.function = frameString;
+        defaultFrame.isHighlighted = false;
+        return defaultFrame;
+    }
+
+    // If the frame is a continuation indicator (...), handle it specially
+    if (frameString.startsWith('...')) {
+        defaultFrame.file = 'Continuation';
+        defaultFrame.function = frameString;
+        defaultFrame.isHighlighted = false;
+        return defaultFrame;
+    }
+
     try {
         // Handle variable dump lines
         if (frameString.startsWith('$') || frameString.startsWith('Variable dump')) {
             defaultFrame.file = 'Variable dump';
             defaultFrame.function = frameString;
+            defaultFrame.isHighlighted = true;
+            return defaultFrame;
+        }
+
+        // Handle error type information
+        if (frameString.startsWith('\nError Type:')) {
+            defaultFrame.file = 'Error Info';
+            defaultFrame.function = frameString.replace('\nError Type:', 'Error Type:');
             defaultFrame.isHighlighted = true;
             return defaultFrame;
         }
@@ -173,7 +200,8 @@ function parseStackFrame(frameString) {
         console.error('Error parsing stack frame:', e);
     }
 
-    console.log('Parsed frame:', defaultFrame);
+    // Don't log every parsed frame to avoid console spam
+    // console.log('Parsed frame:', defaultFrame);
     return defaultFrame;
 }
 
@@ -223,10 +251,33 @@ function copyToClipboard() {
 }
 
 .no-stack-trace {
-    padding: 1rem;
+    padding: 2rem;
     color: #6b7280;
     text-align: center;
-    font-style: italic;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.no-trace-icon {
+    font-size: 2rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.no-trace-message {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.no-trace-help {
+    font-size: 0.875rem;
+    color: #6b7280;
+    max-width: 80%;
+    margin: 0.5rem auto 0;
 }
 
 .stack-trace-container {
@@ -252,7 +303,7 @@ function copyToClipboard() {
 
 .stack-trace-content {
     padding: 0.5rem;
-    max-height: 400px;
+    max-height: 600px; /* Increased height to show more of the stack trace */
     overflow-y: auto;
 }
 

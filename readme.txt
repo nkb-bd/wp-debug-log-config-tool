@@ -78,23 +78,18 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 == Changelog ==
 
 = 2.0.0 =
-- Added WP-CLI style command structure in terminal (e.g., `wp core version` instead of `wp-version`)
+- Added WP-CLI style command structure in terminal (e.g., `wp core version`)
 - Added database commands with WP-CLI syntax (`wp db query`, `wp db tables`, etc.)
 - Added terminal settings page to enable/disable terminal and database features
 - Added super admin restriction for database commands
 - Added support for SQL queries with proper security measures
 - Added stack trace visualization for better error analysis
-- Enhanced developer profile in support page
-- Improved UI for support and notification pages
-- Added command auto-completion for WP-CLI style commands
-- Added support for colon syntax in commands (e.g., `wp:db:query` instead of `wp db query`)
 - Help command to show commands by category with organized sections
 - Enhanced security for terminal commands (preventing SQL injection, restricting destructive commands)
 - Quick Debug Toggle from admin bar (WP_DEBUG)
 
 = 1.5.3 =
 - Fix footer text on all page
-
 
 = 1.5.2 =
 - Added query logs

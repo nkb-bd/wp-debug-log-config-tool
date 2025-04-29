@@ -126,7 +126,7 @@
         <div v-if="state.error" class="dlct-error-msg">{{ state.error }}</div>
 
         <!-- Stack Trace Dialog -->
-        <Dialog v-model:visible="stackTraceDialogVisible" draggable="false" modal header="Error Stack Trace" :style="{width: '80vw'}" :maximizable="false">
+        <Dialog v-model:visible="stackTraceDialogVisible" :draggable='false' modal header="Error Stack Trace" :style="{width: '80vw'}" :maximizable="false">
             <div class="error-details" v-if="selectedError">
                 <div class="error-message">
                     <h3>Error Message</h3>
@@ -287,6 +287,21 @@
                 // If still no stack trace found, at least add the file and line info
                 if (stackTraceLines.length === 0 && errorData.file_location) {
                     stackTraceLines.push(`${errorData.file_location}(${errorData.line_number}): ${errorData.error_type}`);
+                }
+
+                // If we still couldn't find any stack trace information, add a fallback message
+                if (stackTraceLines.length === 0) {
+                    // Add a message explaining why no stack trace is available
+                    stackTraceLines.push("No stack trace information was found in the error log.");
+                    stackTraceLines.push("This may be because:");
+                    stackTraceLines.push("- The error didn't generate a stack trace");
+                    stackTraceLines.push("- The error logging level doesn't include stack traces");
+                    stackTraceLines.push("- The error format is not recognized by the parser");
+
+                    // If we have error details, add them as context
+                    if (errorData.error_type) {
+                        stackTraceLines.push(`\nError Type: ${errorData.error_type}`);
+                    }
                 }
             }
 

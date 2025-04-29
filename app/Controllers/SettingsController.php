@@ -2,6 +2,8 @@
 
 namespace DebugLogConfigTool\Controllers;
 
+use DebugLogConfigTool\Controllers\ConfigController;
+
 class SettingsController
 {
     protected $optionKey = 'debuglogconfigtool_updated_constant';
