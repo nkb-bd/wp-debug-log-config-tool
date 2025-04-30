@@ -1,4 +1,4 @@
-===  Debug Log - Manger Tool ===
+===  Debug Log - Manager Tool ===
 Contributors: pyrobd
 Donate link:
 Tags: debug, log, developer, tools,remote debug
@@ -17,7 +17,7 @@ A comprehensive debugging toolkit for WordPress developers and site administrato
 
 = Quick Demo =
 
-[youtube https://youtu.be/moJPyyVfm3A]
+[youtube https://youtu.be/D4K5zsLnILw]
 
 = Key Features =
 
