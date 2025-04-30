@@ -5,7 +5,7 @@
  * Plugin Name:       Debug Log Manager Tool
  * Plugin URI:        https://nkb-bd.github.io/
  * Description:       Debug & Query log Helper tool with additional CLI like tools
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            Lukman Nakib
  * Author URI:        https://nkb-bd.github.io/
  * License:           GPL-2.0+

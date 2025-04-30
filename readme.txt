@@ -4,7 +4,7 @@ Donate link:
 Tags: debug, log, developer, tools,remote debug
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,10 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 1. ** Debug Log **
 
 == Changelog ==
+
+= 2.0.1 =
+- Fix typo
+- Fix memory issue
 
 = 2.0.0 =
 - Added WP-CLI style command structure in terminal (e.g., `wp core version`)
