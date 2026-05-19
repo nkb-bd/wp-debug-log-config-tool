@@ -8,7 +8,7 @@
 **Tags:** debug, debug log, developer, tools
 **Requires at least:** 5.6
 **Tested up to:** 6.6.1
-**Stable tag:** 2.0.0
+**Stable tag:** 3.0.0
 **Requires PHP:** 5.6
 **License:** GPLv2 or later
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,15 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 2. **Debug Log**
 
 ## Changelog
+### 3.0.0
+- Hardened AJAX route verification to fail closed for invalid requests, missing permissions, and bad nonces.
+- Added a guarded debug log file viewer endpoint with wp-content path containment and latest 1 MB reads for large files.
+- Improved debug log migration safety by checking file containment, readability, and writability without overwriting the original default log.
+- Reworked the admin interface with compact navigation, cleaner WordPress admin page spacing, and suppressed third-party notices on the plugin screen.
+- Improved debug log readability with structured timeline rows, stack trace formatting, database call-chain formatting, safer text rendering, and cleaner expand/collapse behavior.
+- Refined Safe Mode, Notifications, Terminal, Terminal Settings, and Overview screens for a more consistent settings-page experience.
+- Fixed missing terminal settings routes, unresolved PrimeVue component registrations, Safe Mode submit state handling, admin-bar debug toggle styling, modal z-index, loader sizing, and empty feature icons.
+
 ### 1.0.0
 - Initial Version
 
@@ -158,4 +167,3 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 - Fixed issue with SQL query execution where quotes were included in the query
 - Fixed terminal command parsing for complex arguments
 - Fixed case sensitivity issues in command validation
-

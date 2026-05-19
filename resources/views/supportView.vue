@@ -55,7 +55,7 @@
             </section>
 
             <div class="version-info">
-                <Chip label="Version: 2.0.1" icon="pi pi-tag" />
+                <Chip label="Version: 3.0.0" icon="pi pi-tag" />
                 <Chip label="License: GPL v2 or later" icon="pi pi-check-circle" />
             </div>
         </div>
