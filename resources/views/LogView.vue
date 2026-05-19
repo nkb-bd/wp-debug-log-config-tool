@@ -1,136 +1,234 @@
 <template>
-    <div>
-        <Toast style="margin-top: 20px;" position="bottom-right" group="tr" />
+    <section class="dlct-log-console">
+        <Toast position="bottom-right" group="tr" />
 
-        <div>
+        <div class="dlct-log-card">
             <TabView v-model:activeIndex="state.activeIndex">
-                    <TabPanel header="Debug Log">
-                        <div v-if="state.isLoading" class=" flex text-center justify-content-center">
-                            <ProgressSpinner style="max-width:100%;text-align: center;
-                                    display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
-                                             aria-label="Loading"/>
+                <TabPanel header="Live Debug Logs">
+                    <div class="dlct-log-toolbar">
+                        <div class="dlct-log-stats">
+                            <span class="dlct-stat-pill">
+                                <strong>{{ filteredEntries.length }}</strong>
+                                <span>{{ filteredEntries.length === 1 ? 'entry' : 'entries' }}</span>
+                            </span>
+                            <span v-if="state.fileSize" class="dlct-stat-pill dlct-stat-muted">
+                                <i class="pi pi-file"></i>
+                                <span>{{ formatFileSize(state.fileSize) }}</span>
+                            </span>
+                            <Button
+                                v-if="state.log_path"
+                                @click="showLogFileDialog"
+                                class="p-button-sm"
+                                icon="pi pi-folder-open"
+                                label="Log file"
+                                severity="secondary"
+                                outlined
+                            />
+                            <Button
+                                v-if="state.log_path"
+                                @click="openLogFileViewer"
+                                class="p-button-sm"
+                                icon="pi pi-eye"
+                                label="View File"
+                                severity="info"
+                                outlined
+                            />
                         </div>
 
-                        <DataTable v-else class="log-table" :rowClass="getRowClass"  :paginator ='filteredEntries && Object.entries(filteredEntries).length > 20' :rows="20" :rowsPerPageOptions="[ 20,30, 50]"  :value="filteredEntries"  >
-                            <template #header>
-                                <div class="table-header">
-                                    <div class="log-stats">
-                                        <div class="log-count" v-if="filteredEntries && filteredEntries.length > 0">
-                                            <Badge :value="filteredEntries.length" severity="info"></Badge>
-                                            <span class="log-count-text">{{ filteredEntries.length === 1 ? 'Entry' : 'Entries' }}</span>
-                                        </div>
-                                        <div class="file-size" v-if="state.fileSize">
-                                            <i class="pi pi-file"></i>
-                                            <span class="file-size-text">{{ formatFileSize(state.fileSize) }}</span>
-                                        </div>
-                                    </div>
+                        <div class="dlct-log-controls">
+                            <MultiSelect
+                                v-if="state.logs && Object.entries(state.logs).length"
+                                v-model="selectedErrorTypes"
+                                display="chip"
+                                :options="state.error_types"
+                                placeholder="Error types"
+                                :maxSelectedLabels="2"
+                                class="error-type-filter"
+                            />
+                            <span v-if="state.logs && Object.entries(state.logs).length" class="p-input-icon-left dlct-search-field">
+                                <i class="pi pi-search" />
+                                <InputText size="small" v-model="searchText" placeholder="Search logs" />
+                            </span>
+                            <div class="auto-refresh-controls">
+                                <span class="auto-refresh-label">Live</span>
+                                <InputSwitch v-model="autoRefreshEnabled" @change="toggleAutoRefresh" />
+                                <Dropdown
+                                    v-if="autoRefreshEnabled"
+                                    v-model="autoRefreshInterval"
+                                    :options="refreshIntervals"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    placeholder="Interval"
+                                    class="refresh-interval-dropdown"
+                                />
+                            </div>
+                            <Button
+                                v-if="state.logs && Object.entries(state.logs).length"
+                                @click="deleteLogs('debug')"
+                                class="p-button-sm"
+                                icon="pi pi-trash"
+                                severity="danger"
+                                text
+                            />
+                            <Button @click="fetchLogs()" class="p-button-sm" icon="pi pi-refresh" severity="info" />
+                            <Button v-if="!isProductionEnv" @click="generateTestLogs()" class="p-button-sm" icon="pi pi-bolt" label="Generate" severity="secondary" />
+                        </div>
+                    </div>
 
-                                    <MultiSelect @change="filteredEntries" v-if="state.logs && Object.entries(state.logs).length" v-model="selectedErrorTypes" display="chip" :options="state.error_types"  placeholder="Error types"
-                                                 :maxSelectedLabels="3" class="error-type-filter" />
-                                         <span  v-if="state.logs && Object.entries(state.logs).length" class="p-input-icon-left">
-                                              <i class="pi pi-search" />
-                                              <InputText  @change="filteredEntries" size="small"  v-model="searchText" placeholder="Search" />
-                                        </span>
-                                    <div class="auto-refresh-controls">
-                                        <span class="auto-refresh-label">Auto-refresh:</span>
-                                        <InputSwitch v-model="autoRefreshEnabled" @change="toggleAutoRefresh" />
-                                        <Dropdown v-if="autoRefreshEnabled" v-model="autoRefreshInterval" :options="refreshIntervals" optionLabel="label" optionValue="value" placeholder="Interval" class="refresh-interval-dropdown" />
+                    <div v-if="state.isLoading" class="dlct-loading">
+                        <ProgressSpinner strokeWidth="4" fill="var(--surface-ground)" aria-label="Loading"/>
+                    </div>
+
+                    <DataTable
+                        v-else
+                        class="log-table dlct-timeline-table"
+                        :rowClass="getRowClass"
+                        :paginator="filteredEntries.length > 20"
+                        :rows="20"
+                        :rowsPerPageOptions="[20, 30, 50]"
+                        :value="filteredEntries"
+                    >
+                        <Column field="details" header="Log event">
+                            <template #body="slotProps">
+                                <div class="dlct-log-event">
+                                    <span class="dlct-timeline-dot"></span>
+                                    <div class="dlct-log-body">
+                                        <div class="dlct-log-main">
+                                            <div class="dlct-log-meta">
+                                                <span class="dlct-log-time" v-tooltip.top="formatExactTime(slotProps.data.raw_time)">
+                                                    {{ slotProps.data.time }}
+                                                </span>
+                                                <span :class="['dlct-severity', getSeverityClass(slotProps.data)]">
+                                                    {{ getSeverityLabel(slotProps.data) }}
+                                                </span>
+                                                <span v-if="slotProps.data.plugin_name" class="dlct-source-chip">
+                                                    {{ slotProps.data.plugin_name }}
+                                                </span>
+                                                <Badge v-if="slotProps.data.occurrenceCount > 1" :value="slotProps.data.occurrenceCount" severity="warning" class="log-count-badge" />
+                                            </div>
+                                            <div :class="['dlct-log-message', {'is-collapsed': isLongLog(slotProps.data) && !isLogExpanded(slotProps.data)}]">
+                                                <p class="dlct-log-summary">{{ getLogSummary(slotProps.data) }}</p>
+                                                <ol v-if="getLogFrames(slotProps.data).length" class="dlct-stack-list">
+                                                    <li v-for="frame in getLogFrames(slotProps.data)" :key="`${getLogKey(slotProps.data)}-${frame.index}`">
+                                                        <span class="dlct-stack-index">#{{ frame.index }}</span>
+                                                        <span class="dlct-stack-location">{{ frame.location }}</span>
+                                                        <span v-if="frame.call" class="dlct-stack-call">{{ frame.call }}</span>
+                                                    </li>
+                                                </ol>
+                                                <ol v-else-if="getLogTraceItems(slotProps.data).length" class="dlct-stack-list dlct-call-chain-list">
+                                                    <li v-for="trace in getLogTraceItems(slotProps.data)" :key="`${getLogKey(slotProps.data)}-trace-${trace.index}`">
+                                                        <span class="dlct-stack-index">#{{ trace.index }}</span>
+                                                        <span class="dlct-stack-location">{{ trace.call }}</span>
+                                                    </li>
+                                                </ol>
+                                                <pre v-else>{{ getReadableDetails(slotProps.data) }}</pre>
+                                            </div>
+                                        </div>
+                                        <div class="dlct-log-actions">
+                                            <Button
+                                                v-if="isLongLog(slotProps.data)"
+                                                @click="toggleLogExpanded(slotProps.data)"
+                                                class="p-button-sm"
+                                                :icon="isLogExpanded(slotProps.data) ? 'pi pi-angle-up' : 'pi pi-angle-down'"
+                                                :label="isLogExpanded(slotProps.data) ? 'Collapse' : 'Expand'"
+                                                severity="secondary"
+                                                text
+                                            />
+                                            <Button
+                                                v-if="hasTrace(slotProps.data)"
+                                                @click="showStackTrace(slotProps.data)"
+                                                class="p-button-sm"
+                                                icon="pi pi-list"
+                                                label="Trace"
+                                                severity="secondary"
+                                                text
+                                            />
+                                            <Button
+                                                @click="copyLogAsJson(slotProps.data)"
+                                                class="p-button-sm"
+                                                icon="pi pi-copy"
+                                                label="Copy JSON"
+                                                severity="secondary"
+                                                text
+                                            />
+                                        </div>
                                     </div>
-                                    <Button   v-if="state.logs && Object.entries(state.logs).length" @click="deleteLogs('debug')" class="p-button-sm"
-                                              icon="pi pi-trash" severity="danger"/>
-                                    <Button @click="fetchLogs()" class="p-button-sm" icon="pi pi-refresh" label="" severity="info"/>
-                                    <Button v-if="!isProductionEnv" @click="generateTestLogs()" class="p-button-sm" icon="pi pi-bolt" label="Generate Test Logs" severity="secondary"/>
                                 </div>
                             </template>
-                            <Column field="details" header="Log">
-                                <template #body="slotProps">
-                                    <div>
-                                        <div class="log-entry-header">
-                                            <div v-html="slotProps.data.details"></div>
-                                            <Badge v-if="slotProps.data.occurrenceCount > 1" :value="slotProps.data.occurrenceCount" severity="warning" class="log-count-badge" />
-                                        </div>
-                                        <div>
-                                            <Button  v-if="slotProps.data.error_type && (slotProps.data.error_type === 'Fatal error' || slotProps.data.error_type === 'Parse error' || slotProps.data.error_type === 'Parse')"
-                                                @click="showStackTrace(slotProps.data)" class="p-button-sm mt-2" icon="pi pi-list" label="View Stack Trace" severity="secondary"/>
-                                            <Button v-else-if="slotProps.data.details && slotProps.data.details.includes('backtrace')"
-                                                @click="showStackTrace(slotProps.data)" class="p-button-sm mt-2" icon="pi pi-list" label="View Backtrace" severity="info"/>
-                                        </div>
-                                    </div>
-                                </template>
-                            </Column>
-                            <Column sortable field="raw_time" header="Time">
-                                <template #body="slotProps">
-                                    <span class="time-with-tooltip" v-tooltip.top="formatExactTime(slotProps.data.raw_time)">{{ slotProps.data.time }}</span>
-                                </template>
-                            </Column>
-                            <Column sortable field="plugin_name" header="Plugin Name"></Column>
-                            <Column sortable field="date" header="Date"></Column>
-                            <template  v-tooltip="'Enter your username'"  v-if="state.log_path" #footer><small>Log Path: {{state.log_path}}. Path randomized for security reasons. </small></template>
-                        </DataTable>
-                        <div v-if="filteredEntries && filteredEntries.length === 0" >
-                            <p style="margin: 20px auto;padding-bottom:20px;text-align: center">  No Log found !</p>
+                        </Column>
+                        <Column sortable field="date" header="Date" class="dlct-date-column"></Column>
+                    </DataTable>
+
+                    <div v-if="!state.isLoading && filteredEntries.length === 0" class="dlct-empty-state">
+                        No logs found.
+                    </div>
+                </TabPanel>
+
+                <TabPanel header="Query Log">
+                    <div class="dlct-log-toolbar">
+                        <div class="dlct-log-stats">
+                            <span class="dlct-stat-pill">
+                                <strong>{{ state.query_logs ? state.query_logs.length : 0 }}</strong>
+                                <span>queries</span>
+                            </span>
+                            <span class="dlct-stat-pill dlct-stat-muted">Last 50</span>
                         </div>
-                    </TabPanel>
-                    <TabPanel header="Query Log">
-                        <div class="query-table">
-                            <div class=" table-header ">
-                                <div></div>
-                                <button disabled>Last 50 query</button>
-                                <div class="auto-refresh-controls">
-                                    <span class="auto-refresh-label">Auto-refresh:</span>
-                                    <InputSwitch v-model="autoRefreshEnabled" @change="toggleAutoRefresh" />
-                                </div>
-                                <Button v-if="state.query_logs && Object.entries(state.query_logs).length"
-                                            @click="deleteLogs('query')" class="p-button-sm"   icon="pi pi-trash" severity="danger">
-                                </Button>
-                                <Button @click="fetchLogs()" class="p-button-sm" icon="pi pi-refresh" label="Refresh" severity="info"/>
+                        <div class="dlct-log-controls">
+                            <div class="auto-refresh-controls">
+                                <span class="auto-refresh-label">Live</span>
+                                <InputSwitch v-model="autoRefreshEnabled" @change="toggleAutoRefresh" />
                             </div>
+                            <Button
+                                v-if="state.query_logs && Object.entries(state.query_logs).length"
+                                @click="deleteLogs('query')"
+                                class="p-button-sm"
+                                icon="pi pi-trash"
+                                severity="danger"
+                                text
+                            />
+                            <Button @click="fetchLogs()" class="p-button-sm" icon="pi pi-refresh" label="Refresh" severity="info"/>
                         </div>
-                        <div v-if="state.isLoading" class=" flex text-center justify-content-center">
-                            <ProgressSpinner style="max-width:100%;text-align: center;
-                                    display: block;width: 50px; height: 50px" strokeWidth="5" fill="var(--surface-ground)"
-                                             aria-label="Loading"/>
-                        </div>
-                        <Accordion :activeIndex="0"  v-else-if="state.is_save_query_on">
+                    </div>
 
-                            <AccordionTab v-for="(query,index) in state.query_logs ">
-                                <template #header>
-                                    <div class="query-log-list">
-                                        <div>{{query.sql}}</div>
-                                        <div class="index-number">{{index+1}}</div>
-                                    </div>
-                                                </template>
+                    <div v-if="state.isLoading" class="dlct-loading">
+                        <ProgressSpinner strokeWidth="4" fill="var(--surface-ground)" aria-label="Loading"/>
+                    </div>
+
+                    <Accordion :activeIndex="0" v-else-if="state.is_save_query_on">
+                        <AccordionTab v-for="(query,index) in state.query_logs" :key="index">
+                            <template #header>
                                 <div class="query-log-list">
-                                    <div> <b>Caller</b> {{ query.caller }}</div>
-                                    <div><b>Execution Time</b> {{ query.execution_time }}</div>
-                                    <!-- Add other properties as needed -->
-                                    <div> <b>Stack Trace</b>
-                                        <ul class="query-trace">
-                                            <li v-for="(caller, i) in query.stack" :key="i">
-                                                {{ caller }}
-                                            </li>
-                                        </ul>
-                                    </div>
-
-
+                                    <code>{{ query.sql }}</code>
+                                    <span class="index-number">#{{ index + 1 }}</span>
                                 </div>
-                            </AccordionTab>
+                            </template>
+                            <div class="query-log-detail">
+                                <div><b>Caller</b> {{ query.caller }}</div>
+                                <div><b>Execution Time</b> {{ query.execution_time }}</div>
+                                <div>
+                                    <b>Stack Trace</b>
+                                    <ul class="query-trace">
+                                        <li v-for="(caller, i) in query.stack" :key="i">
+                                            {{ caller }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </AccordionTab>
+                    </Accordion>
 
-                        </Accordion>
-                        <div v-else>
-                            <p class="message">Enable <b>SAVEQUERIES</b> from settings page to view database query logs. Please note it will store all queries so always turn it off after debugging in production mode or it will effect performance.</p>
-                        </div>
-                    </TabPanel>
-        </TabView>
+                    <div v-else class="message">Enable <b>SAVEQUERIES</b> from settings to view database query logs.</div>
+                </TabPanel>
+            </TabView>
         </div>
+
         <div v-if="state.error" class="dlct-error-msg">{{ state.error }}</div>
 
-        <!-- Stack Trace Dialog -->
-        <Dialog v-model:visible="stackTraceDialogVisible" :draggable='false' modal header="Error Stack Trace" :style="{width: '80vw'}" :maximizable="false">
+        <Dialog v-model:visible="stackTraceDialogVisible" :draggable="false" modal header="Error Stack Trace" :style="{width: '80vw'}" :maximizable="false">
             <div class="error-details" v-if="selectedError">
                 <div class="error-message">
                     <h3>Error Message</h3>
-                    <div v-html="selectedError.details"></div>
+                    <pre>{{ selectedError.details }}</pre>
                 </div>
                 <div class="error-location" v-if="selectedError.file_location || selectedError.line_number">
                     <h3>Location</h3>
@@ -140,9 +238,67 @@
                     </div>
                 </div>
                 <StackTraceViewer :stackTrace="parsedStackTrace" />
+                <div class="dlct-dialog-actions">
+                    <Button @click="copyLogAsJson(selectedError)" icon="pi pi-copy" label="Copy as JSON" />
+                </div>
             </div>
         </Dialog>
-    </div>
+
+        <Dialog v-model:visible="logFileDialogVisible" :draggable="false" modal header="Debug Log File" :style="{width: '640px'}" :maximizable="false">
+            <div class="dlct-file-dialog">
+                <div class="dlct-file-summary">
+                    <span class="dlct-file-icon"><i class="pi pi-file"></i></span>
+                    <div>
+                        <strong>{{ logFileName }}</strong>
+                        <span>{{ formatFileSize(state.fileSize) }}</span>
+                    </div>
+                </div>
+
+                <div class="dlct-file-field">
+                    <label>Directory</label>
+                    <div class="dlct-file-value">
+                        <code>{{ logDirectory }}</code>
+                        <Button @click="copyText(logDirectory, 'Directory copied')" icon="pi pi-copy" severity="secondary" text />
+                    </div>
+                </div>
+
+                <div class="dlct-file-field">
+                    <label>Full path</label>
+                    <div class="dlct-file-value">
+                        <code>{{ state.log_path }}</code>
+                        <Button @click="copyText(state.log_path, 'Log path copied')" icon="pi pi-copy" severity="secondary" text />
+                    </div>
+                </div>
+
+                <div class="dlct-file-actions">
+                    <Button @click="openLogFileViewer" icon="pi pi-eye" label="View File" severity="info" />
+                    <Button @click="openLogDirectory" icon="pi pi-external-link" label="Open Directory" severity="info" />
+                    <Button @click="copyText(state.log_path, 'Log path copied')" icon="pi pi-copy" label="Copy Path" severity="secondary" outlined />
+                </div>
+            </div>
+        </Dialog>
+
+        <Dialog v-model:visible="logFileViewerVisible" :draggable="false" modal header="Debug Log File Content" :style="{width: '88vw'}" :maximizable="true">
+            <div class="dlct-file-viewer">
+                <div class="dlct-file-viewer-toolbar">
+                    <div>
+                        <strong>{{ logFileName }}</strong>
+                        <span v-if="rawFile.truncated">
+                            Showing latest {{ formatFileSize(rawFile.maxBytes) }} of {{ formatFileSize(rawFile.fileSize) }}
+                        </span>
+                        <span v-else>
+                            {{ formatFileSize(rawFile.fileSize) }}
+                        </span>
+                    </div>
+                    <Button @click="copyText(rawFile.content, 'File content copied')" icon="pi pi-copy" label="Copy Content" severity="secondary" outlined />
+                </div>
+                <div v-if="rawFile.isLoading" class="dlct-loading">
+                    <ProgressSpinner strokeWidth="4" fill="var(--surface-ground)" aria-label="Loading"/>
+                </div>
+                <pre v-else class="dlct-raw-log-content">{{ rawFile.content || 'No file content found.' }}</pre>
+            </div>
+        </Dialog>
+    </section>
 </template>
 
 <script setup>
@@ -167,6 +323,7 @@
 
     const selectedErrorTypes = ref([]);
     const searchText = ref('');
+    const expandedLogs = ref({});
 
     // Auto-refresh settings
     const autoRefreshEnabled = ref(false);
@@ -207,10 +364,43 @@
         fileSize: 0
     });
 
+    const rawFile = reactive({
+        content: '',
+        isLoading: false,
+        fileSize: 0,
+        maxBytes: 0,
+        truncated: false,
+        error: null
+    });
+
     // Stack trace dialog state
     const stackTraceDialogVisible = ref(false);
+    const logFileDialogVisible = ref(false);
+    const logFileViewerVisible = ref(false);
     const selectedError = ref(null);
     const parsedStackTrace = ref([]);
+
+    const logDirectory = computed(() => {
+        if (!state.log_path) {
+            return '';
+        }
+
+        const normalizedPath = String(state.log_path).replace(/\\/g, '/');
+        const separatorIndex = normalizedPath.lastIndexOf('/');
+
+        return separatorIndex >= 0 ? normalizedPath.slice(0, separatorIndex) : normalizedPath;
+    });
+
+    const logFileName = computed(() => {
+        if (!state.log_path) {
+            return 'debug.log';
+        }
+
+        const normalizedPath = String(state.log_path).replace(/\\/g, '/');
+        const separatorIndex = normalizedPath.lastIndexOf('/');
+
+        return separatorIndex >= 0 ? normalizedPath.slice(separatorIndex + 1) : normalizedPath;
+    });
 
     function showStackTrace(errorData) {
         selectedError.value = errorData;
@@ -223,10 +413,7 @@
             const stackTraceLines = [];
 
             if (errorData.details) {
-                // First, try to extract from HTML content by converting HTML to text
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = errorData.details;
-                const textContent = tempDiv.textContent || tempDiv.innerText || '';
+                const textContent = String(errorData.details || '');
 
                 // Check for custom backtrace format
                 if (textContent.includes('Backtrace:')) {
@@ -315,6 +502,271 @@
         return filteredEntries && filteredEntries.length >= 0
     }
     const isNotEmpty = computed(isNotEmptyLog);
+
+    function hasTrace(log) {
+        return Boolean(
+            (log.stack_trace && Array.isArray(log.stack_trace) && log.stack_trace.length > 0) ||
+            (log.details && (log.details.includes('Stack trace:') || log.details.includes('Backtrace:') || log.details.includes('backtrace')))
+        );
+    }
+
+    function getSeverityLabel(log) {
+        return log.error_type || 'info';
+    }
+
+    function getSeverityClass(log) {
+        const label = String(getSeverityLabel(log)).toLowerCase();
+
+        if (label.includes('fatal') || label.includes('parse')) {
+            return 'is-critical';
+        }
+
+        if (label.includes('warning')) {
+            return 'is-warning';
+        }
+
+        if (label.includes('deprecated') || label.includes('notice')) {
+            return 'is-muted';
+        }
+
+        return 'is-info';
+    }
+
+    function getLogKey(log) {
+        return [
+            log.date || '',
+            log.time || '',
+            log.error_type || '',
+            log.file_location || '',
+            log.line_number || '',
+            String(log.details || '').slice(0, 120)
+        ].join('|');
+    }
+
+    function isLongLog(log) {
+        const frames = getLogFrames(log);
+        const traceItems = getLogTraceItems(log);
+
+        if (frames.length > 2) {
+            return true;
+        }
+
+        if (traceItems.length > 5) {
+            return true;
+        }
+
+        if (log && log.stack_trace && Array.isArray(log.stack_trace) && log.stack_trace.length > 2) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function isLogExpanded(log) {
+        return Boolean(expandedLogs.value[getLogKey(log)]);
+    }
+
+    function toggleLogExpanded(log) {
+        const key = getLogKey(log);
+        expandedLogs.value = {
+            ...expandedLogs.value,
+            [key]: !expandedLogs.value[key]
+        };
+    }
+
+    function getLogSummary(log) {
+        const details = getReadableDetails(log).trim();
+
+        if (!details) {
+            return '';
+        }
+
+        const stackIndex = details.search(/\n#\d+\s/);
+
+        if (stackIndex >= 0) {
+            return details.slice(0, stackIndex).replace(/\n+Stack trace:\s*$/i, '').trim();
+        }
+
+        const madeByIndex = details.indexOf(' made by ');
+
+        if (madeByIndex >= 0) {
+            return details.slice(0, madeByIndex).trim();
+        }
+
+        return details;
+    }
+
+    function getLogFrames(log) {
+        const details = getReadableDetails(log);
+        const lines = details.split('\n');
+        const frames = [];
+        let current = null;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (!trimmed) {
+                return;
+            }
+
+            if (/^#\d+\s/.test(trimmed)) {
+                if (current) {
+                    frames.push(parseStackFrame(current));
+                }
+
+                current = trimmed;
+                return;
+            }
+
+            if (current) {
+                current += ' ' + trimmed;
+            }
+        });
+
+        if (current) {
+            frames.push(parseStackFrame(current));
+        }
+
+        return frames;
+    }
+
+    function parseStackFrame(frame) {
+        const match = frame.match(/^#(\d+)\s+(.+?)(?::\s*(.*))?$/);
+
+        if (!match) {
+            return {
+                index: '?',
+                location: frame,
+                call: ''
+            };
+        }
+
+        return {
+            index: match[1],
+            location: match[2] || '',
+            call: match[3] || ''
+        };
+    }
+
+    function getLogTraceItems(log) {
+        const details = getReadableDetails(log);
+        const madeByIndex = details.indexOf(' made by ');
+
+        if (madeByIndex < 0) {
+            return [];
+        }
+
+        const traceText = details.slice(madeByIndex + ' made by '.length);
+
+        return traceText
+            .split(/,\s+/)
+            .map((call) => call.trim())
+            .filter(Boolean)
+            .map((call, index) => ({
+                index,
+                call
+            }));
+    }
+
+    function getReadableDetails(log) {
+        const details = String(log && log.details ? log.details : '');
+
+        return decodeLogText(details)
+            .replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1')
+            .replace(/<\/?(strong|em|code|span)\b[^>]*>/gi, '')
+            .replace(/<br\s*\/?>/gi, '\n')
+            .trim();
+    }
+
+    function decodeLogText(value) {
+        if (typeof document === 'undefined') {
+            return value;
+        }
+
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = value;
+
+        return textarea.value;
+    }
+
+    async function copyLogAsJson(log) {
+        if (!log) {
+            return;
+        }
+
+        const payload = JSON.stringify(toRaw(log), null, 2);
+
+        await copyText(payload, 'Log copied as JSON');
+    }
+
+    async function copyText(value, detail = 'Copied') {
+        if (!value) {
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(value);
+            toast.add({ severity: 'success', summary: 'Copied', detail, group: 'tr', life: 1800 });
+        } catch (err) {
+            toast.add({ severity: 'warn', summary: 'Copy failed', detail: 'Could not write to clipboard', group: 'tr', life: 2500 });
+        }
+    }
+
+    function showLogFileDialog() {
+        logFileDialogVisible.value = true;
+    }
+
+    async function openLogFileViewer() {
+        logFileViewerVisible.value = true;
+        rawFile.isLoading = true;
+        rawFile.error = null;
+
+        try {
+            const {data, error: fetchError} = await $get({
+                route: 'get_log_file_content'
+            });
+
+            if (data && data.value && data.value.success && data.value.data) {
+                rawFile.content = data.value.data.content || '';
+                rawFile.fileSize = data.value.data.file_size || 0;
+                rawFile.maxBytes = data.value.data.max_bytes || 0;
+                rawFile.truncated = Boolean(data.value.data.truncated);
+            } else {
+                const message = data && data.value && data.value.data && data.value.data.message
+                    ? data.value.data.message
+                    : 'Could not load log file content';
+                rawFile.error = message;
+                rawFile.content = message;
+            }
+
+            if (fetchError && fetchError.value) {
+                rawFile.error = fetchError.value;
+                rawFile.content = String(fetchError.value);
+            }
+        } catch (err) {
+            rawFile.error = err;
+            rawFile.content = String(err);
+        } finally {
+            rawFile.isLoading = false;
+        }
+    }
+
+    function openLogDirectory() {
+        if (!logDirectory.value) {
+            return;
+        }
+
+        const fileUrl = 'file://' + logDirectory.value.split('/').map(segment => encodeURIComponent(segment)).join('/');
+        window.open(fileUrl, '_blank', 'noopener');
+        toast.add({
+            severity: 'info',
+            summary: 'Opening directory',
+            detail: 'If the browser blocks local file links, copy the directory path instead.',
+            group: 'tr',
+            life: 3000
+        });
+    }
+
     function fetchLogs(isAutoRefresh = false) {
         return new Promise(async (resolve) => {
             try {

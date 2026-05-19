@@ -102,6 +102,8 @@ final class DLCT_Bootstrap
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('wp_before_admin_bar_render', [$this, 'adminTopMenu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
+        add_action('admin_print_scripts', [$this, 'suppressAdminNotices'], 0);
+        add_filter('admin_body_class', [$this, 'adminBodyClass']);
         add_action('wpdd_admin_page_render', [$this, 'showMsg']);
         add_action('admin_init', [$this, 'msgDismissed']);
         add_action('wp_ajax_dlct_toggle_debug', [$this, 'toggleDebug']);
@@ -160,24 +162,59 @@ final class DLCT_Bootstrap
     private function getAdminBarStyles()
     {
         return '
-            #wp-admin-bar-debug_log_config_tool_id > .ab-item {
+            #wpadminbar #wp-admin-bar-dlct_logs_id > .ab-item {
                 display: flex !important;
                 align-items: center;
+                gap: 6px;
+                color: #f0f0f1 !important;
             }
-            .dlct-debug-enabled, .dlct-debug-disabled {
+            #wpadminbar #wp-admin-bar-dlct_logs_id:hover > .ab-item,
+            #wpadminbar #wp-admin-bar-dlct_logs_id.hover > .ab-item {
+                color: #72aee6 !important;
+            }
+            #wpadminbar .dlct-debug-indicator {
                 display: inline-block;
-                width: 10px!important;
-                height: 10px!important;
-                border-radius: 50%;
-                margin-right: 5px!important;
+                width: 8px !important;
+                height: 8px !important;
+                border-radius: 999px;
+                margin: 0 !important;
+                flex: 0 0 8px;
             }
-            .dlct-debug-enabled {
-                background-color: #46b450;
-                box-shadow: 0 0 5px #46b450;
+            #wpadminbar .dlct-debug-enabled {
+                background-color: #22c55e;
+                box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.18);
             }
-            .dlct-debug-disabled {
-                background-color: #dc3232;
-                box-shadow: 0 0 5px #dc3232;
+            #wpadminbar .dlct-debug-disabled {
+                background-color: #94a3b8;
+                box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.18);
+            }
+            #wpadminbar #wp-admin-bar-dlct_logs_toggle_debug > .ab-item {
+                color: #f0f0f1 !important;
+                font-size: 13px;
+                line-height: 32px;
+            }
+            #wpadminbar #wp-admin-bar-dlct_logs_toggle_debug:hover > .ab-item,
+            #wpadminbar #wp-admin-bar-dlct_logs_toggle_debug.hover > .ab-item {
+                color: #72aee6 !important;
+            }
+            #wpadminbar .dlct-adminbar-loading {
+                opacity: 0.85;
+            }
+            #wpadminbar .dlct-adminbar-spinner {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                margin-left: 6px;
+                border: 2px solid rgba(240, 240, 241, 0.35);
+                border-top-color: #f0f0f1;
+                border-radius: 999px;
+                vertical-align: -1px;
+                animation: dlct-adminbar-spin 0.8s linear infinite;
+            }
+            @keyframes dlct-adminbar-spin {
+                to {
+                    transform: rotate(360deg);
+                }
             }
         ';
     }
@@ -202,18 +239,9 @@ final class DLCT_Bootstrap
             var $toggleButton = $(this);
             var originalHtml = $toggleButton.find(".ab-item").html() || $toggleButton.html();
 
-            // Store position and parent info
-            var $parent = $toggleButton.parent();
-            var nextElements = $toggleButton.next().length ? $toggleButton.next() : null;
-
             // Add loading spinner without modifying structure
-            $toggleButton.find(".ab-item").addClass("dlct-loading")
-                         .append(\' <span class="dlct-spinner" style="display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:dlct-spin 1s linear infinite;"></span>\');
-
-            // Add spin animation if needed
-            if (!$("#dlct-spinner-style").length) {
-                $("head").append(\'<style id="dlct-spinner-style">@keyframes dlct-spin{to{transform:rotate(360deg)}}</style>\');
-            }
+            $toggleButton.find(".ab-item").addClass("dlct-adminbar-loading")
+                         .append(\' <span class="dlct-adminbar-spinner" aria-hidden="true"></span>\');
 
             $.ajax({
                 url: ajaxurl,
@@ -224,8 +252,8 @@ final class DLCT_Bootstrap
                 },
                 success: function(response) {
                     // Remove spinner
-                    $toggleButton.find(".dlct-spinner").remove();
-                    $toggleButton.find(".ab-item").removeClass("dlct-loading");
+                    $toggleButton.find(".dlct-adminbar-spinner").remove();
+                    $toggleButton.find(".ab-item").removeClass("dlct-adminbar-loading");
 
                     if (response.success) {
                         // Update only the text portion carefully
@@ -234,11 +262,8 @@ final class DLCT_Bootstrap
                         }).first().replaceWith(response.data.toggle_text);
 
                         // Update indicator class (the status indicator)
-                        var $indicator = $("#wp-admin-bar-dlct_logs_id > a span");
-                        console.log(response.data)
+                        var $indicator = $("#wp-admin-bar-dlct_logs_id > .ab-item .dlct-debug-indicator");
                         if (response.data.debug_enabled == true) {
-                                console.log($indicator)
-
                             $indicator.removeClass("dlct-debug-disabled").addClass("dlct-debug-enabled");
                         } else {
                             $indicator.removeClass("dlct-debug-enabled").addClass("dlct-debug-disabled");
@@ -265,8 +290,8 @@ final class DLCT_Bootstrap
                 },
                 error: function() {
                     // Remove spinner
-                    $toggleButton.find(".dlct-spinner").remove();
-                    $toggleButton.find(".ab-item").removeClass("dlct-loading");
+                    $toggleButton.find(".dlct-adminbar-spinner").remove();
+                    $toggleButton.find(".ab-item").removeClass("dlct-adminbar-loading");
 
                     // Restore original content safely
                     if ($toggleButton.find(".ab-item").length) {
@@ -316,6 +341,46 @@ final class DLCT_Bootstrap
                 'current_color' => get_user_option('admin_color', get_current_user_id())
             ]
         );
+    }
+
+    /**
+     * Suppress third-party admin notices on the plugin app screen.
+     */
+    public function suppressAdminNotices()
+    {
+        if (!$this->isPluginAdminPage()) {
+            return;
+        }
+
+        remove_all_actions('admin_notices');
+        remove_all_actions('all_admin_notices');
+        remove_all_actions('network_admin_notices');
+        remove_all_actions('user_admin_notices');
+    }
+
+    /**
+     * Add a page-specific body class for notice cleanup.
+     *
+     * @param string $classes
+     * @return string
+     */
+    public function adminBodyClass($classes)
+    {
+        if ($this->isPluginAdminPage()) {
+            $classes .= ' dlct-admin-page';
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Check whether the current admin page is this plugin screen.
+     *
+     * @return bool
+     */
+    private function isPluginAdminPage()
+    {
+        return isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === self::DLCT_LOG;
     }
 
     /**
@@ -410,8 +475,8 @@ final class DLCT_Bootstrap
 
         // Create debug status indicator
         $indicator = $isDebugEnabled
-            ? '<span class="dlct-debug-enabled"></span>'
-            : '<span class="dlct-debug-disabled"></span>';
+            ? '<span class="dlct-debug-indicator dlct-debug-enabled" aria-hidden="true"></span>'
+            : '<span class="dlct-debug-indicator dlct-debug-disabled" aria-hidden="true"></span>';
 
         // Add main menu item with indicator
         $wp_admin_bar->add_menu([

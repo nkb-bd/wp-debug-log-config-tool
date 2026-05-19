@@ -1,63 +1,64 @@
 <template>
   <div class="terminal-view">
-    <Card>
-      <template #title>
-        WordPress Debug Terminal
-      </template>
-      <template #subtitle>
-        Execute WordPress commands directly from your browser
-      </template>
-      <template #content>
-        <div v-if="state.isLoading" class="loading-container">
-          <ProgressSpinner />
-          <p>Loading terminal settings...</p>
-        </div>
+    <div v-if="state.isLoading" class="loading-container">
+      <ProgressSpinner />
+      <p>Loading terminal settings...</p>
+    </div>
 
-        <div v-else-if="!state.terminalEnabled" class="terminal-disabled">
-          <Message severity="warn" class="terminal-disabled-message">
-            <template #container>
-              <div class="flex flex-column align-items-center">
-                <i class="pi pi-ban text-5xl mb-3"></i>
-                <h3>Terminal is disabled</h3>
-                <p>The terminal has been disabled by the administrator.</p>
-                <Button label="Go to Terminal Settings" icon="pi pi-cog" @click="goToSettings" />
-              </div>
-            </template>
-          </Message>
-        </div>
-
-        <div v-else>
-          <DebugTerminal />
-
-          <div class="terminal-description">
-            <p>This terminal allows you to run WordPress-specific commands to help with debugging and site management.</p>
-            <Message icon="false" severity="info">
-              <span>Type <strong>wp</strong> to see available WP-CLI style commands.</span>
-            </Message>
-            <Message icon="false" severity="warn">
-              <span>Commands are executed with WordPress admin privileges. Use with caution.</span>
-            </Message>
-            <Message v-if="state.dbCommandsEnabled" icon="false" severity="info">
-              <span>Database commands are enabled. Type <code>wp db</code> to see available database commands.</span>
-            </Message>
-            <Message v-else icon="false" severity="info">
-              <span>Database commands are disabled. Enable them in <router-link to="/terminal-settings">Terminal Settings</router-link> to use database commands.</span>
-            </Message>
+    <div v-else-if="!state.terminalEnabled" class="terminal-disabled">
+      <Message severity="warn" class="terminal-disabled-message">
+        <template #container>
+          <div class="terminal-disabled-content">
+            <i class="pi pi-ban"></i>
+            <div>
+              <h3>Terminal is disabled</h3>
+              <p>The terminal has been disabled by the administrator.</p>
+            </div>
+            <Button label="Settings" icon="pi pi-cog" @click="goToSettings" />
           </div>
+        </template>
+      </Message>
+    </div>
 
-          <div class="terminal-tips">
-            <h4>Tips:</h4>
-            <ul>
-              <li>Use <strong>Up/Down</strong> arrow keys to navigate command history</li>
-              <li>Use <strong>Tab</strong> key for command auto-completion</li>
-              <li>Use <strong>clear</strong> command to clear the terminal</li>
-              <li>Try WP-CLI commands like <code>wp core version</code>, <code>wp plugin list</code>, etc.</li>
-              <li>Basic shell commands like <code>ls</code>, <code>cat</code>, <code>date</code> are also supported</li>
-            </ul>
-          </div>
+    <div v-else class="terminal-shell">
+      <DebugTerminal />
+
+      <div class="terminal-support">
+        <div class="terminal-notices">
+          <span class="terminal-notice is-info">
+            <i class="pi pi-info-circle"></i>
+            Type <strong>wp</strong> for WP-CLI commands.
+          </span>
+          <span class="terminal-notice is-warning">
+            <i class="pi pi-exclamation-triangle"></i>
+            Runs with admin privileges.
+          </span>
+          <router-link
+            v-if="!state.dbCommandsEnabled"
+            to="/terminal-settings"
+            class="terminal-notice is-info terminal-link-notice"
+          >
+            <i class="pi pi-database"></i>
+            Enable database commands
+          </router-link>
+          <span v-else class="terminal-notice is-info">
+            <i class="pi pi-database"></i>
+            Database commands enabled.
+          </span>
         </div>
-      </template>
-    </Card>
+
+        <details class="terminal-tips">
+          <summary>Tips and examples</summary>
+          <ul>
+            <li><strong>Up/Down</strong> navigates history</li>
+            <li><strong>Tab</strong> autocompletes commands</li>
+            <li><code>clear</code> clears the terminal</li>
+            <li><code>wp core version</code>, <code>wp plugin list</code>, <code>wp log tail</code></li>
+            <li><code>ls</code>, <code>cat</code>, <code>date</code>, <code>pwd</code></li>
+          </ul>
+        </details>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -109,9 +110,8 @@ onMounted(() => {
 
 <style scoped>
 .terminal-view {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 .loading-container {
@@ -123,37 +123,98 @@ onMounted(() => {
 }
 
 .terminal-disabled {
-  padding: 20px;
+  padding: 0;
 }
 
 .terminal-disabled-message {
   text-align: center;
 }
 
-.terminal-description {
-  margin-bottom: 20px;
+.terminal-disabled-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+}
+
+.terminal-disabled-content i {
+  color: #d97706;
+  font-size: 24px;
+}
+
+.terminal-disabled-content h3,
+.terminal-disabled-content p {
+  margin: 0;
+}
+
+.terminal-disabled-content p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.terminal-shell {
+  display: grid;
+  gap: 12px;
+}
+
+.terminal-support {
+  display: grid;
+  gap: 10px;
+}
+
+.terminal-notices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.terminal-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terminal-notice.is-info {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.terminal-notice.is-warning {
+  background: #fff7dc;
+  color: #8a5a00;
+}
+
+.terminal-link-notice {
+  border: 1px solid #bfdbfe;
 }
 
 .terminal-tips {
-  margin-top: 20px;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  padding: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #fff;
 }
 
-.terminal-tips h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #495057;
+.terminal-tips summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  color: #334155;
+  font-weight: 700;
 }
 
 .terminal-tips ul {
   margin: 0;
-  padding-left: 20px;
+  padding: 0 12px 12px 30px;
 }
 
 .terminal-tips li {
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   color: #495057;
+  font-size: 13px;
 }
 </style>

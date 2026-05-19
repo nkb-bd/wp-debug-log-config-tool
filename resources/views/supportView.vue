@@ -1,127 +1,64 @@
 <template>
     <div class="support-page">
-        <Card>
-            <template #title>
-                <div class="card-title">
-                    <i class="pi pi-info-circle mr-2"></i>
-                    About Debug Log Config Tool
+        <div class="support-content">
+            <section class="overview-panel">
+                <div class="overview-heading">
+                    <span class="overview-icon"><i class="pi pi-info-circle"></i></span>
+                    <div>
+                        <h2>About Debug Log Config Tool</h2>
+                        <p>Focused debugging tools for WordPress developers.</p>
+                    </div>
                 </div>
-            </template>
-            <template #subtitle>
-                Powerful debugging tools for WordPress developers
-            </template>
-            <template #content>
-                <div class="support-content">
-                    <div class="plugin-info">
-                        <p>
-                            Debug Log Config Tool is a WordPress plugin designed to simplify debugging and troubleshooting WordPress sites.
-                            It provides powerful tools for viewing, analyzing, and managing debug logs with an intuitive interface.
-                        </p>
-                    </div>
+                <p class="plugin-info">
+                    View logs, inspect traces, run guarded terminal commands, and isolate plugin conflicts from one admin screen.
+                </p>
+            </section>
 
-                    <Divider align="center">
-                        <span class="divider-text">Key Features</span>
-                    </Divider>
-
-                    <div class="feature-grid">
-                        <div class="feature-card">
-                            <div class="feature-icon-container">
-                                <i class="pi pi-terminal feature-icon"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h4>Debug Terminal</h4>
-                                <p>WP-CLI style command-line interface with WordPress and shell commands</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon-container">
-                                <i class="pi pi-refresh feature-icon"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h4>Auto-Refresh</h4>
-                                <p>Real-time log monitoring with configurable intervals</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon-container">
-                                <i class="pi pi-list feature-icon"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h4>Stack Trace Viewer</h4>
-                                <p>Visual analysis of PHP error stack traces</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon-container">
-                                <i class="pi pi-shield feature-icon"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h4>Safe Mode</h4>
-                                <p>Safely disable problematic plugins when debugging</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon-container">
-                                <i class="pi pi-database feature-icon"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h4>Database Tools</h4>
-                                <p>Query and analyze your WordPress database</p>
-                            </div>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon-container">
-                                <i class="pi pi-bell feature-icon"></i>
-                            </div>
-                            <div class="feature-content">
-                                <h4>Notifications</h4>
-                                <p>Get email alerts when errors occur</p>
-                            </div>
+            <section class="feature-panel">
+                <h3>Key Features</h3>
+                <div class="feature-grid">
+                    <div v-for="feature in features" :key="feature.title" class="feature-row">
+                        <span class="feature-icon-container">
+                            <i :class="feature.icon"></i>
+                        </span>
+                        <div class="feature-content">
+                            <h4>{{ feature.title }}</h4>
+                            <p>{{ feature.copy }}</p>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <Divider align="center">
-                        <span class="divider-text">Resources</span>
-                    </Divider>
-
+            <section class="meta-panel">
+                <div class="resource-card">
+                    <h3>Resources</h3>
                     <div class="support-links">
-                        <Button icon="pi pi-exclamation-circle" label="Report Issue" class="p-button-outlined p-button-rounded p-button-sm" @click="openLink('https://github.com/nkb-bd/wp-debug-log-config-tool/issues')" />
-                        <Button icon="pi pi-user" label="Developer Profile" class="p-button-outlined p-button-rounded p-button-success p-button-sm" @click="openLink('https://github.com/nkb-bd')" />
-                    </div>
-
-                    <Divider align="center">
-                        <span class="divider-text">Developer</span>
-                    </Divider>
-
-                    <div class="developer-info">
-                        <div class="developer-card">
-                            <div class="developer-avatar">
-                                <i class="pi pi-user-plus"></i>
-                            </div>
-                            <div class="developer-details">
-                                <h3>Lukman Nakib</h3>
-                                <p>WordPress Developer & Plugin Author</p>
-                                <div class="developer-social">
-                                    <Button icon="pi pi-github" class="p-button-rounded p-button-text" @click="openLink('https://github.com/nkb-bd')" />
-                                    <Button icon="pi pi-twitter" class="p-button-rounded p-button-text p-button-info" @click="openLink('https://twitter.com/nkb_bd')" />
-                                    <Button icon="pi pi-linkedin" class="p-button-rounded p-button-text p-button-help" @click="openLink('https://www.linkedin.com/in/nkb-bd/')" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="version-info">
-                        <Chip label="Version: 2.0.0" icon="pi pi-tag" />
-                        <Chip label="License: GPL v2 or later" icon="pi pi-check-circle" />
+                        <Button icon="pi pi-exclamation-circle" label="Report Issue" class="p-button-outlined p-button-sm" @click="openLink('https://github.com/nkb-bd/wp-debug-log-config-tool/issues')" />
+                        <Button icon="pi pi-github" label="Developer Profile" class="p-button-outlined p-button-sm" @click="openLink('https://github.com/nkb-bd')" />
                     </div>
                 </div>
-            </template>
-        </Card>
+
+                <div class="developer-card">
+                    <div class="developer-avatar">
+                        <i class="pi pi-user"></i>
+                    </div>
+                    <div class="developer-details">
+                        <h3>Lukman Nakib</h3>
+                        <p>WordPress Developer & Plugin Author</p>
+                        <div class="developer-social">
+                            <Button icon="pi pi-github" class="p-button-rounded p-button-text" @click="openLink('https://github.com/nkb-bd')" />
+                            <Button icon="pi pi-twitter" class="p-button-rounded p-button-text p-button-info" @click="openLink('https://twitter.com/nkb_bd')" />
+                            <Button icon="pi pi-linkedin" class="p-button-rounded p-button-text p-button-help" @click="openLink('https://www.linkedin.com/in/nkb-bd/')" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="version-info">
+                <Chip label="Version: 2.0.1" icon="pi pi-tag" />
+                <Chip label="License: GPL v2 or later" icon="pi pi-check-circle" />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -129,6 +66,14 @@
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
+const features = [
+    { title: 'Debug Terminal', icon: 'pi pi-code', copy: 'WP-CLI style commands for WordPress debugging.' },
+    { title: 'Live Logs', icon: 'pi pi-refresh', copy: 'Auto-refreshing log view with filters and search.' },
+    { title: 'Stack Traces', icon: 'pi pi-list', copy: 'Readable stack trace analysis for PHP errors.' },
+    { title: 'Safe Mode', icon: 'pi pi-shield', copy: 'Temporarily isolate plugin conflicts.' },
+    { title: 'Database Tools', icon: 'pi pi-database', copy: 'Guarded database inspection commands.' },
+    { title: 'Notifications', icon: 'pi pi-bell', copy: 'Daily email summaries for debug activity.' },
+];
 
 function openLink(url) {
     window.open(url, '_blank');
@@ -143,127 +88,141 @@ function openLink(url) {
 
 <style scoped>
 .support-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 .support-content {
-    line-height: 1.6;
+    display: grid;
+    gap: 14px;
 }
 
-.card-title {
+.overview-panel,
+.feature-panel,
+.resource-card,
+.developer-card {
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.overview-panel {
+    padding: 16px;
+}
+
+.overview-heading {
     display: flex;
     align-items: center;
-    font-size: 1.25rem;
+    gap: 12px;
+}
+
+.overview-icon,
+.feature-icon-container,
+.developer-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.overview-icon {
+    width: 38px;
+    height: 38px;
+}
+
+.overview-heading h2 {
+    margin: 0 0 4px;
+    color: #1e293b;
+    font-size: 18px;
+}
+
+.overview-heading p,
+.plugin-info {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
 }
 
 .plugin-info {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    color: #4b5563;
-}
-
-.divider-text {
-    background-color: white;
-    padding: 0 1rem;
-    font-weight: 600;
-    color: #4b5563;
+    margin-top: 12px;
 }
 
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0;
 }
 
-.feature-card {
+.feature-panel {
+    overflow: hidden;
+}
+
+.feature-panel h3,
+.resource-card h3 {
+    margin: 0;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #334155;
+    font-size: 15px;
+}
+
+.feature-row {
     display: flex;
-    align-items: flex-start;
-    padding: 1.25rem;
-    border-radius: 8px;
-    background-color: #f8fafc;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .feature-icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #e0f2fe;
-    margin-right: 1rem;
+    width: 34px;
+    height: 34px;
 }
 
-.feature-icon {
-    font-size: 1.5rem;
-    color: #0284c7;
-}
-
-.feature-content {
-    flex: 1;
+.feature-icon-container i {
+    font-size: 16px;
+    line-height: 1;
 }
 
 .feature-content h4 {
-    margin: 0 0 0.5rem 0;
-    color: #0f172a;
-    font-size: 1.1rem;
+    margin: 0 0 3px;
+    color: #1e293b;
+    font-size: 14px;
 }
 
 .feature-content p {
     margin: 0;
     color: #64748b;
-    font-size: 0.95rem;
+    font-size: 13px;
+}
+
+.meta-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+    gap: 14px;
 }
 
 .support-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    margin: 2rem 0;
-}
-
-.developer-info {
-    display: flex;
-    justify-content: center;
-    margin: 2rem 0;
+    gap: 8px;
+    padding: 14px;
 }
 
 .developer-card {
     display: flex;
     align-items: center;
-    padding: 1.5rem;
-    background-color: #f8fafc;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    max-width: 500px;
-    width: 100%;
+    gap: 12px;
+    padding: 14px;
 }
 
 .developer-avatar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #e0f2fe;
-    margin-right: 1.5rem;
-}
-
-.developer-avatar i {
-    font-size: 2.5rem;
-    color: #0284c7;
+    width: 38px;
+    height: 38px;
 }
 
 .developer-details {
@@ -271,32 +230,36 @@ function openLink(url) {
 }
 
 .developer-details h3 {
-    margin: 0 0 0.5rem 0;
-    color: #0f172a;
-    font-size: 1.25rem;
+    margin: 0 0 3px;
+    color: #1e293b;
+    font-size: 15px;
 }
 
 .developer-details p {
-    margin: 0 0 1rem 0;
+    margin: 0 0 8px;
     color: #64748b;
+    font-size: 13px;
 }
 
 .developer-social {
     display: flex;
-    gap: 0.5rem;
+    gap: 4px;
 }
 
 .version-info {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 2rem;
+    gap: 8px;
+    justify-content: flex-start;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .meta-panel {
         grid-template-columns: 1fr;
     }
 

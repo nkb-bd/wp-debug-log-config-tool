@@ -41,6 +41,8 @@ import Badge from 'primevue/badge';
 import Tooltip from 'primevue/tooltip';
 import Card from 'primevue/card';
 import Message from 'primevue/message';
+import Divider from 'primevue/divider';
+import Chip from 'primevue/chip';
 
 window.onload = function () {
     const appEl = document.querySelector('#main-app');
@@ -70,6 +72,8 @@ window.onload = function () {
         application.component('Badge', Badge);
         application.component('Card', Card);
         application.component('Message', Message);
+        application.component('Divider', Divider);
+        application.component('Chip', Chip);
 
         // Directives
         application.directive('tooltip', Tooltip);
@@ -79,4 +83,3 @@ window.onload = function () {
         application.use(router).mount(appEl);
     }
 }
-

@@ -10,7 +10,7 @@
     <div class="terminal-window" ref="terminalWindow">
       <div class="terminal-output">
         <div v-for="(line, index) in outputLines" :key="index" class="terminal-line" :class="{ 'terminal-error': line.type === 'error', 'terminal-success': line.type === 'success', 'terminal-info': line.type === 'info' }">
-          <span v-html="formatOutput(line.text)"></span>
+          <span>{{ formatOutput(line.text) }}</span>
         </div>
       </div>
       <div class="terminal-input-line">
@@ -41,8 +41,8 @@ const terminalWindow = ref(null);
 const commandInput = ref(null);
 const outputLines = ref([
   { text: 'WordPress Debug Terminal v2.0.0', type: 'info' },
-  { text: 'Type <strong>help</strong> to see available commands', type: 'info' },
-  { text: 'Type <strong>wp</strong> to see WP-CLI style commands', type: 'info' },
+  { text: 'Type help to see available commands', type: 'info' },
+  { text: 'Type wp to see WP-CLI style commands', type: 'info' },
   { text: '', type: 'info' }
 ]);
 const currentCommand = ref('');
@@ -134,8 +134,7 @@ onMounted(() => {
 });
 
 function formatOutput(text) {
-  // Convert URLs to clickable links
-  return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+  return String(text || '').replace(/<[^>]*>/g, '');
 }
 
 function scrollToBottom() {

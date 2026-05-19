@@ -13,7 +13,7 @@
                  class="terminal-line"
                  :class="{ 'command-line': line.type === 'command', 'error-line': line.type === 'error', 'success-line': line.type === 'success' }">
                 <span v-if="line.type === 'command'" class="prompt">wp-debug></span>
-                <span v-html="line.content"></span>
+                <span>{{ stripTerminalMarkup(line.content) }}</span>
             </div>
         </div>
 
@@ -44,8 +44,8 @@
     const commandInput = ref(null);
     const terminalOutput = ref([
         { content: 'WordPress Debug Terminal v2.0.0', type: 'info' },
-        { content: 'Type <strong>help</strong> to see available commands', type: 'info' },
-        { content: 'Type <strong>wp</strong> to see WP-CLI style commands', type: 'info' },
+        { content: 'Type help to see available commands', type: 'info' },
+        { content: 'Type wp to see WP-CLI style commands', type: 'info' },
         { content: '', type: 'info' }
     ]);
     const currentCommand = ref('');
@@ -119,6 +119,10 @@
         // Add a small delay to ensure focus works even after page transitions
         setTimeout(focusInput, 100);
     });
+
+    function stripTerminalMarkup(content) {
+        return String(content || '').replace(/<[^>]*>/g, '');
+    }
 
     // Function to focus the input field
     function focusInput() {
@@ -535,13 +539,14 @@
     .debug-terminal {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: min(520px, calc(100vh - 250px));
+        min-height: 360px;
         border-radius: 6px;
         overflow: hidden;
         background-color: #1e1e1e;
         color: #f0f0f0;
         font-family: 'Courier New', monospace;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
     }
 
     .terminal-header {
@@ -549,14 +554,14 @@
         justify-content: space-between;
         align-items: center;
         background-color: #2d2d2d;
-        padding: 10px 15px;
+        padding: 8px 12px;
         border-bottom: 1px solid #444;
     }
 
     .terminal-header h3 {
         margin: 0;
         color: #e2e2e2;
-        font-size: 1rem;
+        font-size: 0.92rem;
     }
 
     .terminal-actions {
@@ -566,13 +571,13 @@
 
     .terminal-window {
         flex: 1;
-        padding: 15px;
+        padding: 12px;
         overflow-y: auto;
-        line-height: 1.5;
+        line-height: 1.4;
     }
 
     .terminal-line {
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         white-space: pre-wrap;
         word-break: break-word;
     }
@@ -593,7 +598,7 @@
     .terminal-input-container {
         display: flex;
         align-items: center;
-        padding: 10px 15px;
+        padding: 8px 12px;
         background-color: #252525;
         border-top: 1px solid #444;
     }
@@ -610,7 +615,7 @@
         border: none;
         color: #f0f0f0;
         font-family: 'Courier New', monospace;
-        font-size: 1em;
+        font-size: 0.95em;
         outline: none;
     }
 

@@ -2,79 +2,73 @@
     <div class="notification-view">
         <Toast position="bottom-right" group="br" />
 
-        <Card>
-            <template #title>
-                <div class="card-title">
-                    <i class="pi pi-bell mr-2"></i>
-                    Email Notifications
+        <div v-if="state.isLoading" class="loading-container">
+            <ProgressSpinner />
+            <p>Loading notification settings...</p>
+        </div>
+
+        <div v-else class="notification-content">
+            <div class="notification-summary">
+                <span class="notification-icon"><i class="pi pi-bell"></i></span>
+                <div>
+                    <h2>Email Notifications</h2>
+                    <p>Send debug log summaries to a selected inbox.</p>
                 </div>
-            </template>
-            <template #subtitle>
-                Configure email alerts for debug log events
-            </template>
-            <template #content>
-                <div v-if="state.isLoading" class="loading-container">
-                    <ProgressSpinner />
-                    <p>Loading notification settings...</p>
-                </div>
+            </div>
 
-                <div v-else class="notification-content">
-                    <Message severity="info" class="mb-4">
-                        <span>Configure email notifications to stay informed about debug log events. Receive daily summaries or immediate alerts when errors occur.</span>
-                    </Message>
-
-                    <div class="notification-form">
-                        <div class="form-field">
-                            <label for="email" class="form-label">Notification Email</label>
-                            <div class="p-inputgroup">
-                                <span class="p-inputgroup-addon">
-                                    <i class="pi pi-envelope"></i>
-                                </span>
-                                <InputText
-                                    id="email"
-                                    v-model="state.email"
-                                    placeholder="Enter email address"
-                                    aria-describedby="email-help"
-                                />
-                            </div>
-                            <small id="email-help" class="form-text">Email address to receive notifications</small>
-                        </div>
-
-                        <Divider />
-
-                        <div class="notification-options">
-                            <div class="option-item">
-                                <div class="option-content">
-                                    <h4>Daily Summary</h4>
-                                    <p>Receive a daily email summary if any debug logs were created</p>
-                                </div>
-                                <InputSwitch
-                                    v-model="state.status"
-                                    @change="updatetNotificationEmail"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <Button
-                                label="Save Settings"
-                                icon="pi pi-check"
-                                @click="updatetNotificationEmail"
-                                :loading="state.isSaving"
-                                :disabled="!state.email"
-                            />
-                            <Button
-                                label="Test Email"
-                                icon="pi pi-envelope"
-                                class="p-button-outlined"
-                                @click="sendTestEmail"
-                                :disabled="!state.email"
-                            />
-                        </div>
+            <section class="notification-panel">
+                <div class="form-field">
+                    <div class="form-field-info">
+                        <label for="email" class="form-label">Notification Email</label>
+                        <small id="email-help" class="form-text">Recipient for debug log notifications.</small>
+                    </div>
+                    <div class="p-inputgroup notification-email-input">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-envelope"></i>
+                        </span>
+                        <InputText
+                            id="email"
+                            v-model="state.email"
+                            placeholder="Enter email address"
+                            aria-describedby="email-help"
+                        />
                     </div>
                 </div>
-            </template>
-        </Card>
+
+                <div class="option-item">
+                    <div class="option-content">
+                        <h4>Daily Summary</h4>
+                        <p>Send one email when debug logs were created that day.</p>
+                    </div>
+                    <div class="option-control">
+                        <span :class="['option-status', state.status ? 'is-on' : 'is-off']">
+                            {{ state.status ? 'Enabled' : 'Disabled' }}
+                        </span>
+                        <InputSwitch
+                            v-model="state.status"
+                            @change="updatetNotificationEmail"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <Button
+                    label="Save Settings"
+                    icon="pi pi-check"
+                    @click="updatetNotificationEmail"
+                    :loading="state.isSaving"
+                    :disabled="!state.email"
+                />
+                <Button
+                    label="Test Email"
+                    icon="pi pi-envelope"
+                    class="p-button-outlined"
+                    @click="sendTestEmail"
+                    :disabled="!state.email"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -178,15 +172,8 @@ onMounted(() => {
 
 <style scoped>
 .notification-view {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.card-title {
-    display: flex;
-    align-items: center;
-    font-size: 1.25rem;
+    margin: 0;
+    padding: 0;
 }
 
 .loading-container {
@@ -198,58 +185,159 @@ onMounted(() => {
 }
 
 .notification-content {
-    padding: 10px;
+    display: grid;
+    gap: 14px;
 }
 
-.notification-form {
-    margin-top: 20px;
+.notification-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.notification-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.notification-summary h2 {
+    margin: 0 0 4px;
+    color: #1e293b;
+    font-size: 18px;
+}
+
+.notification-summary p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.notification-panel {
+    overflow: hidden;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    background: #fff;
 }
 
 .form-field {
-    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: minmax(220px, 0.35fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .form-label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 4px;
     font-weight: 600;
-    color: #4b5563;
+    color: #1e293b;
 }
 
 .form-text {
     display: block;
-    margin-top: 0.5rem;
-    color: #6b7280;
+    color: #64748b;
+    font-size: 13px;
 }
 
-.notification-options {
-    margin: 1.5rem 0;
+.notification-email-input {
+    display: flex;
+    min-width: 0;
+}
+
+.notification-email-input .p-inputgroup-addon {
+    width: 46px;
+    min-width: 46px;
+    padding: 0;
+    border-color: #bfdbfe;
+    border-right: 0;
+    border-radius: 8px 0 0 8px;
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.notification-email-input .p-inputtext {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 42px;
+    border-color: #bfdbfe;
+    border-left: 0;
+    border-radius: 0 8px 8px 0;
+    box-shadow: none;
+}
+
+.notification-email-input .p-inputtext:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 1px #93c5fd;
+}
+
+.notification-email-input:focus-within .p-inputgroup-addon {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 1px #93c5fd;
 }
 
 .option-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    gap: 16px;
+    padding: 16px;
+    background-color: #fff;
 }
 
 .option-content h4 {
-    margin: 0 0 0.5rem 0;
-    color: #374151;
+    margin: 0 0 4px;
+    color: #1e293b;
+    font-size: 15px;
 }
 
 .option-content p {
     margin: 0;
-    color: #6b7280;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.option-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.option-status {
+    min-width: 68px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.option-status.is-on {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.option-status.is-off {
+    background: #f1f5f9;
+    color: #64748b;
 }
 
 .form-actions {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 /* Responsive adjustments */
@@ -259,8 +347,13 @@ onMounted(() => {
         align-items: flex-start;
     }
 
-    .option-item .p-inputswitch {
-        margin-top: 1rem;
+    .form-field {
+        grid-template-columns: 1fr;
+    }
+
+    .option-control {
+        width: 100%;
+        justify-content: space-between;
     }
 
     .form-actions {
