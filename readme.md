@@ -8,7 +8,7 @@
 **Tags:** debug, debug log, developer, tools
 **Requires at least:** 5.6
 **Tested up to:** 6.6.1
-**Stable tag:** 3.0.0
+**Stable tag:** 3.0.1
 **Requires PHP:** 5.6
 **License:** GPLv2 or later
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,9 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 2. **Debug Log**
 
 ## Changelog
+### 3.0.1
+- Maintenance release with refreshed plugin metadata.
+
 ### 3.0.0
 - Hardened AJAX route verification to fail closed for invalid requests, missing permissions, and bad nonces.
 - Added a guarded debug log file viewer endpoint with wp-content path containment and latest 1 MB reads for large files.

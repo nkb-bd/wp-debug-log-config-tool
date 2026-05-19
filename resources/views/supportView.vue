@@ -48,14 +48,14 @@
                         <div class="developer-social">
                             <Button icon="pi pi-github" class="p-button-rounded p-button-text" @click="openLink('https://github.com/nkb-bd')" />
                             <Button icon="pi pi-twitter" class="p-button-rounded p-button-text p-button-info" @click="openLink('https://twitter.com/nkb_bd')" />
-                            <Button icon="pi pi-linkedin" class="p-button-rounded p-button-text p-button-help" @click="openLink('https://www.linkedin.com/in/nkb-bd/')" />
+                            <Button icon="pi pi-linkedin" class="p-button-rounded p-button-text p-button-help" @click="openLink('https://www.linkedin.com/in/lukman-nakib/')" />
                         </div>
                     </div>
                 </div>
             </section>
 
             <div class="version-info">
-                <Chip label="Version: 3.0.0" icon="pi pi-tag" />
+                <Chip label="Version: 3.0.1" icon="pi pi-tag" />
                 <Chip label="License: GPL v2 or later" icon="pi pi-check-circle" />
             </div>
         </div>
