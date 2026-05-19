@@ -31,14 +31,15 @@ class AjaxHandler
     public function verify($request)
     {
         if (!wp_doing_ajax()) {
-            return;
+            wp_send_json_error(['message' => 'Invalid request context.'], 400);
         }
         if (!current_user_can($this->getAccessRole())) {
-            return;
+            wp_send_json_error(['message' => 'Permission denied.'], 403);
         }
-        
-        if (!wp_verify_nonce($request['nonce'], 'dlct-nonce')) {
-            wp_send_json_error(['message' => 'Error: Nonce error!']);
+
+        $nonce = isset($request['nonce']) ? sanitize_text_field(wp_unslash($request['nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'dlct-nonce')) {
+            wp_send_json_error(['message' => 'Error: Nonce error!'], 403);
         }
     }
     

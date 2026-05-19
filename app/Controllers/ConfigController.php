@@ -48,7 +48,7 @@ class ConfigController
         $configContents = file_get_contents(self::$configfilePath);
         if (false === strpos($configContents, "/* That's all, stop editing!")) {
             preg_match('@\$table_prefix = (.*);@', $configContents, $matches);
-            self::$configArgs['anchor'] = $matches[0] ?? '';
+            self::$configArgs['anchor'] = isset($matches[0]) ? $matches[0] : '';
             self::$configArgs['placement'] = 'after';
         }
 

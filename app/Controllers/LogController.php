@@ -53,8 +53,8 @@ class LogController
             wp_send_json_success([
                 'success' => true,
                 'log_path'    => $this->logFilePath,
-                'logs'        => $logData['logs'] ?? '',
-                'error_types' => $logData['unique_error_types'] ?? '',
+                'logs'        => isset($logData['logs']) ? $logData['logs'] : '',
+                'error_types' => isset($logData['unique_error_types']) ? $logData['unique_error_types'] : '',
                 'file_size'   => $currentSize,
                 'last_modified' => time(),
                 'query_logs'    => $this->getQueryLogs($isSaveQueryOn),
@@ -70,6 +70,55 @@ class LogController
     public function getFilesize()
     {
         return file_exists($this->logFilePath) ? filesize($this->logFilePath) : false;
+    }
+
+    public function getLogFileContent()
+    {
+        Helper::verifyRequest();
+
+        if (empty($this->logFilePath)) {
+            $this->logFilePath = $this->setRandomLogPath();
+        }
+
+        $contentDir = wp_normalize_path(WP_CONTENT_DIR);
+        $logFilePath = wp_normalize_path($this->logFilePath);
+
+        if (strpos($logFilePath, $contentDir) !== 0) {
+            wp_send_json_error(array(
+                'message' => 'Debug log file path is outside wp-content.',
+            ), 403);
+        }
+
+        if (!file_exists($logFilePath) || !is_readable($logFilePath)) {
+            wp_send_json_error(array(
+                'message' => 'Debug log file is not readable.',
+            ), 404);
+        }
+
+        $fileSize = filesize($logFilePath);
+        $maxBytes = 1024 * 1024;
+        $offset = 0;
+
+        if ($fileSize > $maxBytes) {
+            $offset = $fileSize - $maxBytes;
+        }
+
+        $content = file_get_contents($logFilePath, false, null, $offset);
+        if ($content === false) {
+            wp_send_json_error(array(
+                'message' => 'Could not read debug log file.',
+            ), 500);
+        }
+
+        wp_send_json_success(array(
+            'success' => true,
+            'log_path' => $logFilePath,
+            'file_size' => $fileSize,
+            'content' => $content,
+            'truncated' => $offset > 0,
+            'offset' => $offset,
+            'max_bytes' => $maxBytes,
+        ));
     }
 
     public function loadLogs($limit = false, $lastModified = 0)
@@ -610,9 +659,24 @@ class LogController
             $currentLogPath = get_option('dlct_debug_file_path');
             $defaultLogPath = apply_filters('wp_dlct_default_log_file_path', WP_CONTENT_DIR . '/debug.log');
 
+            $contentDir = wp_normalize_path(WP_CONTENT_DIR);
+            $currentLogPath = wp_normalize_path($currentLogPath);
+            $defaultLogPath = wp_normalize_path($defaultLogPath);
+
+            if (strpos($currentLogPath, $contentDir) !== 0 || strpos($defaultLogPath, $contentDir) !== 0) {
+                return;
+            }
+
+            if (!is_readable($defaultLogPath) || !is_writable(dirname($currentLogPath))) {
+                return;
+            }
+
             $content = file_get_contents($defaultLogPath);
+            if ($content === false) {
+                return;
+            }
+
             file_put_contents($currentLogPath, $content);
-            file_put_contents($defaultLogPath, 'Content Moved');
 
             update_option('dlct_log_file_copied', true);
         }
@@ -661,7 +725,7 @@ class LogController
         try{
             global $wpdb;
 
-            $currentQueries = $wpdb->queries ?? [];
+            $currentQueries = isset($wpdb->queries) ? $wpdb->queries : array();
             if(empty($currentQueries)){
                 return;
             }
