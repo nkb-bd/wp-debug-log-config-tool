@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 define('DLCT_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DLCT_PLUGIN_VERSION', '1.5.3');
+define('DLCT_PLUGIN_VERSION', '2.0.1');
 define('DLCT_PLUGIN_MAIN_FILE', __FILE__);
 define('DLCT_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('DLCT_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -42,5 +42,4 @@ register_deactivation_hook(DLCT_PLUGIN_MAIN_FILE, function () {
 add_action('shutdown', function (){
     \DebugLogConfigTool\Controllers\LogController::maybeCacheQueries();
 });
-
 
