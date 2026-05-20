@@ -581,13 +581,11 @@ class LogController
         } elseif ($time_diff < 86400) {
             $hours = round($time_diff / 3600);
             return $hours . ' ' . _n('hour', 'hours', $hours, 'debug-log-config-tool') . ' ago';
-        } elseif ($time_diff < 604800) {
-            $days = round($time_diff / 86400);
-            return $days . ' ' . _n('day', 'days', $days, 'debug-log-config-tool') . ' ago';
-        } else {
-            // For older logs, show the actual date and time
-            return date('M j, Y g:i a', $timestamp);
         }
+
+        // For older logs, show the actual date and time. Relative "days ago"
+        // labels were easy to misread when scanning historical debug entries.
+        return date_i18n('M j, Y g:i a', $timestamp);
     }
 
     public function clearDebugLog()

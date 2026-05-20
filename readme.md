@@ -1,4 +1,4 @@
-# Debug Log - Manager Tool
+# Debug Log Manager Tool
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/debug-log-config-tool)](https://wordpress.org/plugins/debug-log-config-tool/)
 [![WordPress Plugin Rating](https://img.shields.io/wordpress/plugin/rating/debug-log-config-tool)](https://wordpress.org/plugins/debug-log-config-tool/)
@@ -8,12 +8,12 @@
 **Tags:** debug, debug log, developer, tools
 **Requires at least:** 5.6
 **Tested up to:** 6.6.1
-**Stable tag:** 3.0.1
+**Stable tag:** 3.0.2
 **Requires PHP:** 5.6
 **License:** GPLv2 or later
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-The "Debug Log Config Tool" simplifies WordPress debugging by providing a powerful interface to manage debug logs, toggle settings, and analyze issues directly from your dashboard.
+Debug Log Manager Tool simplifies WordPress debugging by providing a powerful interface to manage debug logs, toggle settings, and analyze issues directly from your dashboard.
 
 ## Description
 
@@ -58,7 +58,7 @@ Please note: Constant values will be restored on plugin deactivation as it was b
 
 ### 🚀 Improvements
 
-We're constantly working to improve the Debug Log Config Tool. Here are some features we're planning to add in future releases:
+We're constantly working to improve Debug Log Manager Tool. Here are some features we're planning to add in future releases:
 
 #### Developer Tools
 - **Code Snippets Runner**: Securely run PHP code snippets for testing (admin only)
@@ -110,6 +110,10 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 2. **Debug Log**
 
 ## Changelog
+### 3.0.2
+- Improved debug log time labels so older entries show exact dates instead of misleading relative age text.
+- Normalized the plugin name spelling on public plugin metadata.
+
 ### 3.0.1
 - Maintenance release with refreshed plugin metadata.
 

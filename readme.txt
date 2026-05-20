@@ -1,15 +1,15 @@
-===  Debug Log - Manager Tool ===
+=== Debug Log Manager Tool ===
 Contributors: pyrobd
 Donate link:
 Tags: debug, log, developer, tools,remote debug
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The "Debug Log Config Tool" simplifies debugging. Toggle logging,queries , view levels, clear logs from dashboard.
+Debug Log Manager Tool simplifies debugging. Toggle logging, queries, view levels, and clear logs from the dashboard.
 
 == Description ==
 
@@ -60,7 +60,7 @@ Please note: Constant values will be restored on plugin deactivation as it was b
 
 == Frequently Asked Questions ==
 
-= Do I need file manager/ftp or modify wp-config.php fie  ? =
+= Do I need file manager/FTP or modify wp-config.php? =
 
 No, just activate the plugin and turn off/on debug mode from plugin settings
 
@@ -76,6 +76,10 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 1. ** Debug Log **
 
 == Changelog ==
+
+= 3.0.2 =
+- Improved debug log time labels so older entries show exact dates instead of misleading relative age text.
+- Normalized the plugin name spelling on public plugin metadata.
 
 = 3.0.1 =
 - Maintenance release with refreshed plugin metadata.

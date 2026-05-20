@@ -5,7 +5,7 @@
                 <div class="overview-heading">
                     <span class="overview-icon"><i class="pi pi-info-circle"></i></span>
                     <div>
-                        <h2>About Debug Log Config Tool</h2>
+                        <h2>About Debug Log Manager Tool</h2>
                         <p>Focused debugging tools for WordPress developers.</p>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
             </section>
 
             <div class="version-info">
-                <Chip label="Version: 3.0.1" icon="pi pi-tag" />
+                <Chip label="Version: 3.0.2" icon="pi pi-tag" />
                 <Chip label="License: GPL v2 or later" icon="pi pi-check-circle" />
             </div>
         </div>
