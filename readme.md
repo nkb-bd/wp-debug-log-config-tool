@@ -8,16 +8,16 @@
 **Tags:** debug, debug log, developer, tools
 **Requires at least:** 5.6
 **Tested up to:** 6.6.1
-**Stable tag:** 3.0.2
+**Stable tag:** 3.0.3
 **Requires PHP:** 5.6
 **License:** GPLv2 or later
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-Debug Log Manager Tool simplifies WordPress debugging by providing a powerful interface to manage debug logs, toggle settings, and analyze issues directly from your dashboard.
+Debug Log Manager Tool is a WordPress debugging console for managing debug constants, reading logs, inspecting stack traces, running guarded terminal commands, and isolating plugin conflicts from your dashboard.
 
 ## Description
 
-A comprehensive debugging toolkit for WordPress developers and site administrators. This plugin gives you complete control over WordPress debugging without editing wp-config.php files or using FTP.
+A comprehensive debugging toolkit for WordPress developers, agencies, and site administrators. This plugin gives you control over WordPress debugging without editing wp-config.php files or using FTP.
 
 ### 🎥 Quick Demo
 
@@ -25,14 +25,20 @@ A comprehensive debugging toolkit for WordPress developers and site administrato
 
 ### ✨ Key Features
 
-- **WP-CLI Style Terminal**: Execute WordPress commands directly from your browser with syntax highlighting and auto-completion
-- **Database Tools**: Run SQL queries, view table structures, and optimize your database (super admin only)
-- **Debug Constants Manager**: Toggle all WordPress debug constants with a single click
-- **Log Viewer**: View, filter, and analyze debug logs with syntax highlighting and error categorization
-- **Query Inspector**: Examine database queries with SAVEQUERIES support
-- **Email Notifications**: Get alerts when new errors appear in your logs
-- **Safe Mode**: Quickly disable all plugins except selected ones for troubleshooting
-- **Custom Log Paths**: Set custom log file locations with filter support
+- **Debug Constants Manager**: Toggle WP_DEBUG, WP_DEBUG_LOG, WP_DEBUG_DISPLAY, SCRIPT_DEBUG, and SAVEQUERIES without manually editing wp-config.php.
+- **Modern Debug Log Viewer**: View, search, filter, group, and clear debug log entries from a compact WordPress admin interface.
+- **Readable Timeline Rows**: Scan log entries with severity labels, occurrence counts, plugin/source hints, exact timestamps, and copy-as-JSON actions.
+- **Stack Trace Analysis**: Format PHP stack traces and database call chains so long fatal errors are easier to read.
+- **Large Log File Preview**: Open the current debug log file inside a modal and safely read the latest 1 MB of large files.
+- **Query Inspector**: Examine database queries when SAVEQUERIES is enabled, including SQL, caller, execution time, and stack trace details.
+- **WP-CLI Style Terminal**: Run guarded WordPress-style commands directly from the browser with command history and auto-completion.
+- **Terminal Settings**: Enable or disable terminal access and database commands from a dedicated settings screen.
+- **Safe Mode**: Temporarily isolate plugin conflicts by keeping selected plugins active and restoring the previous state when Safe Mode is turned off.
+- **Email Notifications**: Configure notification email settings, daily summaries, and test email delivery for debug activity.
+- **Admin Bar Debug Toggle**: Quickly enable or disable WP_DEBUG from the WordPress admin bar.
+- **Dashboard Widget**: See recent debug log activity from the WordPress dashboard.
+- **Custom Log Path Support**: Use filters to customize the debug log location.
+- **Hardened Admin Routes**: AJAX actions use nonce and capability checks, with guarded file path handling for debug log access.
 
 ### 🔧 Debug Constants Available
 
@@ -51,6 +57,8 @@ A comprehensive debugging toolkit for WordPress developers and site administrato
 - **Stack Trace Analysis**: Visualize error stack traces for easier debugging
 - **Hook Inspector**: View all registered hooks and their callbacks
 - **Environment Detection**: Using Laravel Mix to automatically hide development features in production
+- **Copy JSON**: Copy structured log entries for support tickets or developer handoff
+- **File Viewer**: Inspect the debug log file without leaving the WordPress admin screen
 
 > **Developer API**: Apply custom filters like `apply_filters('wp_debuglog_log_file_path', $file);` to extend functionality
 
@@ -106,10 +114,14 @@ Yes you can see a simple log in dashboard widget and nicely formatted view in th
 Safe mode will deactivate all the plugin except the selected one. When you turn safe mode off it will restore all the previous activated plugin.
 
 ## Screenshots
-1. **Plugin Settings**
-2. **Debug Log**
+1. **Debug log timeline with filters, grouped events, and file tools**
+2. **Terminal and database debugging commands**
+3. **Safe Mode and settings screens**
 
 ## Changelog
+### 3.0.3
+- Refreshed plugin directory assets and feature documentation.
+
 ### 3.0.2
 - Improved debug log time labels so older entries show exact dates instead of misleading relative age text.
 - Normalized the plugin name spelling on public plugin metadata.
