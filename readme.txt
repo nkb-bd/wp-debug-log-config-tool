@@ -4,7 +4,7 @@ Donate link:
 Tags: debug, log, developer, tools,remote debug
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -85,6 +85,9 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 3. **Safe Mode and settings screens**
 
 == Changelog ==
+
+= 3.0.4 =
+- Refreshed the plugin directory banner and icon with a softer visual style.
 
 = 3.0.3 =
 - Refreshed plugin directory assets and feature documentation.
