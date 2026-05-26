@@ -1,13 +1,15 @@
 .DS_Store
 .distignore
 .git
+.github
 .gitattributes
 .gitignore
+docs
 README.md
+readme.md
 .idea
 node_modules
 package-lock.json
 package.json
 webpack.mix.js
 resources
-

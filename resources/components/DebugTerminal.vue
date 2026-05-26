@@ -90,6 +90,16 @@
         // WordPress Option commands
         'wp option': 'WordPress option commands',
         'wp option list': 'List autoloaded options',
+        'wp option get [name]': 'Get an option value',
+
+        // WordPress Object commands
+        'wp post': 'WordPress post inspection commands',
+        'wp post get [id]': 'Get a post by ID',
+        'wp post list [post_type]': 'List recent posts',
+        'wp user': 'WordPress user inspection commands',
+        'wp user get [id]': 'Get a user by ID',
+        'wp meta': 'WordPress metadata inspection commands',
+        'wp meta get [type] [id] [key]': 'Get object metadata',
 
         // WordPress Database commands
         'wp db': 'WordPress database commands',
@@ -378,6 +388,7 @@
                 'WordPress Hooks': Object.entries(availableCommands).filter(([cmd]) => cmd.startsWith('wp hook')),
                 'WordPress Cron': Object.entries(availableCommands).filter(([cmd]) => cmd.startsWith('wp cron')),
                 'WordPress Options': Object.entries(availableCommands).filter(([cmd]) => cmd.startsWith('wp option')),
+                'WordPress Objects': Object.entries(availableCommands).filter(([cmd]) => cmd.startsWith('wp post') || cmd.startsWith('wp user') || cmd.startsWith('wp meta')),
                 'WordPress Database': Object.entries(availableCommands).filter(([cmd]) => cmd.startsWith('wp db')),
                 'PHP': Object.entries(availableCommands).filter(([cmd]) => cmd.startsWith('php')),
                 'Shell': Object.entries(availableCommands).filter(([cmd]) => !cmd.startsWith('wp') && !cmd.startsWith('php') && cmd !== 'help' && cmd !== 'clear')

@@ -1,19 +1,21 @@
-===  Debug Log - Manager Tool ===
+=== Debug Log Manager Tool ===
 Contributors: pyrobd
 Donate link:
 Tags: debug, log, developer, tools,remote debug
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 3.0.0
+Stable tag: 3.0.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The "Debug Log Config Tool" simplifies debugging. Toggle logging,queries , view levels, clear logs from dashboard.
+Debug Log Manager Tool is a WordPress log manager for safely reading debug logs, reviewing errors, and choosing when to update WordPress debug constants from the dashboard.
 
 == Description ==
 
-A comprehensive debugging toolkit for WordPress developers and site administrators. This plugin gives you complete control over WordPress debugging without editing wp-config.php files or using FTP.
+A simple debugging workspace for WordPress developers, agencies, and site administrators. The plugin focuses on safe first-run behavior: activation does not automatically turn debug mode on, deactivation does not automatically turn it off, and existing debug constants or custom log paths are preserved until you choose to change them.
+
+Use it to inspect the current debug log, search and group log entries, copy useful error details, and make explicit debug configuration changes from the WordPress admin when needed. Advanced tools such as terminal commands, database inspection, Safe Mode, and notifications are available as optional helpers.
 
 = Quick Demo =
 
@@ -21,48 +23,77 @@ A comprehensive debugging toolkit for WordPress developers and site administrato
 
 = Key Features =
 
-* **WP-CLI Style Terminal**: Execute WordPress commands directly from your browser with syntax highlighting and auto-completion
-* **Database Tools**: Run SQL queries, view table structures, and optimize your database (super admin only)
-* **Debug Constants Manager**: Toggle all WordPress debug constants with a single click
-* **Log Viewer**: View, filter, and analyze debug logs with syntax highlighting and error categorization
-* **Query Inspector**: Examine database queries with SAVEQUERIES support
-* **Email Notifications**: Get alerts when new errors appear in your logs
-* **Safe Mode**: Quickly disable all plugins except selected ones for troubleshooting
-* **Custom Log Paths**: Set custom log file locations with filter support
+* **Safe First Run**: Activating the plugin does not automatically change WP_DEBUG, WP_DEBUG_LOG, WP_DEBUG_DISPLAY, SCRIPT_DEBUG, SAVEQUERIES, or existing log paths.
+* **Explicit Debug Controls**: Review current debug constant values and update them only through intentional UI actions.
+* **Modern Debug Log Viewer**: View, search, filter, group, copy, and clear debug log entries from a compact WordPress admin interface.
+* **Readable Timeline Rows**: Scan log entries with severity labels, occurrence counts, plugin/source hints, exact timestamps, and copy-as-JSON actions.
+* **Stack Trace Analysis**: Format PHP stack traces and database call chains so long fatal errors are easier to read.
+* **Last Fatal Snapshot**: Capture the latest fatal error during shutdown and show it in the log screen when wp-admin is available again.
+* **Large Log File Preview**: Open the current debug log file inside a modal and safely read the latest 1 MB of large files.
+* **Smooth Upgrade Behavior**: Upgrades preserve existing constants and custom debug log locations instead of replacing your current configuration.
+* **Query Inspector**: Optionally examine database queries when SAVEQUERIES is enabled, including SQL, caller, execution time, and stack trace details.
+* **WP-CLI Style Terminal**: Optionally run guarded WordPress-style commands directly from the browser with command history and auto-completion.
+* **Terminal Settings**: Enable or disable terminal access and database commands from a dedicated settings screen.
+* **Safe Mode**: Optionally isolate plugin conflicts by keeping selected plugins active and restoring the previous state when Safe Mode is turned off.
+* **Email Notifications**: Optionally configure notification email settings, daily summaries, and test email delivery for debug activity.
+* **Admin Bar Debug Toggle**: Quickly review and change WP_DEBUG from the WordPress admin bar when you explicitly choose to.
+* **Dashboard Widget**: See recent debug log activity from the WordPress dashboard.
+* **Custom Log Path Support**: Keep existing custom log paths and use filters to customize the debug log location.
+* **Hardened Admin Routes**: AJAX actions use nonce and capability checks, with guarded file path handling for debug log access.
 
 = Debug Constants Available =
 
-* **WP_DEBUG** - Default Value: true - Enables WordPress debug mode
-* **WP_DEBUG_LOG** - Default Value: true - Saves all errors to a debug.log file
-* **SCRIPT_DEBUG** - Default Value: false - Uses development versions of core JS and CSS files
-* **WP_DEBUG_DISPLAY** - Default Value: false - Controls whether debug messages display on screen
-* **SAVEQUERIES** - Default Value: false - Saves database queries for analysis
+These constants can be reviewed and changed from the plugin UI. The plugin does not change them on activation or deactivation.
+
+* **WP_DEBUG** - Enables WordPress debug mode
+* **WP_DEBUG_LOG** - Saves errors to the configured debug log destination
+* **SCRIPT_DEBUG** - Uses development versions of core JS and CSS files
+* **WP_DEBUG_DISPLAY** - Controls whether debug messages display on screen
+* **SAVEQUERIES** - Saves database queries for analysis
 
 = Developer Tools =
 
-* **Terminal Commands**: Use WP-CLI style commands like `wp core version` or `wp plugin list`
-* **Database Explorer**: Run SELECT queries and view results in a formatted table
+* **Terminal Commands**: Optionally use WP-CLI style commands like `wp core version` or `wp plugin list`
+* **Database Explorer**: Optionally run SELECT queries and view results in a formatted table
 * **Stack Trace Analysis**: Visualize error stack traces for easier debugging
 * **Hook Inspector**: View all registered hooks and their callbacks
 * **Environment Detection**: Development features are automatically hidden in production
+* **Copy JSON**: Copy structured log entries for support tickets or developer handoff
+* **File Viewer**: Inspect the debug log file without leaving the WordPress admin screen
 
-> **Developer API**: Apply custom filters like `apply_filters('wp_debuglog_log_file_path', $file);` to extend functionality
+> **Developer API**: Use filters like `wp_dlct_log_file_path` and `dlct_debug_file_path` to customize log path behavior.
 
-Please note: Constant values will be restored on plugin deactivation as it was before activating the plugin.
+Please note: Configuration changes are made only by explicit UI actions. Deactivating the plugin does not automatically restore, remove, enable, or disable WordPress debug constants.
 
 
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/debug-log-config-tool` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress
-1. Go to Tools-> Debug Logs screen to see the debug logs or access it from the top navbar.
+1. Activate the plugin through the 'Plugins' screen in WordPress. Activation will not automatically change your debug constants.
+1. Go to Tools -> Debug Logs to view logs, review current debug settings, or make an explicit configuration change.
 
 
 == Frequently Asked Questions ==
 
-= Do I need file manager/ftp or modify wp-config.php fie  ? =
+= Do I need file manager/FTP or modify wp-config.php? =
 
-No, just activate the plugin and turn off/on debug mode from plugin settings
+No. You can review current debug settings and turn debug constants on or off from the plugin settings when you choose to. Activation itself does not edit your debug configuration.
+
+= Will activation or deactivation change my debug constants? =
+
+No. Activation and deactivation do not automatically change WP_DEBUG, WP_DEBUG_LOG, WP_DEBUG_DISPLAY, SCRIPT_DEBUG, SAVEQUERIES, or your configured debug log path.
+
+= What happens when I upgrade from an older version? =
+
+The plugin preserves your existing debug constants and log path. Upgrade handling is designed to avoid replacing your current configuration unless you make an explicit change in the UI.
+
+= Are terminal commands and database tools required? =
+
+No. The core value is log viewing and debug configuration management. Terminal, database, Safe Mode, and notification tools are optional advanced features.
+
+= Can it help after a fatal error? =
+
+Yes. The plugin stores a small last-fatal-error snapshot during WordPress shutdown and shows it in the log screen when the dashboard can load again. It does not create a public emergency log viewer.
 
 = Can I see full debug in dashboard?  =
 
@@ -72,10 +103,33 @@ Yes you can see a simple log in dashboard widget and nicely formatted view in th
 Safe mode will deactivate all the plugin except the selected one. When you turn safe mode off it will restore all the previous activated plugin.
 
 == Screenshots ==
-1. ** Plugin Settings **
-1. ** Debug Log **
+1. **Debug log timeline with filters, grouped events, and file tools**
+2. **Terminal and database debugging commands**
+3. **Safe Mode and settings screens**
 
 == Changelog ==
+
+= 3.0.5 =
+- Added last fatal error snapshots so the log screen can show the most recent fatal captured during shutdown.
+- Added read-only terminal commands for inspecting options, posts, users, and metadata without arbitrary PHP execution.
+- Improved Query Log so missing or unchanged debug log files no longer hide collected database queries.
+- Improved Query Log sorting and labels to show the most expensive queries first with execution time, duplicate count, and duplicate total time.
+- Hardened first-run and upgrade behavior so activation, deactivation, settings reads, and log reads do not silently change debug constants or create a new debug log path.
+- Defaulted terminal access to disabled for fresh installs while preserving saved terminal settings.
+- Refreshed README and WordPress.org copy around safe first-run log management and optional advanced tools.
+
+= 3.0.4 =
+- Refreshed the plugin directory banner and icon with a softer visual style.
+
+= 3.0.3 =
+- Refreshed plugin directory assets and feature documentation.
+
+= 3.0.2 =
+- Improved debug log time labels so older entries show exact dates instead of misleading relative age text.
+- Normalized the plugin name spelling on public plugin metadata.
+
+= 3.0.1 =
+- Maintenance release with refreshed plugin metadata.
 
 = 3.0.0 =
 - Hardened AJAX route verification to fail closed for invalid requests, missing permissions, and bad nonces.

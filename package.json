@@ -1,7 +1,7 @@
 {
-  "name": "debug-log-config-tool-x",
-  "version": "1.0.0",
-  "description": "=== WP Debug Log - Config Tool === Contributors: pyrobd Tags: debug, log , debug constant, config Requires at least: 5.0 Tested up to: 6.0.1 Requires PHP: 5.2 Stable tag: 1.1 License: GPLv2 or later License URI: https://www.gnu.org/licenses/gpl-2.0.html",
+  "name": "wp-debug-log-config-tool",
+  "version": "3.0.5",
+  "description": "Debug Log Manager Tool is a WordPress log manager and debugging console with safe first-run behavior.",
   "main": "webpack.mix.js",
   "dependencies": {
     "primeicons": "^6.0.1",

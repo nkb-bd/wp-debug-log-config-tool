@@ -83,7 +83,10 @@ class TerminalController
                                 "  db         Perform basic database operations",
                                 "  log        View and manage debug logs",
                                 "  hook       Manage WordPress hooks",
-                                "  option     Manage WordPress options"
+                                "  option     Manage WordPress options",
+                                "  post       Inspect WordPress posts",
+                                "  user       Inspect WordPress users",
+                                "  meta       Inspect WordPress metadata"
                             ],
                             'type' => 'info'
                         ];
@@ -253,15 +256,93 @@ class TerminalController
                                         "Usage: wp option <command>",
                                         "",
                                         "Available commands:",
-                                        "  list       List autoloaded options"
+                                        "  list       List autoloaded options",
+                                        "  get        Get an option value"
                                     ],
                                     'type' => 'info'
                                 ];
                             } else if ($subargs[0] === 'list') {
                                 $result = $this->checkAutoloadOptions();
+                            } else if ($subargs[0] === 'get') {
+                                $optionName = isset($subargs[1]) ? $subargs[1] : '';
+                                $result = $this->getOptionValue($optionName);
                             } else {
                                 $result = [
                                     'output' => ["Unknown command: wp option {$subargs[0]}"],
+                                    'type' => 'error'
+                                ];
+                            }
+                            break;
+
+                        case 'post':
+                            if (empty($subargs)) {
+                                $result = [
+                                    'output' => [
+                                        "<strong>WP Post Commands:</strong>",
+                                        "Usage: wp post <command>",
+                                        "",
+                                        "Available commands:",
+                                        "  get        Get a post by ID",
+                                        "  list       List recent posts"
+                                    ],
+                                    'type' => 'info'
+                                ];
+                            } else if ($subargs[0] === 'get') {
+                                $postId = isset($subargs[1]) ? intval($subargs[1]) : 0;
+                                $result = $this->getPost($postId);
+                            } else if ($subargs[0] === 'list') {
+                                $result = $this->listPosts(array_slice($subargs, 1));
+                            } else {
+                                $result = [
+                                    'output' => ["Unknown command: wp post {$subargs[0]}"],
+                                    'type' => 'error'
+                                ];
+                            }
+                            break;
+
+                        case 'user':
+                            if (empty($subargs)) {
+                                $result = [
+                                    'output' => [
+                                        "<strong>WP User Commands:</strong>",
+                                        "Usage: wp user <command>",
+                                        "",
+                                        "Available commands:",
+                                        "  get        Get a user by ID"
+                                    ],
+                                    'type' => 'info'
+                                ];
+                            } else if ($subargs[0] === 'get') {
+                                $userId = isset($subargs[1]) ? intval($subargs[1]) : 0;
+                                $result = $this->getUser($userId);
+                            } else {
+                                $result = [
+                                    'output' => ["Unknown command: wp user {$subargs[0]}"],
+                                    'type' => 'error'
+                                ];
+                            }
+                            break;
+
+                        case 'meta':
+                            if (empty($subargs)) {
+                                $result = [
+                                    'output' => [
+                                        "<strong>WP Meta Commands:</strong>",
+                                        "Usage: wp meta <command>",
+                                        "",
+                                        "Available commands:",
+                                        "  get        Get metadata: wp meta get post <id> <key>"
+                                    ],
+                                    'type' => 'info'
+                                ];
+                            } else if ($subargs[0] === 'get') {
+                                $metaType = isset($subargs[1]) ? $subargs[1] : '';
+                                $objectId = isset($subargs[2]) ? intval($subargs[2]) : 0;
+                                $metaKey = isset($subargs[3]) ? $subargs[3] : '';
+                                $result = $this->getMetaValue($metaType, $objectId, $metaKey);
+                            } else {
+                                $result = [
+                                    'output' => ["Unknown command: wp meta {$subargs[0]}"],
                                     'type' => 'error'
                                 ];
                             }
@@ -1581,6 +1662,206 @@ class TerminalController
             'output' => $output,
             'type' => 'info'
         ];
+    }
+
+    /**
+     * Get a WordPress option value.
+     */
+    private function getOptionValue($optionName)
+    {
+        $optionName = sanitize_key($optionName);
+
+        if (empty($optionName)) {
+            return [
+                'output' => ['Usage: wp option get <name>'],
+                'type' => 'error'
+            ];
+        }
+
+        $value = get_option($optionName, null);
+
+        if ($value === null) {
+            return [
+                'output' => ["Option '{$optionName}' was not found."],
+                'type' => 'error'
+            ];
+        }
+
+        return [
+            'output' => [
+                "<strong>Option: {$optionName}</strong>",
+                $this->formatTerminalValue($value)
+            ],
+            'type' => 'info'
+        ];
+    }
+
+    /**
+     * Get a post by ID.
+     */
+    private function getPost($postId)
+    {
+        if ($postId <= 0) {
+            return [
+                'output' => ['Usage: wp post get <id>'],
+                'type' => 'error'
+            ];
+        }
+
+        $post = get_post($postId);
+
+        if (!$post) {
+            return [
+                'output' => ["Post {$postId} was not found."],
+                'type' => 'error'
+            ];
+        }
+
+        return [
+            'output' => [
+                "<strong>Post {$post->ID}</strong>",
+                "Title: " . get_the_title($post),
+                "Type: {$post->post_type}",
+                "Status: {$post->post_status}",
+                "Author: {$post->post_author}",
+                "Date: {$post->post_date}",
+                "Modified: {$post->post_modified}",
+                "Permalink: " . get_permalink($post),
+            ],
+            'type' => 'info'
+        ];
+    }
+
+    /**
+     * List recent posts with optional post_type and limit arguments.
+     */
+    private function listPosts($args = [])
+    {
+        $postType = 'post';
+        $limit = 10;
+
+        foreach ($args as $arg) {
+            if (strpos($arg, '--post_type=') === 0) {
+                $postType = sanitize_key(substr($arg, strlen('--post_type=')));
+            } elseif (strpos($arg, '--limit=') === 0) {
+                $limit = max(1, min(50, intval(substr($arg, strlen('--limit=')))));
+            } elseif (!empty($arg) && strpos($arg, '--') !== 0) {
+                $postType = sanitize_key($arg);
+            }
+        }
+
+        $posts = get_posts([
+            'post_type' => $postType,
+            'post_status' => 'any',
+            'numberposts' => $limit,
+            'orderby' => 'modified',
+            'order' => 'DESC',
+        ]);
+
+        if (empty($posts)) {
+            return [
+                'output' => ["No posts found for post_type '{$postType}'."],
+                'type' => 'info'
+            ];
+        }
+
+        $output = ["<strong>Recent {$postType} posts</strong>"];
+        $output[] = "ID | Status | Modified | Title";
+        $output[] = "----------------------------------------";
+
+        foreach ($posts as $post) {
+            $title = get_the_title($post);
+            if (strlen($title) > 60) {
+                $title = substr($title, 0, 57) . '...';
+            }
+
+            $output[] = "{$post->ID} | {$post->post_status} | {$post->post_modified} | {$title}";
+        }
+
+        return [
+            'output' => $output,
+            'type' => 'info'
+        ];
+    }
+
+    /**
+     * Get safe user details by ID.
+     */
+    private function getUser($userId)
+    {
+        if ($userId <= 0) {
+            return [
+                'output' => ['Usage: wp user get <id>'],
+                'type' => 'error'
+            ];
+        }
+
+        $user = get_userdata($userId);
+
+        if (!$user) {
+            return [
+                'output' => ["User {$userId} was not found."],
+                'type' => 'error'
+            ];
+        }
+
+        return [
+            'output' => [
+                "<strong>User {$user->ID}</strong>",
+                "Login: {$user->user_login}",
+                "Display name: {$user->display_name}",
+                "Email: {$user->user_email}",
+                "Registered: {$user->user_registered}",
+                "Roles: " . implode(', ', $user->roles),
+            ],
+            'type' => 'info'
+        ];
+    }
+
+    /**
+     * Get metadata for supported WordPress object types.
+     */
+    private function getMetaValue($metaType, $objectId, $metaKey)
+    {
+        $metaType = sanitize_key($metaType);
+        $metaKey = sanitize_key($metaKey);
+        $allowedTypes = ['post', 'user', 'term', 'comment'];
+
+        if (!in_array($metaType, $allowedTypes, true) || $objectId <= 0 || empty($metaKey)) {
+            return [
+                'output' => ['Usage: wp meta get <post|user|term|comment> <id> <key>'],
+                'type' => 'error'
+            ];
+        }
+
+        $value = get_metadata($metaType, $objectId, $metaKey, true);
+
+        if ($value === '') {
+            return [
+                'output' => ["No {$metaType} meta found for object {$objectId} and key '{$metaKey}'."],
+                'type' => 'info'
+            ];
+        }
+
+        return [
+            'output' => [
+                "<strong>{$metaType} meta: {$objectId} / {$metaKey}</strong>",
+                $this->formatTerminalValue($value)
+            ],
+            'type' => 'info'
+        ];
+    }
+
+    /**
+     * Format scalar, array, and object values for the terminal.
+     */
+    private function formatTerminalValue($value)
+    {
+        if (is_scalar($value) || $value === null) {
+            return var_export($value, true);
+        }
+
+        return wp_json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
     /**

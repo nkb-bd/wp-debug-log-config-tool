@@ -60,7 +60,7 @@ class TerminalSettingsController
      */
     public function isTerminalEnabled()
     {
-        $option = get_option($this->terminalEnabledOption, 'yes'); // Default to enabled
+        $option = get_option($this->terminalEnabledOption, 'no'); // Default to disabled for fresh installs
         return $option === 'yes';
     }
     

@@ -75,6 +75,20 @@
                         </div>
                     </div>
 
+                    <Message v-if="state.fatal_snapshot && state.fatal_snapshot.message" severity="error" :closable="false" class="dlct-fatal-snapshot">
+                        <div class="dlct-fatal-content">
+                            <div>
+                                <strong>Last fatal error captured</strong>
+                                <p>{{ state.fatal_snapshot.message }}</p>
+                                <small v-if="state.fatal_snapshot.file">
+                                    {{ state.fatal_snapshot.file }}<span v-if="state.fatal_snapshot.line">:{{ state.fatal_snapshot.line }}</span>
+                                    <span v-if="state.fatal_snapshot.captured_at"> · {{ state.fatal_snapshot.captured_at }}</span>
+                                </small>
+                            </div>
+                            <Button @click="clearFatalSnapshot" class="p-button-sm" icon="pi pi-times" label="Clear" severity="secondary" text />
+                        </div>
+                    </Message>
+
                     <div v-if="state.isLoading" class="dlct-loading">
                         <ProgressSpinner strokeWidth="4" fill="var(--surface-ground)" aria-label="Loading"/>
                     </div>
@@ -198,13 +212,27 @@
                         <AccordionTab v-for="(query,index) in state.query_logs" :key="index">
                             <template #header>
                                 <div class="query-log-list">
-                                    <code>{{ query.sql }}</code>
-                                    <span class="index-number">#{{ index + 1 }}</span>
+                                    <div class="query-log-summary">
+                                        <code>{{ query.sql }}</code>
+                                        <span class="index-number">#{{ index + 1 }}</span>
+                                        <span v-if="query.is_duplicate" class="query-log-duplicate">
+                                            {{ query.duplicate_count }}x duplicate
+                                        </span>
+                                    </div>
+                                    <span class="query-log-cost">
+                                        {{ formatQueryTime(query.execution_time) }}
+                                        <small v-if="query.is_duplicate">
+                                            total {{ formatQueryTime(query.duplicate_total_time) }}
+                                        </small>
+                                    </span>
                                 </div>
                             </template>
                             <div class="query-log-detail">
                                 <div><b>Caller</b> {{ query.caller }}</div>
-                                <div><b>Execution Time</b> {{ query.execution_time }}</div>
+                                <div><b>Execution Time</b> {{ formatQueryTime(query.execution_time) }}</div>
+                                <div v-if="query.is_duplicate">
+                                    <b>Duplicate Query</b> Seen {{ query.duplicate_count }} times, {{ formatQueryTime(query.duplicate_total_time) }} total.
+                                </div>
                                 <div>
                                     <b>Stack Trace</b>
                                     <ul class="query-trace">
@@ -361,7 +389,8 @@
         is_save_query_on : false,
         activeIndex : 0,
         lastModified: 0,
-        fileSize: 0
+        fileSize: 0,
+        fatal_snapshot: null
     });
 
     const rawFile = reactive({
@@ -496,6 +525,26 @@
         }
 
         stackTraceDialogVisible.value = true;
+    }
+
+    function formatQueryTime(seconds) {
+        const value = Number(seconds);
+
+        if (!Number.isFinite(value)) {
+            return '0 ms';
+        }
+
+        const milliseconds = value * 1000;
+
+        if (milliseconds < 1) {
+            return `${milliseconds.toFixed(2)} ms`;
+        }
+
+        if (milliseconds < 100) {
+            return `${milliseconds.toFixed(1)} ms`;
+        }
+
+        return `${Math.round(milliseconds)} ms`;
     }
 
     function isNotEmptyLog(){
@@ -797,6 +846,9 @@
                     if (data.value.data.no_changes) {
                         state.fileSize = data.value.data.file_size;
                         state.lastModified = data.value.data.last_modified;
+                        state.is_save_query_on = data.value.data.is_save_query_on;
+                        state.query_logs = data.value.data.query_logs;
+                        state.fatal_snapshot = data.value.data.fatal_snapshot;
                         return;
                     }
 
@@ -804,6 +856,7 @@
                     state.log_path = data.value.data.log_path;
                     state.fileSize = data.value.data.file_size;
                     state.lastModified = data.value.data.last_modified;
+                    state.fatal_snapshot = data.value.data.fatal_snapshot;
 
                     // For auto-refresh, append new logs to existing ones
                     if (isAutoRefresh && state.logs && data.value.data.logs) {
@@ -983,6 +1036,23 @@
     const showTopLeft = () => {
         toast.add({ severity: 'success', summary: '', detail: 'Log Cleared', group: 'br', life: 3000 });
     };
+
+    async function clearFatalSnapshot() {
+        try {
+            const {data, error: fetchError} = await $post({
+                route: 'clear_fatal_snapshot'
+            });
+
+            if (data && data.value && data.value.data && data.value.data.success) {
+                state.fatal_snapshot = null;
+                toast.add({ severity: 'success', summary: 'Snapshot cleared', detail: data.value.data.message, group: 'br', life: 3000 });
+            } else if (fetchError) {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to clear fatal snapshot', group: 'br', life: 3000 });
+            }
+        } catch (err) {
+            toast.add({ severity: 'error', summary: 'Error', detail: err.message || 'Failed to clear fatal snapshot', group: 'br', life: 3000 });
+        }
+    }
     function toggleAutoRefresh() {
         clearInterval(refreshTimer);
         if (autoRefreshEnabled.value) {

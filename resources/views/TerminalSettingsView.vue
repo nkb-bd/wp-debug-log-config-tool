@@ -72,7 +72,7 @@ const toast = useToast();
 
 const state = reactive({
   isLoading: true,
-  terminalEnabled: true,
+  terminalEnabled: false,
   dbCommandsEnabled: false
 });
 

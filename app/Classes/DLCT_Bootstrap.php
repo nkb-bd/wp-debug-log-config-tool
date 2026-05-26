@@ -85,6 +85,8 @@ final class DLCT_Bootstrap
      */
     public function init()
     {
+        (new FatalErrorSnapshot())->boot();
+
         if (!is_admin()) {
             return;
         }

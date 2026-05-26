@@ -5,6 +5,7 @@ $router->get('get_log', 'LogController@get');
 $router->get('get_log_file_content', 'LogController@getLogFileContent');
 $router->post('clear_debug_logs', 'LogController@clearDebugLog');
 $router->post('clear_query_logs', 'LogController@clearQueryLog');
+$router->post('clear_fatal_snapshot', 'LogController@clearFatalSnapshot');
 $router->post('generate_test_logs', 'LogController@generateTestLogs');
 $router->post('terminal_command', 'TerminalController@executeCommand');
 $router->get('get_terminal_settings', 'TerminalSettingsController@get');

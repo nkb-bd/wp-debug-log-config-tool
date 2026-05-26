@@ -15,23 +15,16 @@ class SettingsController
         $formattedSettings = [];
         foreach ($configs as $setting) {
             $configFileValue = ConfigController::getInstance()->getValue($setting['name']);
-            if ($configFileValue != null) {
-                # value exists in config so do nothing
-            } else {
-                # value does not exist in config so update
-                $configFileValue = $setting['value'];
-                ConfigController::getInstance()->update($setting['name'], $setting['value']);
-            }
             if ($setting['name'] == 'WP_DEBUG_LOG') {
-                $value = $configFileValue;
+                $value = $configFileValue !== null ? $configFileValue : '';
             } else {
                 $value = $configFileValue === true || $configFileValue === 'true';
-
             }
             $formattedSettings[] = [
                 'name'  => $setting['name'],
                 'value' => $value,
                 'info'  => $setting['info'],
+                'exists' => $configFileValue !== null,
             ];
         }
         wp_send_json_success([
@@ -71,14 +64,14 @@ class SettingsController
 
     public function getConstants()
     {
-        $WP_DEBUG_LOG = true;
+        $WP_DEBUG_LOG = false;
         if(get_option('dlct_debug_file_path')){
             $WP_DEBUG_LOG = "'".get_option('dlct_debug_file_path')."'";
         }
         $constants = [
             'WP_DEBUG'         => [
                 'name'  => 'WP_DEBUG',
-                'value' => true,
+                'value' => false,
                 'info'  => 'Enable WP_DEBUG mode',
             ],
             'WP_DEBUG_LOG'     => [
@@ -88,7 +81,7 @@ class SettingsController
             ],
             'SCRIPT_DEBUG'     => [
                 'name'  => 'SCRIPT_DEBUG',
-                'value' => true,
+                'value' => false,
                 'info'  => 'Use the “dev” versions of core CSS and JavaScript files'
             ],
             'WP_DEBUG_DISPLAY' => [

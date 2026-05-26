@@ -2,6 +2,7 @@
 
 namespace DebugLogConfigTool\Controllers;
 
+use DebugLogConfigTool\Classes\FatalErrorSnapshot;
 use DebugLogConfigTool\Classes\DLCT_Bootstrap;
 
 class LogController
@@ -11,7 +12,7 @@ class LogController
 
     public function __construct()
     {
-        $debugPath =  $this->setRandomLogPath();
+        $debugPath =  $this->resolveLogPath();
         $this->logFilePath = apply_filters('wp_dlct_log_file_path', $debugPath);
     }
 
@@ -19,12 +20,23 @@ class LogController
     {
         Helper::verifyRequest();
 
-        if(empty( $this->logFilePath )){
-            $this->logFilePath = $this->setRandomLogPath();
-        }
         try {
-            if (!file_exists($this->logFilePath)) {
-                wp_send_json_error(['message' => 'Debug log file not found']);
+            $isSaveQueryOn = \DebugLogConfigTool\Controllers\ConfigController::getInstance()->getValue('SAVEQUERIES');
+
+            if (empty($this->logFilePath) || !file_exists($this->logFilePath)) {
+                wp_send_json_success([
+                    'success' => true,
+                    'message' => 'Debug log file not found',
+                    'log_path' => $this->logFilePath,
+                    'logs' => [],
+                    'error_types' => [],
+                    'file_size' => 0,
+                    'last_modified' => time(),
+                    'query_logs' => $this->getQueryLogs($isSaveQueryOn),
+                    'is_save_query_on' => $isSaveQueryOn === true || $isSaveQueryOn == 'true',
+                    'fatal_snapshot' => FatalErrorSnapshot::get(),
+                ]);
+                return;
             }
 
             // Check if we should only get new logs
@@ -41,14 +53,16 @@ class LogController
                     'error_types' => [],
                     'file_size' => $currentSize,
                     'last_modified' => time(),
-                    'no_changes' => true
+                    'no_changes' => true,
+                    'query_logs' => $this->getQueryLogs($isSaveQueryOn),
+                    'is_save_query_on' => $isSaveQueryOn === true || $isSaveQueryOn == 'true',
+                    'fatal_snapshot' => FatalErrorSnapshot::get(),
                 ]);
                 return;
             }
 
             // Load logs, potentially only new ones
             $logData = $this->loadLogs(false, $lastModified);
-            $isSaveQueryOn = \DebugLogConfigTool\Controllers\ConfigController::getInstance()->getValue('SAVEQUERIES');
 
             wp_send_json_success([
                 'success' => true,
@@ -58,7 +72,8 @@ class LogController
                 'file_size'   => $currentSize,
                 'last_modified' => time(),
                 'query_logs'    => $this->getQueryLogs($isSaveQueryOn),
-                'is_save_query_on' => $isSaveQueryOn === true || $isSaveQueryOn == 'true'
+                'is_save_query_on' => $isSaveQueryOn === true || $isSaveQueryOn == 'true',
+                'fatal_snapshot' => FatalErrorSnapshot::get(),
             ]);
         } catch (\Exception $e) {
             wp_send_json_success([
@@ -77,9 +92,10 @@ class LogController
         Helper::verifyRequest();
 
         if (empty($this->logFilePath)) {
-            $this->logFilePath = $this->setRandomLogPath();
+            wp_send_json_error(array(
+                'message' => 'Debug log file path is not configured.',
+            ), 404);
         }
-
         $contentDir = wp_normalize_path(WP_CONTENT_DIR);
         $logFilePath = wp_normalize_path($this->logFilePath);
 
@@ -581,13 +597,11 @@ class LogController
         } elseif ($time_diff < 86400) {
             $hours = round($time_diff / 3600);
             return $hours . ' ' . _n('hour', 'hours', $hours, 'debug-log-config-tool') . ' ago';
-        } elseif ($time_diff < 604800) {
-            $days = round($time_diff / 86400);
-            return $days . ' ' . _n('day', 'days', $days, 'debug-log-config-tool') . ' ago';
-        } else {
-            // For older logs, show the actual date and time
-            return date('M j, Y g:i a', $timestamp);
         }
+
+        // For older logs, show the actual date and time. Relative "days ago"
+        // labels were easy to misread when scanning historical debug entries.
+        return date_i18n('M j, Y g:i a', $timestamp);
     }
 
     public function clearDebugLog()
@@ -634,6 +648,29 @@ class LogController
     public function setLogFilePath($logFilePath)
     {
         $this->logFilePath = $logFilePath;
+    }
+
+    private function resolveLogPath()
+    {
+        $generatedDebugPath = get_option('dlct_debug_file_path');
+        if (get_option('dlct_debug_file_path_generated') === 'yes' && !empty($generatedDebugPath)) {
+            return $generatedDebugPath;
+        }
+
+        $debugLogValue = ConfigController::getInstance()->getValue('WP_DEBUG_LOG');
+        if (is_string($debugLogValue)) {
+            $debugLogValue = trim($debugLogValue, '\'"');
+        }
+
+        if ($debugLogValue === true || $debugLogValue === 'true' || $debugLogValue === '1') {
+            return apply_filters('wp_dlct_default_log_file_path', WP_CONTENT_DIR . '/debug.log');
+        }
+
+        if (is_string($debugLogValue) && $debugLogValue !== '' && $debugLogValue !== 'false') {
+            return $debugLogValue;
+        }
+
+        return '';
     }
 
     private function getRandomPath()
@@ -693,6 +730,7 @@ class LogController
             return [];
         }
         $queryLogs = [];
+        $duplicateStats = [];
         foreach ($allQueries as $query) {
             $callers = [];
             if (isset($query[0], $query[1], $query[2])) {
@@ -706,16 +744,42 @@ class LogController
             $callers = array_map('trim', $callers);
             $caller = reset($callers);
             $sql = trim($sql);
+            $normalizedSql = preg_replace('/\s+/', ' ', $sql);
+            $executionTime = (float) $executionTime;
+
+            if (!isset($duplicateStats[$normalizedSql])) {
+                $duplicateStats[$normalizedSql] = [
+                    'count' => 0,
+                    'total_time' => 0.0,
+                ];
+            }
+
+            $duplicateStats[$normalizedSql]['count']++;
+            $duplicateStats[$normalizedSql]['total_time'] += $executionTime;
 
             $row = [
                 'caller'         => $caller,
                 'sql'            => $sql,
+                'normalized_sql' => $normalizedSql,
                 'execution_time' => $executionTime,
                 'stack'          => $callers,
             ];
             $queryLogs[] = $row; // Store the row in the $rows array
         }
-        return array_reverse($queryLogs);
+
+        foreach ($queryLogs as &$queryLog) {
+            $stats = $duplicateStats[$queryLog['normalized_sql']];
+            $queryLog['duplicate_count'] = $stats['count'];
+            $queryLog['duplicate_total_time'] = $stats['total_time'];
+            $queryLog['is_duplicate'] = $stats['count'] > 1;
+        }
+        unset($queryLog);
+
+        usort($queryLogs, function ($a, $b) {
+            return $b['execution_time'] <=> $a['execution_time'];
+        });
+
+        return $queryLogs;
     }
 
 
@@ -761,10 +825,20 @@ class LogController
             if (!is_file($debugPath)) {
                 file_put_contents($debugPath, '');
             }
-            ConfigController::getInstance()->update('WP_DEBUG_LOG', "'" . $debugPath . "'");
-            (new \DebugLogConfigTool\Controllers\LogController())->maybeCopyLogFromDefaultLogFile();
+            $this->maybeCopyLogFromDefaultLogFile();
         }
         return $debugPath;
+    }
+
+    public function clearFatalSnapshot()
+    {
+        Helper::verifyRequest();
+        FatalErrorSnapshot::clear();
+
+        wp_send_json_success([
+            'success' => true,
+            'message' => 'Fatal error snapshot cleared',
+        ]);
     }
 
     /**
@@ -775,27 +849,13 @@ class LogController
         Helper::verifyRequest();
 
         if(empty($this->logFilePath)){
-            $this->logFilePath = $this->setRandomLogPath();
+            wp_send_json_error([
+                'message' => 'Debug log file path is not configured. Enable debug logging before generating sample logs.',
+                'success' => false,
+            ]);
         }
 
         try {
-            // Make sure debug logging is enabled
-            $configController = \DebugLogConfigTool\Controllers\ConfigController::getInstance();
-            $isDebugEnabled = $configController->getValue('WP_DEBUG');
-            $isDebugLogEnabled = $configController->getValue('WP_DEBUG_LOG');
-            $isDebugBacktraceEnabled = $configController->getValue('WP_DEBUG_BACKTRACE');
-
-            if (!$isDebugEnabled || !$isDebugLogEnabled) {
-                // Temporarily enable debug logging
-                $configController->update('WP_DEBUG', 'true');
-                $configController->update('WP_DEBUG_LOG', 'true');
-            }
-
-            // Ensure backtrace is enabled for better test logs
-            if (!$isDebugBacktraceEnabled) {
-                $configController->update('WP_DEBUG_BACKTRACE', 'true');
-            }
-
             // Generate different types of log entries
             $timestamp = current_time('mysql');
 

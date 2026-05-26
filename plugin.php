@@ -5,7 +5,7 @@
  * Plugin Name:       Debug Log Manager Tool
  * Plugin URI:        https://nkb-bd.github.io/
  * Description:       Debug & Query log Helper tool with additional CLI like tools
- * Version:           3.0.0
+ * Version:           3.0.5
  * Author:            Lukman Nakib
  * Author URI:        https://nkb-bd.github.io/
  * License:           GPL-2.0+
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 define('DLCT_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DLCT_PLUGIN_VERSION', '3.0.0');
+define('DLCT_PLUGIN_VERSION', '3.0.5');
 define('DLCT_PLUGIN_MAIN_FILE', __FILE__);
 define('DLCT_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('DLCT_PLUGIN_DIR', plugin_dir_path(__FILE__));

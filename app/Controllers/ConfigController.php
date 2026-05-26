@@ -6,7 +6,6 @@ use DebugLogConfigTool\vendor\WPConfigTransformer;
 
 class ConfigController
 {
-    const WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE = 'dlct_data_initial';
     private static $configfilePath;
 
     /**
@@ -149,48 +148,6 @@ class ConfigController
         foreach ($deletedConstant as $item) {
             $this->config_file_manager->remove('constant', strtoupper($item));
         }
-    }
-
-
-    public function storeInitialValues()
-    {
-        if (!is_writable(self::$configfilePath)) {
-            return;
-        }
-        $predefinedConstants = [];
-        $constants =  (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
-
-        foreach ($constants as $constantKey => $constantValue) {
-            if ($this->exists(strtoupper($constantKey))) {
-                $value = $this->getValue(strtoupper($constantKey));
-                $predefinedConstants[$constantKey] = $value;
-            }
-        }
-        update_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE, $predefinedConstants ,false);
-    }
-
-
-    public function restoreInitialState()
-    {
-        try {
-            $initialSettings = get_option(self::WPDD_DEBUGGING_PREDEFINED_CONSTANTS_STATE);
-            if (!is_writable(self::$configfilePath)) {
-                return;
-            }
-
-            $constants = (new \DebugLogConfigTool\Controllers\SettingsController())->getConstants();
-            //first turn off all
-            foreach ($constants as $key => $constants) {
-                (new ConfigController())->update($key, false);
-            }
-            //then restore as before
-            foreach ($initialSettings as $key => $value) {
-                (new ConfigController())->update($key, $value);
-            }
-        } catch (\Exception $e){
-
-        }
-
     }
 
 
