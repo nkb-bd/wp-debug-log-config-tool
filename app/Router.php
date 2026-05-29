@@ -63,19 +63,18 @@ class Router
      */
     public function direct($uri, $requestType)
     {
-        if(!$uri){
-            throw new \Exception('No route defined in this Reqeust.');
+        if (!$uri) {
+            return ['ok' => false, 'reason' => 'empty_action'];
         }
-        $validRoutes = in_array( $uri,$this->routeNames);
-        
-        if (array_key_exists($uri, $this->routes[$requestType]) && $validRoutes) {
-            
-            $action = explode('@', $this->routes[$requestType][$uri]);
 
+        $validRoutes = in_array($uri, $this->routeNames, true);
+
+        if (isset($this->routes[$requestType]) && array_key_exists($uri, $this->routes[$requestType]) && $validRoutes) {
+            $action = explode('@', $this->routes[$requestType][$uri]);
             return $this->callAction(...$action);
         }
-        throw new \Exception('No route defined for this Routes : '  .$uri );
-        
+
+        return ['ok' => false, 'reason' => 'unknown_route', 'route' => $uri, 'method' => $requestType];
     }
     
     /**

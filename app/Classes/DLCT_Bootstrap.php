@@ -144,13 +144,11 @@ final class DLCT_Bootstrap
      */
     public function enqueueAdminScripts()
     {
-        // Add CSS for the debug indicator in admin bar
-        wp_add_inline_style('admin-bar', $this->getAdminBarStyles());
+        if ($this->shouldInjectAdminBarToggle()) {
+            wp_add_inline_style('admin-bar', $this->getAdminBarStyles());
+            wp_add_inline_script('jquery', $this->getDebugToggleScript());
+        }
 
-        // Add JavaScript for AJAX toggle
-        wp_add_inline_script('jquery', $this->getDebugToggleScript());
-
-        // Load plugin-specific assets for the admin page
         if (isset($_GET['page']) && sanitize_text_field($_GET['page']) === self::DLCT_LOG) {
             $this->loadPluginAssets();
         }
@@ -470,6 +468,10 @@ final class DLCT_Bootstrap
      */
     public function adminTopMenu()
     {
+        if (!$this->shouldInjectAdminBarToggle()) {
+            return;
+        }
+
         global $wp_admin_bar;
 
         // Check if WP_DEBUG is enabled
@@ -582,6 +584,34 @@ final class DLCT_Bootstrap
     public function getAccessRole()
     {
         return apply_filters('DLCT_LOG_admin_access_role', 'manage_options');
+    }
+
+    /**
+     * Whether the admin-bar debug toggle (and its supporting assets) should be injected
+     * on the current request. Keeps the assets scoped to pages that actually render
+     * the toggle so other plugins' admin screens (e.g. JetEngine Vue 2 editors) are not
+     * polluted by inline jQuery payloads they never use.
+     *
+     * @return bool
+     */
+    private function shouldInjectAdminBarToggle()
+    {
+        if (wp_doing_ajax() || wp_doing_cron()) {
+            return false;
+        }
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return false;
+        }
+        if (function_exists('is_network_admin') && is_network_admin()) {
+            return false;
+        }
+        if (!is_admin_bar_showing()) {
+            return false;
+        }
+        if (!current_user_can($this->getAccessRole())) {
+            return false;
+        }
+        return true;
     }
 
     /**

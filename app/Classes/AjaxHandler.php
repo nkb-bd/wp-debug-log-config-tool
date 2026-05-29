@@ -20,7 +20,28 @@ class AjaxHandler
     public function handleRequest()
     {
         $this->verify($_REQUEST);
-        Router::load('app/routes.php')->direct(Request::ajaxRoute(), Request::method());
+
+        try {
+            $result = Router::load('app/routes.php')->direct(Request::ajaxRoute(), Request::method());
+        } catch (\Throwable $e) {
+            error_log(sprintf(
+                '[debug-log-config-tool] router dispatch failed: %s (route=%s method=%s)',
+                $e->getMessage(),
+                Request::ajaxRoute(),
+                Request::method()
+            ));
+            wp_send_json_error(['message' => 'Internal error.'], 500);
+        }
+
+        if (is_array($result) && isset($result['ok']) && $result['ok'] === false) {
+            error_log(sprintf(
+                '[debug-log-config-tool] unknown route: reason=%s route=%s method=%s',
+                $result['reason'],
+                isset($result['route']) ? $result['route'] : '',
+                isset($result['method']) ? $result['method'] : ''
+            ));
+            wp_send_json_error(['message' => 'Unknown action.'], 404);
+        }
     }
     
     public function getAccessRole()

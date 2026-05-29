@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.6] - 2026-05-29
+
+### Fixed
+- AJAX router dispatch now returns a JSON 404 for unknown or empty actions instead of throwing an uncaught exception that surfaced as a critical PHP error in wp-admin.
+- Admin-bar debug toggle assets (inline style + inline jQuery script) are scoped to pages that actually render the toggle, fixing Vue 2 conflicts with JetEngine and Crocoblock editor screens.
+
+### Changed
+- Bumped `Tested up to` to 7.0, `Requires at least` to 6.0, and `Requires PHP` to 7.4 in `readme.txt`.
+- Refreshed `readme.txt` tags and description copy to lead with the queries users actually search for on WordPress.org.
+- Added `Requires at least`, `Requires PHP`, and `Tested up to` to the `plugin.php` header so the in-WordPress plugin updater agrees with the readme.
+
 ## [3.0.5] - 2026-05-27
 
 ### Added

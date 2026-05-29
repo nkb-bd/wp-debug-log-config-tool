@@ -1,19 +1,21 @@
 === Debug Log Manager Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug, log, developer, tools,remote debug
-Requires at least: 5.6
-Tested up to: 6.8
-Stable tag: 3.0.5
-Requires PHP: 5.6
+Tags: debug log, error log, wp_debug, log viewer, debug bar, query monitor, stack trace, wp-cli, debugger, developer tools
+Requires at least: 6.0
+Tested up to: 7.0
+Stable tag: 3.0.6
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Debug Log Manager Tool is a WordPress log manager for safely reading debug logs, reviewing errors, and choosing when to update WordPress debug constants from the dashboard.
+View, search, and filter the WordPress debug log from wp-admin. Toggle WP_DEBUG safely, group repeated errors, format stack traces, and inspect queries — no FTP or wp-config edits.
 
 == Description ==
 
-A simple debugging workspace for WordPress developers, agencies, and site administrators. The plugin focuses on safe first-run behavior: activation does not automatically turn debug mode on, deactivation does not automatically turn it off, and existing debug constants or custom log paths are preserved until you choose to change them.
+Debug Log Manager Tool is a debug log viewer and WP_DEBUG manager for WordPress. Read, search, group, and clear `wp-content/debug.log` from inside wp-admin; toggle WP_DEBUG, WP_DEBUG_LOG, WP_DEBUG_DISPLAY, SCRIPT_DEBUG, and SAVEQUERIES from explicit UI controls instead of editing `wp-config.php`; capture the last fatal error during shutdown; and review slow database queries with their stack trace. Useful as a lightweight alternative to Query Monitor or Debug Bar when you mainly need a clean debug.log reader and explicit debug-constant control.
+
+The plugin focuses on safe first-run behavior: activation does not automatically turn debug mode on, deactivation does not automatically turn it off, and existing debug constants or custom log paths are preserved until you choose to change them.
 
 Use it to inspect the current debug log, search and group log entries, copy useful error details, and make explicit debug configuration changes from the WordPress admin when needed. Advanced tools such as terminal commands, database inspection, Safe Mode, and notifications are available as optional helpers.
 
@@ -108,6 +110,12 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 3. **Safe Mode and settings screens**
 
 == Changelog ==
+
+= 3.0.6 =
+- Fixed: AJAX requests for removed or unknown actions no longer surface as a critical PHP error in wp-admin. The router now returns a JSON 404 and logs the attempt instead of throwing an uncaught exception.
+- Fixed: admin-bar debug toggle script and styles are no longer injected on admin screens where the toggle is not rendered (AJAX, REST, cron, network admin, or for users without the required capability), resolving Vue 2 conflicts on JetEngine and Crocoblock editor screens.
+- Improved: WP.org readme metadata — bumped Tested up to 7.0, Requires at least 6.0, Requires PHP 7.4, and refreshed tags and description copy for clearer search discoverability.
+- Improved: synced plugin header (Requires at least, Requires PHP, Tested up to) so the in-WordPress plugin updater agrees with the readme.
 
 = 3.0.5 =
 - Added last fatal error snapshots so the log screen can show the most recent fatal captured during shutdown.

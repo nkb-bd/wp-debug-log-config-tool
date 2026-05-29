@@ -2,3 +2,5 @@
 .DS_Store
 node_modules
 .idea/
+# Added by code-review-graph
+.code-review-graph/
