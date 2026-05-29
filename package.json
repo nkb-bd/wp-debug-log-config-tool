@@ -1,6 +1,6 @@
 {
   "name": "wp-debug-log-config-tool",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "Debug Log Manager Tool is a WordPress log manager and debugging console with safe first-run behavior.",
   "main": "webpack.mix.js",
   "dependencies": {
