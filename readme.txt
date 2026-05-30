@@ -1,7 +1,7 @@
 === Debug Log Manager Tool ===
 Contributors: pyrobd
 Donate link:
-Tags: debug log, error log, wp_debug, log viewer, debug bar, query monitor, stack trace, wp-cli, debugger, developer tools
+Tags: debug log, error log, wp_debug, log viewer, debugging
 Requires at least: 6.0
 Tested up to: 7.0
 Stable tag: 3.0.6
@@ -9,7 +9,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Read, search, and clear the WordPress debug log from wp-admin. Toggle WP_DEBUG, view stack traces, inspect queries — no FTP, no wp-config.
+Read, search, and clear WordPress debug logs from wp-admin. Toggle WP_DEBUG and inspect errors without FTP.
 
 == Description ==
 
