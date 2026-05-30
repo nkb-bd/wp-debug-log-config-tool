@@ -3,25 +3,113 @@ name: Deploy to WordPress.org
 on:
   push:
     tags:
-      - "*"
+      - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry-run (build and validate; skip SVN push)'
+        type: boolean
+        default: true
+      tag:
+        description: 'Tag to deploy (e.g. 3.0.6). Required for workflow_dispatch.'
+        type: string
+        default: ''
 
 jobs:
-  tag:
-    name: New tag
+  deploy:
+    name: Build, validate, deploy
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Step 2: Install Subversion
+      - name: Resolve release version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            VERSION="${{ github.event.inputs.tag }}"
+            if [ -z "$VERSION" ]; then
+              echo "::error::tag input is required for workflow_dispatch"
+              exit 1
+            fi
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Resolved release version: $VERSION"
+
+      - name: Verify version consistency
+        run: |
+          set -e
+          V="${{ steps.version.outputs.version }}"
+          fail=0
+
+          HDR=$(grep -E '^\s*\*\s*Version:' plugin.php | head -1 | sed -E 's/.*Version:[[:space:]]*([0-9.]+).*/\1/')
+          CONST=$(grep -E "DLCT_PLUGIN_VERSION" plugin.php | head -1 | sed -E "s/.*'([0-9.]+)'.*/\1/")
+          STABLE=$(grep -E '^Stable tag:' readme.txt | head -1 | sed -E 's/.*Stable tag:[[:space:]]*([0-9.]+).*/\1/')
+          PKG=$(node -p "require('./package.json').version")
+
+          echo "Tag:                 $V"
+          echo "plugin.php Version:  $HDR"
+          echo "DLCT_PLUGIN_VERSION: $CONST"
+          echo "readme Stable tag:   $STABLE"
+          echo "package.json:        $PKG"
+
+          [ "$HDR" = "$V" ]    || { echo "::error::plugin.php Version ($HDR) != tag ($V)"; fail=1; }
+          [ "$CONST" = "$V" ]  || { echo "::error::DLCT_PLUGIN_VERSION ($CONST) != tag ($V)"; fail=1; }
+          [ "$STABLE" = "$V" ] || { echo "::error::readme Stable tag ($STABLE) != tag ($V)"; fail=1; }
+          [ "$PKG" = "$V" ]    || { echo "::error::package.json version ($PKG) != tag ($V)"; fail=1; }
+
+          exit $fail
+
+      - name: Verify readme short description length (<= 150 chars)
+        run: |
+          set -e
+          SHORT=$(awk '/^== /{flag=1; next} flag && NF{print; exit}' readme.txt)
+          LEN=${#SHORT}
+          echo "Short description ($LEN chars): $SHORT"
+          if [ "$LEN" -gt 150 ]; then
+            echo "::error::readme short description is $LEN chars; WP.org limit is 150."
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install JS deps
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run prod
+
+      - name: Verify built bundle contains release version
+        run: |
+          set -e
+          V="${{ steps.version.outputs.version }}"
+          if ! grep -q "Version: $V" dist/wpdebuglog-admin.js; then
+            echo "::error::dist/wpdebuglog-admin.js does not contain 'Version: $V'. Did you forget to bump the supportView chip?"
+            exit 1
+          fi
+
       - name: Install Subversion
+        if: ${{ github.event_name == 'push' || github.event.inputs.dry_run == 'false' }}
         run: sudo apt-get update && sudo apt-get install -y subversion
 
-      # Step 3: Deploy to WordPress.org
-      - name: WordPress Plugin Deploy
+      - name: Deploy to WordPress.org
+        if: ${{ github.event_name == 'push' || github.event.inputs.dry_run == 'false' }}
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SLUG: ${{ secrets.SLUG }} # Optional, only if the repo name doesn't match the SVN slug
+          SLUG: ${{ secrets.SLUG }}
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Dry-run summary
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' }}
+        run: |
+          echo "::notice::Dry-run complete for ${{ steps.version.outputs.version }}. All checks + build succeeded. Re-run with dry_run=false to publish."
