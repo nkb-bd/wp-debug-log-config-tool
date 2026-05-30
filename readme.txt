@@ -9,7 +9,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-View, search, and filter the WordPress debug log from wp-admin. Toggle WP_DEBUG safely, group repeated errors, format stack traces, and inspect queries — no FTP or wp-config edits.
+Read, search, and clear the WordPress debug log from wp-admin. Toggle WP_DEBUG, view stack traces, inspect queries — no FTP, no wp-config.
 
 == Description ==
 
