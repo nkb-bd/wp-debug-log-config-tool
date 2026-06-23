@@ -16,7 +16,9 @@ class SettingsController
         foreach ($configs as $setting) {
             $configFileValue = ConfigController::getInstance()->getValue($setting['name']);
             if ($setting['name'] == 'WP_DEBUG_LOG') {
-                $value = $configFileValue !== null ? $configFileValue : '';
+                $raw = is_string($configFileValue) ? trim($configFileValue, "'\"") : $configFileValue;
+                $value = $raw === true || $raw === 'true' || $raw === '1'
+                    || (is_string($raw) && $raw !== '' && $raw !== 'false');
             } else {
                 $value = $configFileValue === true || $configFileValue === 'true';
             }
@@ -49,7 +51,11 @@ class SettingsController
             if ($setting['name'] == $updateKey) {
                 $setting['value'] = $updateValue;
                 #Write to wp-config.php file
-                ConfigController::getInstance()->update($updateKey, $updateValue);
+                if ($updateKey === 'WP_DEBUG_LOG') {
+                    $this->updateDebugLogConstant($updateValue);
+                } else {
+                    ConfigController::getInstance()->update($updateKey, $updateValue);
+                }
             }
             $updatedSettings[] = $setting;
         }
@@ -60,6 +66,21 @@ class SettingsController
             'message'          => 'Debug Constant updated successfully',
             'success'          => true
         ]);
+    }
+
+    private function updateDebugLogConstant($enable)
+    {
+        $config = ConfigController::getInstance();
+        if (!$enable) {
+            $config->update('WP_DEBUG_LOG', 'false');
+            return;
+        }
+        $managedPath = get_option('dlct_debug_file_path');
+        if ($managedPath && get_option('dlct_debug_file_path_generated') === 'yes') {
+            $config->update('WP_DEBUG_LOG', "'" . $managedPath . "'");
+        } else {
+            $config->update('WP_DEBUG_LOG', 'true');
+        }
     }
 
     public function getConstants()
