@@ -4,7 +4,7 @@ Donate link:
 Tags: debug log, error log, wp_debug, log viewer, debugging
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 3.0.6
+Stable tag: 3.0.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,12 @@ Safe mode will deactivate all the plugin except the selected one. When you turn 
 3. **Safe Mode and settings screens**
 
 == Changelog ==
+
+= 3.0.7 =
+- New: Emergency Log Viewer — an optional, password-protected page that lets you read the debug log even when the site is down with a fatal error and wp-admin is unreachable. Enable it and set credentials under Settings, then bookmark the URL.
+- Fixed: log timestamps are now shown in your own (browser) timezone, and the relative "x minutes ago" label always matches the exact-time tooltip.
+- Fixed: historical log entries written in the standard WordPress format no longer show today's date; the original date and time are preserved.
+- Improved: success and confirmation messages now stay on screen long enough to read.
 
 = 3.0.6 =
 - Fixed: AJAX requests for removed or unknown actions no longer surface as a critical PHP error in wp-admin. The router now returns a JSON 404 and logs the attempt instead of throwing an uncaught exception.
