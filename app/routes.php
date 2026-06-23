@@ -16,3 +16,6 @@ $router->get('get_notification_email', 'NotificationController@getNotificationEm
 $router->post('update_notification_email', 'NotificationController@updateNotificationEmail');
 $router->post('update_safe_mode', 'SafeModeController@update');
 $router->get('get_safe_mode', 'SafeModeController@get');
+$router->get('get_emergency_viewer', 'EmergencyViewerController@getStatus');
+$router->post('update_emergency_viewer', 'EmergencyViewerController@save');
+$router->post('disable_emergency_viewer', 'EmergencyViewerController@disable');
