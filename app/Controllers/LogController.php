@@ -360,7 +360,7 @@ class LogController
         // Simple format: just the message without timestamp
         if (strpos($line, 'PHP ') === 0 && (strpos($line, 'Notice') !== false || strpos($line, 'Warning') !== false ||
             strpos($line, 'Fatal error') !== false || strpos($line, 'Parse error') !== false || strpos($line, 'Deprecated') !== false)) {
-            $currentTime = current_time('U');
+            $currentTime = time();
 
             // Extract stack trace if available
             $stackTrace = $this->extractStackTrace($line);
@@ -394,7 +394,13 @@ class LogController
     private function parseStandardFormat($parts, $line)
     {
         $info = stripslashes($parts[3]);
-        $time = strtotime($parts[1]);
+        $time = strtotime(trim($parts[0] . ' ' . $parts[1] . ' ' . $parts[2]));
+        if ($time === false) {
+            $time = strtotime(trim($parts[0] . ' ' . $parts[1]));
+        }
+        if ($time === false) {
+            $time = time();
+        }
 
         $pluginName = $this->extractPluginName($info);
         $errorType = $this->extractErrorType($info);
@@ -580,7 +586,7 @@ class LogController
      */
     private function formatTimeAgo($timestamp)
     {
-        $current_time = current_time('U');
+        $current_time = time();
         $time_diff = $current_time - $timestamp;
 
         // If the log is from the future (server time issues), show it as 'just now'
@@ -648,6 +654,11 @@ class LogController
     public function setLogFilePath($logFilePath)
     {
         $this->logFilePath = $logFilePath;
+    }
+
+    public function getLogFilePath()
+    {
+        return $this->logFilePath;
     }
 
     private function resolveLogPath()

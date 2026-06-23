@@ -186,7 +186,7 @@
     }
 
     const showTopLeft = (message, success) => {
-        toast.add({severity: success ? 'success' : 'warn', summary: '', detail: message, group: 'br', life: 1200});
+        toast.add({severity: success ? 'success' : 'warn', summary: '', detail: message, group: 'br', life: 3500});
     };
     onMounted(() => {
         fetchSettings();

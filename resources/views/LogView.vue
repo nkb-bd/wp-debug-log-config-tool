@@ -110,7 +110,7 @@
                                         <div class="dlct-log-main">
                                             <div class="dlct-log-meta">
                                                 <span class="dlct-log-time" v-tooltip.top="formatExactTime(slotProps.data.raw_time)">
-                                                    {{ slotProps.data.time }}
+                                                    {{ slotProps.data.raw_time ? formatRelative(slotProps.data.raw_time) : slotProps.data.time }}
                                                 </span>
                                                 <span :class="['dlct-severity', getSeverityClass(slotProps.data)]">
                                                     {{ getSeverityLabel(slotProps.data) }}
@@ -1114,6 +1114,26 @@
         const i = Math.floor(Math.log(bytes) / Math.log(k));
 
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Relative label derived from the raw UTC epoch, in the viewer's own timezone,
+    // so it always agrees with the exact-time tooltip below.
+    function formatRelative(rawUtc) {
+        if (!rawUtc) return '';
+        const diff = Math.floor(Date.now() / 1000) - Number(rawUtc);
+        if (diff < 0 || diff < 60) return 'Just now';
+        if (diff < 3600) {
+            const m = Math.round(diff / 60);
+            return `${m} ${m === 1 ? 'minute' : 'minutes'} ago`;
+        }
+        if (diff < 86400) {
+            const h = Math.round(diff / 3600);
+            return `${h} ${h === 1 ? 'hour' : 'hours'} ago`;
+        }
+        return new Date(Number(rawUtc) * 1000).toLocaleString(undefined, {
+            month: 'short', day: 'numeric', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
     }
 
     // Format timestamp to exact date and time for tooltip
