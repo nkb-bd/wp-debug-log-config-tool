@@ -62,6 +62,17 @@
                                     class="refresh-interval-dropdown"
                                 />
                             </div>
+                            <div class="auto-refresh-controls" v-tooltip.top="'Clock format for log times (saved in this browser)'">
+                                <span class="auto-refresh-label">Time</span>
+                                <Dropdown
+                                    v-model="timeFormat"
+                                    :options="timeFormatOptions"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    @change="onTimeFormatChange"
+                                    class="refresh-interval-dropdown"
+                                />
+                            </div>
                             <Button
                                 v-if="state.logs && Object.entries(state.logs).length"
                                 @click="deleteLogs('debug')"
@@ -362,6 +373,20 @@
         { label: '30 seconds', value: 30 },
         { label: '1 minute', value: 60 }
     ]);
+    const timeFormat = ref(localStorage.getItem('dlct_time_format') || 'auto');
+    const timeFormatOptions = ref([
+        { label: 'Auto', value: 'auto' },
+        { label: '24h', value: '24' },
+        { label: '12h', value: '12' }
+    ]);
+    function onTimeFormatChange() {
+        try { localStorage.setItem('dlct_time_format', timeFormat.value); } catch (e) {}
+    }
+    function hourOpts() {
+        if (timeFormat.value === '24') return { hour12: false };
+        if (timeFormat.value === '12') return { hour12: true };
+        return {};
+    }
     let refreshTimer = null;
 
 
@@ -1132,7 +1157,7 @@
         }
         return new Date(Number(rawUtc) * 1000).toLocaleString(undefined, {
             month: 'short', day: 'numeric', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
+            hour: '2-digit', minute: '2-digit', ...hourOpts()
         });
     }
 
@@ -1148,7 +1173,8 @@
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
+                ...hourOpts()
             });
         } catch (e) {
             console.error('Error formatting timestamp:', e);
